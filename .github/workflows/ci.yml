@@ -20,19 +20,19 @@ jobs:
         apt update
         apt install clang-format clang-tidy cmake ninja-build build-essential git -y
 
-  build:
-    needs: setup
-    - name: cmake
-      run: |
-        cd ${{ github.workspace }}
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release -GNinja
+  # build:
+  #   needs: setup
+  #   - name: cmake
+  #     run: |
+  #       cd ${{ github.workspace }}
+  #       mkdir build
+  #       cd build
+  #       cmake .. -DCMAKE_BUILD_TYPE=Release -GNinja
 
-    - name: ninja
-      run: ninja
+  #   - name: ninja
+  #     run: ninja
 
-  test:
-    needs: build
-    - name: test
-      run: ctest -V -j
+  # test:
+  #   needs: build
+  #   - name: test
+  #     run: ctest -V -j

@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  setup:
+  build-ubuntu:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,7 @@ jobs:
 
     - name: cmake
       working-directory: ./build
-      run: cmake .. -DCMAKE_BUILD_TYPE=Release -GNinja
+      run: cmake . -DCMAKE_BUILD_TYPE=Release -GNinja
 
     - name: ninja
       working-directory: ./build

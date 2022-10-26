@@ -31,6 +31,14 @@ jobs:
       working-directory: build
       run: ninja
 
+    - name: cache build files
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-build
+      with:
+        path: build
+        key: ${{ runner.os }}-${{ env.cache-name }}
+
   # test:
   #   needs: build
   #   - name: test

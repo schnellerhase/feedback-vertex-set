@@ -1,0 +1,3 @@
+add_subdirectory(analysis)
+add_subdirectory(verifier)
+add_subdirectory(components)

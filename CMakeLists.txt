@@ -1,0 +1,84 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(PACE_2022)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+if (CMAKE_BUILD_TYPE MATCHES Release)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3") # TODO: experiment with -Ofast
+endif()
+
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+endif()
+
+if (NOT PROFILING)
+    SET(PROFILING FALSE)
+endif()
+if (PROFILING)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
+endif()
+
+enable_testing() # flag this or something
+
+add_subdirectory(third-party)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -w") 
+
+# add_subdirectory(discrete)
+if(CMAKE_TESTING_ENABLED)
+    add_subdirectory(test)
+endif()
+
+# file(GLOB_RECURSE DISCRETE_SRCS "src/discrete/*.cpp")
+# add_library(discrete_LIB STATIC ${DISCRETE_SRCS})
+
+function(SOLVER NAME)
+    add_executable(${NAME} src/solvers/${NAME}.cpp)
+
+    target_include_directories(${NAME} PUBLIC src)
+    target_include_directories(${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-src/src)
+    target_include_directories(${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-build)
+    target_include_directories(${NAME} SYSTEM PUBLIC third-party)
+
+    target_link_directories(${NAME} PUBLIC ${CMAKE_BINARY_DIR}/scip-shared-build/lib)
+    target_link_directories(${NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
+
+    # UNCOMMENT THIS FOR STATIC BUILD
+    target_link_libraries(${NAME} -static)
+    target_link_libraries(${NAME} scip_static_lib soplex_static_lib)
+    add_dependencies(${NAME} scip soplex)
+
+    # UNCOMMEN THIS FOR SHARED BUILD
+    # target_link_libraries(${NAME} scip.so soplex.so)
+    # add_dependencies(${NAME} scip-shared soplex)
+endfunction()
+
+SOLVER(naive)
+SOLVER(reduce)
+SOLVER(greedy_reduction)
+SOLVER(vertex_cover)
+SOLVER(vc_reduce)
+SOLVER(reduce_deg_1)
+SOLVER(reduce_deg_1_scc)
+
+add_subdirectory(benchmark/solvers)
+# add_subdirectory(tools) # flag this -> we do not want to build this by default. (OGDF only required if tools...)
+
+# download graphs -> move to some ohter place?
+include(ExternalProject)
+ExternalProject_Add(
+    tracks 
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/tracks"
+    URL https://heibox.uni-heidelberg.de/f/be4337d9e4234bca8606/?dl=1
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+)

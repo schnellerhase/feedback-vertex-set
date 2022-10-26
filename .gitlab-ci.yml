@@ -1,0 +1,40 @@
+image: ubuntu:20.04
+
+# before_script:
+#   - apt update && apt install tzdata -y
+#   - TZ="America/New_York"
+#   - apt install clang-format clang-tidy cmake ninja-build build-essential git -y
+
+stages:
+  - code-format
+  - static-analysis
+  - build+test[release]
+  - build+test[debug]
+
+code-format:
+  stage: code-format
+  allow_failure: true
+  script:
+    - find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
+
+static-analysis:
+  stage: static-analysis
+  allow_failure: true # maybe reset this
+  script:
+    - cmake . -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+    - ninja
+    - find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-tidy -warnings-as-errors=* -p .
+
+build+test[release]:
+  stage: build+test[release]
+  script:
+    - cmake . -GNinja -DCMAKE_BUILD_TYPE=Release
+    - ninja
+    - ctest -V
+
+build+test[debug]:
+  stage: build+test[debug]
+  script:
+    - cmake . -GNinja -DCMAKE_BUILD_TYPE=Debug
+    - ninja
+    - ctest -V

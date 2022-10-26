@@ -1,0 +1,18 @@
+# usage:
+#   create with: 
+#     conda env create -f hpo_env.yml
+#   activate with:
+#     conda activate hpo_env
+#   make changes in this file active:
+#     conda env update --name hpo_env --file hpo_env.yml --prune
+
+name: hpo_env
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - matplotlib
+  - pandas
+  - graph-tool

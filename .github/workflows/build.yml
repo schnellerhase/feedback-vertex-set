@@ -21,13 +21,11 @@ jobs:
         sudo apt install clang-format clang-tidy cmake ninja-build build-essential git -y
 
     - name: cmake
-      run: |
-        cd ${{ github.workspace }}
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release -GNinja
+      working-directory: ./build
+      run: cmake .. -DCMAKE_BUILD_TYPE=Release -GNinja
 
     - name: ninja
+      working-directory: ./build
       run: ninja
 
   # test:

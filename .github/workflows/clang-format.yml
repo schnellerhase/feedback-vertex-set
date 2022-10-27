@@ -1,4 +1,4 @@
-name: code-format
+name: CI
 
 on:
   push:

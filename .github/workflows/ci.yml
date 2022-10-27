@@ -31,7 +31,7 @@ jobs:
         sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
 
     - name: create build dir
-      run: mkdir build
+      run: mkdir -p build
 
     - name: cmake
       working-directory: build

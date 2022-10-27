@@ -20,7 +20,7 @@ jobs:
           submodules: recursive
 
     - name: cache build dir
-      uses: actions/always-upload-cache@v3.0.11
+      uses: pat-s/always-upload-cache@v3.0.11
       with:
         path: build
         key: ${ { matrix.os } }-build-cache-${ { matrix.build-type } }

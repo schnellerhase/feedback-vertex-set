@@ -23,7 +23,7 @@ jobs:
       uses: pat-s/always-upload-cache@v3.0.11
       with:
         path: build
-        key: ${ { matrix.os } }-build-cache-${ { matrix.build-type } }
+        key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
     
     - name: Installing Software
       run: |

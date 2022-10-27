@@ -19,6 +19,12 @@ jobs:
       with:
           submodules: recursive
 
+    - name: cache build dir
+      uses: actions/cache@v2
+      with:
+        path: build
+        key: ${ { matrix.os } }-build-cache-${ { matrix.build-type } }
+    
     - name: Installing Software
       run: |
         sudo apt update

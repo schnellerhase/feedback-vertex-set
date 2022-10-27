@@ -37,7 +37,8 @@ class UndirectedGraph
       , _deg()
       , _adj()
       , _2arc()
-    {}
+    {
+    }
 
     UndirectedGraph(index_t N,
                     IndexList tails,
@@ -129,7 +130,10 @@ class UndirectedGraph
 
     [[nodiscard]] IndexListList& to_arc() { return _2arc; }
 
-    [[nodiscard]] const IndexListList& local2global() const { return _local2global; }
+    [[nodiscard]] const IndexListList& local2global() const
+    {
+        return _local2global;
+    }
 
     [[nodiscard]] IndexListList& local2global() { return _local2global; }
 
@@ -143,7 +147,10 @@ class UndirectedGraph
         return _local2globalInvert;
     }
 
-    [[nodiscard]] IndexListList& local2globalInvert() { return _local2globalInvert; }
+    [[nodiscard]] IndexListList& local2globalInvert()
+    {
+        return _local2globalInvert;
+    }
 
     [[nodiscard]] IndexList local2globalInvert(index_t local_idx) const
     {

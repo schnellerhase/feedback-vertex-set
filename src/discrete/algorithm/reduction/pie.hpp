@@ -9,7 +9,8 @@
     .3 // TODO: this should be chose, s.t. the method to cosntruc tsubgraph is
        // always fastest
 
-namespace {}
+namespace {
+}
 
 SubGraph
 remove_double_edges(const SubGraph& graph)

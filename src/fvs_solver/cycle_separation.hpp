@@ -15,7 +15,8 @@ struct MinHeapDistCompare
 
     MinHeapDistCompare(double* d)
       : _dist(d)
-    {}
+    {
+    }
 
     // Need to have a greater rather than less style because
     // std::heap is internally a max heap
@@ -31,7 +32,8 @@ struct LessCompare
 
     LessCompare(double* v)
       : _value(v)
-    {}
+    {
+    }
 
     bool operator()(const int& one, const int& two) const
     {
@@ -45,7 +47,8 @@ struct LessCompare2
 
     LessCompare2(int* v)
       : _value(v)
-    {}
+    {
+    }
 
     bool operator()(const int& one, const int& two) const
     {
@@ -59,7 +62,8 @@ struct GreaterCompare
 
     GreaterCompare(double* v)
       : _value(v)
-    {}
+    {
+    }
 
     bool operator()(const int& one, const int& two) const
     {

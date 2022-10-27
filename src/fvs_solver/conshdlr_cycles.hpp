@@ -193,7 +193,8 @@ class ConshdlrCycles : public scip::ObjConshdlr
       , _data(data)
       , _vars(vars)
       , _csep(new CycleSeparation(data))
-    {}
+    {
+    }
 
     /** destructor */
     virtual ~ConshdlrCycles() { delete _csep; }

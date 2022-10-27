@@ -34,7 +34,8 @@ class VCFunnelHandler
       , _uInvert(IndexListList())
       , _vNeighbors(IndexListList())
       , _uNeighbors(IndexListList())
-    {}
+    {
+    }
 
     VCFunnelHandler(IndexListList v,
                     IndexListList vInvert,
@@ -48,7 +49,8 @@ class VCFunnelHandler
       , _uInvert(std::move(uInvert))
       , _vNeighbors(std::move(vNeighbors))
       , _uNeighbors(std::move(uNeighbors))
-    {}
+    {
+    }
 
     explicit VCFunnelHandler(const VCFunnelHandler& other) =
       default; // copy should not happen uintended

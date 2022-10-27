@@ -20,7 +20,7 @@ jobs:
           submodules: recursive
 
     - name: cache build dir
-      uses: actions/cache@v2
+      uses: actions/always-upload-cache@v3
       with:
         path: build
         key: ${ { matrix.os } }-build-cache-${ { matrix.build-type } }
@@ -46,9 +46,9 @@ jobs:
       run: ctest -V
 
     - name: clang-format
-      if: (success() || failure() ) && (${{ matrix.build-type }} == Release)
+      if: success() || failure() 
       run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
 
     - name: clang-tidy
-      if: (success() || failure() ) && (${{ matrix.build-type }} == Release)
+      if: success() || failure()
       run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-tidy -warnings-as-errors=* -p .

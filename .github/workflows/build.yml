@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  build-ubuntu:
+  build-ubuntu-release:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,19 +25,18 @@ jobs:
 
     - name: cmake
       working-directory: build
-      run: cmake .. -DCMAKE_BUILD_TYPE=Release -GNinja
+      run: cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_CLANG_TIDY -GNinja
 
     - name: ninja
       working-directory: build
       run: ninja
 
-    - name: cache build files
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-build
+    - name: 'Upload build files'
+      uses: actions/upload-artifact@v3
       with:
-        path: build
-        key: ${{ runner.os }}-${{ env.cache-name }}
+        name: artifact-${{ runner.os }}-build-release
+        path: build/
+        retention-days: 5
 
   # test:
   #   needs: build

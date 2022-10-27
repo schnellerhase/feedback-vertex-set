@@ -18,7 +18,7 @@ jobs:
     - name: Installing Software
       run: |
         sudo apt update
-        sudo apt install clang-format clang-tidy cmake ninja-build build-essential git -y
+        sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
 
     - name: create build dir
       run: mkdir build
@@ -31,14 +31,14 @@ jobs:
       working-directory: build
       run: ninja
 
-    - name: 'Upload build files'
-      uses: actions/upload-artifact@v3
-      with:
-        name: artifact-${{ runner.os }}-build-release
-        path: build/
-        retention-days: 5
+    - name: test
+      working-directory: build
+      run: ctest -V
 
-  # test:
-  #   needs: build
-  #   - name: test
-  #     run: ctest -V -j
+    - name: clang-format
+      if: success() || failure()
+      run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
+
+    - name: clang-tidy
+      if: success() || failure()
+      run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-tidy -warnings-as-errors=* -p .

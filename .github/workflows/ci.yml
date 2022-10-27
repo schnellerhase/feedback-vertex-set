@@ -6,9 +6,13 @@ on:
   pull_request:
 
 jobs:
-  build-ubuntu-release:
-    runs-on: ubuntu-latest
+  CI:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+        build-type: [Debug, Release]
 
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v1
@@ -25,7 +29,7 @@ jobs:
 
     - name: cmake
       working-directory: build
-      run: cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja
 
     - name: ninja
       working-directory: build
@@ -36,9 +40,9 @@ jobs:
       run: ctest -V
 
     - name: clang-format
-      if: success() || failure()
+      if: (success() || failure() ) && (${{ matrix.build-type }} == Release)
       run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
 
     - name: clang-tidy
-      if: success() || failure()
+      if: (success() || failure() ) && (${{ matrix.build-type }} == Release)
       run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-tidy -warnings-as-errors=* -p .

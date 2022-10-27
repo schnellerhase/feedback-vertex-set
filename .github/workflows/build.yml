@@ -25,7 +25,7 @@ jobs:
 
     - name: cmake
       working-directory: build
-      run: cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_CLANG_TIDY -GNinja
+      run: cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja
 
     - name: ninja
       working-directory: build

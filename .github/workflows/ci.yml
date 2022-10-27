@@ -51,4 +51,4 @@ jobs:
 
     - name: clang-tidy
       if: success() || failure()
-      run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-tidy -warnings-as-errors=* -p .
+      run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-tidy -p build # -warnings-as-errors=*

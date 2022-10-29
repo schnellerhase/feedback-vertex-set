@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.5.0)
 
-option(USE_SYSTEM_GOOGLETEST "Use system googletest and do not download/build an own version of it" OFF)
+option(USE_SYSTEM_GOOGLETEST "Use system googletest and do not download/build an own version of it" ON)
 
 if(USE_SYSTEM_GOOGLETEST)
 

@@ -2,8 +2,8 @@
 
 #include <iostream>
 #include <scip/scip.h>
-#include <scip/scipdefplugins.h>
 #include <scip/scip_exception.hpp>
+#include <scip/scipdefplugins.h>
 
 #include <vector>
 

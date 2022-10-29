@@ -84,7 +84,10 @@ class SubGraph : public Graph
 
     [[nodiscard]] IndexList& local2global() { return _local2global; }
 
-    [[nodiscard]] const IndexList& local2global() const { return _local2global; }
+    [[nodiscard]] const IndexList& local2global() const
+    {
+        return _local2global;
+    }
 
     // TODO: remove this
     const IndexList local2global(IndexList localIndices) const

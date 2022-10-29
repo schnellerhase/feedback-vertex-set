@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  CI:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+        build-type: [Debug, Release]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+          submodules: recursive
+
+    - name: cache build dir
+      uses: pat-s/always-upload-cache@v3.0.11
+      with:
+        path: build
+        key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
+    
+    - name: Installing Software
+      run: |
+        sudo apt update
+        sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
+
+    - name: create build dir
+      run: mkdir -p build
+
+    - name: cmake
+      working-directory: build
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja
+
+    - name: ninja
+      working-directory: build
+      run: ninja
+
+    - name: test
+      working-directory: build
+      run: ctest -V
+
+    - name: clang-format
+      if: success() || failure() 
+      run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
+
+    - name: clang-tidy
+      if: success() || failure()
+      run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-tidy -p build # -warnings-as-errors=* TODO: readd at some point

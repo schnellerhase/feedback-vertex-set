@@ -12,10 +12,7 @@ struct SCIP_ConsData
 {};
 #endif
 
-using namespace std;
-
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wunused-function"
 static SCIP_RETCODE
 sepaCycle(SCIP* scip,              
@@ -29,9 +26,8 @@ sepaCycle(SCIP* scip,
           CycleSeparation* csep,
           SCIP_VAR** vars,
           bool enfo)
-{ /*lint --e{715}*/
+{
     assert(scip != nullptr);
-    // assert(data != nullptr);
     assert(vars != nullptr);
 
     *result = SCIP_DIDNOTRUN;
@@ -115,11 +111,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
     const Graph& _data;
     SCIP_VAR** _vars;
     CycleSeparation* _csep;
-    int num_calls_enfolp = 0, num_calls_enfops = 0, num_calls_check = 0,
-        num_calls_lock = 0, num_calls_trans = 0, num_calls_sepalp = 0,
-        num_calls_sepasol = 0;
 
-    /** constructor */
     ConshdlrCycles(const Graph& data, SCIP* scip, SCIP_VAR** vars)
       : ObjConshdlr(scip,
                     "Cycles",
@@ -146,8 +138,6 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
     virtual SCIP_DECL_CONSCHECK(scip_check)
     { /*lint --e{715}*/
-        num_calls_check++;
-
         assert(result != nullptr);
 
         auto* x = new double[_data.M()];
@@ -170,7 +160,6 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
     virtual SCIP_DECL_CONSENFOLP(scip_enfolp)
     { /*lint --e{715}*/
-        num_calls_enfolp++;
         assert(result != nullptr);
 
         SCIP_CALL(sepaCycle(scip,
@@ -190,7 +179,6 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
     virtual SCIP_DECL_CONSENFOPS(scip_enfops)
     { /*lint --e{715}*/
-        num_calls_enfops++;
         assert(result != nullptr);
 
         SCIP_CALL(sepaCycle(scip,
@@ -210,8 +198,6 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
     virtual SCIP_DECL_CONSLOCK(scip_lock)
     { /*lint --e{715}*/
-        num_calls_lock++;
-
         for (index_t v = 0; v < _data.N(); ++v) {
             SCIPaddVarLocksType(
               scip, _vars[v], SCIP_LOCKTYPE_MODEL, nlockspos, nlocksneg);
@@ -222,7 +208,6 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
     virtual SCIP_DECL_CONSTRANS(scip_trans)
     {
-        num_calls_trans++;
 
         //    SCIP_CONSDATA *sourcedata;
         SCIP_CONSDATA* targetdata = nullptr;
@@ -263,8 +248,6 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
     virtual SCIP_DECL_CONSSEPASOL(scip_sepasol)
     {
-        num_calls_sepasol++;
-
         SCIP_CALL(sepaCycle(scip,
                             conshdlr,
                             conss,
@@ -282,8 +265,6 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
     virtual SCIP_DECL_CONSSEPALP(scip_sepalp)
     {
-        num_calls_sepalp++;
-
         SCIP_CALL(sepaCycle(scip,
                             conshdlr,
                             conss,
@@ -307,21 +288,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
         return SCIP_OKAY;
     }
-
-    // Additional functions
-    void printStatistics(std::ostream& out) const
-    {
-        out << "Callback calls tri enfolp: " << num_calls_enfolp << std::endl;
-        out << "Callback calls tri enfops: " << num_calls_enfops << std::endl;
-        out << "Callback calls tri check: " << num_calls_check << std::endl;
-        out << "Callback calls tri lock: " << num_calls_lock << std::endl;
-        out << "Callback calls tri trans: " << num_calls_trans << std::endl;
-        out << "Callback calls tri sepa lp: " << num_calls_sepalp << std::endl;
-        out << "Callback calls tri sepa sol: " << num_calls_sepasol
-            << std::endl;
-    }
-
-}; /*lint !e1712*/
+};
 
 SCIP_RETCODE
 SCIPcreateConsCycle(

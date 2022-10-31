@@ -52,21 +52,16 @@ class VCoverSolver
             SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
         }
 
-        SCIP_VAR** cvars = new SCIP_VAR*[2];
-        SCIP_Real* cvals = new SCIP_Real[2]{ 1.0, 1.0 };
         for (index_t e = 0; e < _data.M(); ++e) {
-            cvars[0] = _vars[_data.tails()[e]];
-            cvars[1] = _vars[_data.heads()[e]];
+            std::array<SCIP_Real, 2> cvals= { 1.0, 1.0 };
+            std::array<SCIP_VAR*, 2> cvars = {_vars[_data.tails()[e]], _vars[_data.heads()[e]]};
 
             SCIP_CONS* cons = nullptr;
             SCIPcreateConsBasicLinear(
-              _scip, &cons, "", 2, cvars, cvals, 1.0, SCIPinfinity(_scip));
+              _scip, &cons, "", 2, cvars.data(), cvals.data(), 1.0, SCIPinfinity(_scip));
             SCIPaddCons(_scip, cons);
             SCIPreleaseCons(_scip, &cons);
         }
-
-        delete[] cvars;
-        delete[] cvals;
     }
 
     ~VCoverSolver()

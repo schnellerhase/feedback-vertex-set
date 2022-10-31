@@ -247,20 +247,14 @@ class Graph
 
     static Graph read(FILE* fp)
     {
-        buffer buf{};
-        buf.line = (char*)malloc(buf.cap);
-
-        if (buf.line == nullptr) {
-            fprintf(stderr, "Fatal error while allocating small buffer\n");
-            exit(1);
-        }
+        std::vector<char> buf(BUFFER_DEFAULT_SIZE);
 
         bool header(false);
         size_t n = 0, m = 0, e = 0;
 
-        while (!header && buffer_line(fp, &buf)) {
-            if (buf.line[0] != '#') {
-                int r = sscanf(buf.line, "%zu %zu %zu", &n, &m, &e);
+        while (!header && buffer_line(fp, buf)) {
+            if (buf.data()[0] != '#') {
+                int r = sscanf(buf.data(), "%zu %zu %zu", &n, &m, &e);
 
                 if (r == 3 && n >= 1 && m >= 1 && e == 0)
                     header = true;
@@ -271,8 +265,6 @@ class Graph
 
         if (!header) {
             fclose(fp);
-            free(buf.line);
-
             fprintf(stdout,
                     "This should not happen: First line has invalid form.\n");
             exit(1);
@@ -287,15 +279,15 @@ class Graph
         size_t eread = 0;
 
         for (unsigned int i = 0; i < n; ++i) {
-            if (buffer_line(fp, &buf)) {
-                if (strlen(buf.line) > 0 && buf.line[0] == '\n')
+            if (buffer_line(fp, buf)) {
+                if (strlen(buf.data()) > 0 && buf.data()[0] == '\n')
                     continue;
 
                 size_t j = 0;
 
                 int offset = 0;
                 int bytes = 0;
-                while (sscanf(buf.line + offset, "%zu%n", &j, &bytes) > 0) {
+                while (sscanf(buf.data() + offset, "%zu%n", &j, &bytes) > 0) {
                     --j;
 
                     assert(i < n);
@@ -319,7 +311,6 @@ class Graph
         }
 
         fclose(fp);
-        free(buf.line);
 
         if (eread != m) {
             fprintf(

@@ -5,17 +5,13 @@
 #include <cstring>
 #include <unistd.h>
 
-struct buffer
-{
-    static constexpr size_t BUFFER_DEFAULT_SIZE = 32;
-    char* line = nullptr;
-    size_t cap = BUFFER_DEFAULT_SIZE;
-};
+// TODO: move this to a more senseful location
+static constexpr std::size_t BUFFER_DEFAULT_SIZE = 32;
 
 bool
-buffer_line(FILE* fp, buffer* b)
+buffer_line(FILE* fp, std::vector<char>& b)
 {
-    if (nullptr == fgets(b->line, b->cap, fp))
+    if (nullptr == fgets(b.data(), b.size(), fp))
         return false;
 
     // We can assume here that at least one
@@ -23,22 +19,13 @@ buffer_line(FILE* fp, buffer* b)
 
     unsigned int offset = 0;
 
-    while (!(feof(fp) || b->line[strlen(b->line) - 1] == '\n')) {
-        offset = b->cap;
-        b->cap <<= 1;
-
-        void* rptr = realloc(b->line, b->cap);
-
-        if (nullptr == rptr) {
-            fprintf(stderr, "Fatal error while enlarging buffer\n");
-            return false;
-        }
-
-        b->line = (char*)rptr;
+    while (!(feof(fp) || b.data()[strlen(b.data()) - 1] == '\n')) {
+        offset = b.size();
+        b.resize(b.size() * 2);
 
         // Now append into "newly allocated half" thereby overwriting
         // the nullptr termination of the former fgets call
-        if (nullptr == fgets(b->line + offset - 1, offset + 1, fp))
+        if (nullptr == fgets(b.data() + offset - 1, offset + 1, fp))
             return false;
     }
 

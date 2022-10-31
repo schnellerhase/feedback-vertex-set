@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <iostream>
 #include <list>
+#include <span>
 #include <stack>
 #include <vector>
 
@@ -34,25 +35,25 @@ class DFS
   private:
     const graph_t& _graph;
     index_t _current;
-    bool* _visited;
+    std::span<bool> _visited;
     std::vector<index_t> _stack;
 
   public:
     DFS(const graph_t& graph)
       : _graph(graph)
       , _current(0)
-      , _visited(new bool[graph.N()])
+      , _visited(new bool[graph.N()], graph.N())
       , _stack()
     {
-        for (index_t i = 0; i < graph.N(); i++)
-            _visited[i] = false;
+        for (auto& e : _visited)
+            e = false;
     }
 
-    ~DFS() { delete[] _visited; }
+    ~DFS() { delete[] _visited.data(); }
 
     void current(index_t i) { _current = i; }
 
-    bool visited(index_t i)
+    [[nodiscard]] bool visited(index_t i) const
     {
         assert(i < _graph.N());
         return _visited[i];

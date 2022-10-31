@@ -62,17 +62,17 @@ class VCFunnelHandler
 
     ~VCFunnelHandler() = default;
 
-    const IndexListList& v() const { return _v; }
+    [[nodiscard]] const IndexListList& v() const { return _v; }
 
-    const IndexListList& vInvert() const { return _vInvert; }
+    [[nodiscard]] const IndexListList& vInvert() const { return _vInvert; }
 
-    const IndexListList& vNeighbors() const { return _vNeighbors; }
+    [[nodiscard]] const IndexListList& vNeighbors() const { return _vNeighbors; }
 
-    const IndexListList& u() const { return _u; }
+    [[nodiscard]] const IndexListList& u() const { return _u; }
 
-    const IndexListList& uInvert() const { return _uInvert; }
+    [[nodiscard]] const IndexListList& uInvert() const { return _uInvert; }
 
-    const IndexListList& uNeighbors() const { return _uNeighbors; }
+    [[nodiscard]] const IndexListList& uNeighbors() const { return _uNeighbors; }
 
     void update(IndexList v,
                 IndexList vInvert,

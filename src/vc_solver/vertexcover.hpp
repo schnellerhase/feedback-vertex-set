@@ -44,9 +44,9 @@ class VCoverSolver
         // 536870911))
 
         for (index_t v = 0; v < _data.N(); ++v) {
-            SCIP_VAR* var;
+            SCIP_VAR* var = nullptr;
             SCIP_CALL_EXC(SCIPcreateVarBasic(
-              _scip, &var, NULL, 0.0, 1.0, 1.0, SCIP_VARTYPE_BINARY));
+              _scip, &var, nullptr, 0.0, 1.0, 1.0, SCIP_VARTYPE_BINARY));
             _vars[v] = var;
             SCIP_CALL_EXC(SCIPaddVar(_scip, var));
             SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
@@ -58,7 +58,7 @@ class VCoverSolver
             cvars[0] = _vars[_data.tails()[e]];
             cvars[1] = _vars[_data.heads()[e]];
 
-            SCIP_CONS* cons;
+            SCIP_CONS* cons = nullptr;
             SCIPcreateConsBasicLinear(
               _scip, &cons, "", 2, cvars, cvals, 1.0, SCIPinfinity(_scip));
             SCIPaddCons(_scip, cons);
@@ -96,7 +96,7 @@ class VCoverSolver
     {
         assert(vc.size() == _data.N());
 
-        SCIP_SOL* sol;
+        SCIP_SOL* sol = nullptr;
         SCIPcreateSol(_scip, &sol, NULL);
 
         for (index_t i = 0; i < vc.size(); i++)

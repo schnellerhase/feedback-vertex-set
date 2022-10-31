@@ -5,8 +5,7 @@
 #include "../two_cycles.hpp"
 #include "edge.hpp"
 
-#define PIE_DOUBLE_CYCLE_DENSITY_SWITCH                                        \
-    .3 // TODO: this should be chose, s.t. the method to cosntruc tsubgraph is
+constexpr double PIE_DOUBLE_CYCLE_DENSITY_SWITCH = .3; // TODO: this should be chose, s.t. the method to cosntruc tsubgraph is
        // always fastest
 
 namespace {
@@ -83,7 +82,7 @@ reduce_PIE(SubGraph& graph)
         index_t head = removed.heads()[m];
         index_t tail = removed.tails()[m];
         if (scc_comp[head] != scc_comp[tail])
-            edges_to_remove.push_back(std::make_tuple(tail, head));
+            edges_to_remove.emplace_back(std::make_tuple(tail, head));
     }
 
     remove_edges_tails_heads_orderd(graph, edges_to_remove);

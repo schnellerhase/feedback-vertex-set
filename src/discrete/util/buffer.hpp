@@ -8,7 +8,7 @@
 struct buffer
 {
     static constexpr size_t BUFFER_DEFAULT_SIZE = 32;
-    char* line;
+    char* line = nullptr;
     size_t cap = BUFFER_DEFAULT_SIZE;
 };
 

@@ -16,8 +16,6 @@ static const double EPS = 1e-6;
 class CycleSeparation
 {
   public:
-    std::vector<std::vector<index_t>> _cuts;
-
     CycleSeparation(const Graph& graph)
       : _graph(graph)
       , _pv(graph.N())
@@ -36,14 +34,13 @@ class CycleSeparation
 
     ~CycleSeparation() = default;
 
-    int separate(double* x)
+    void separate(double* x)
     {
         update_weights(x);
 
         _cuts.resize(0);
 
         find_cycles<true>();
-        return _cuts.size();
     }
 
     bool check(double* x)
@@ -52,9 +49,12 @@ class CycleSeparation
         return !find_cycles<false>();
     }
 
+    [[nodiscard]] const std::vector<std::vector<index_t>>& cuts() const {return _cuts;}
+
   private:
     const Graph& _graph;
 
+    std::vector<std::vector<index_t>> _cuts;
     std::vector<index_t> _pe; // outgoing edge
     std::vector<index_t> _pv; // outgoing vertex connected with prev edge
     std::vector<index_t> _pl; // length of cycle?
@@ -76,15 +76,15 @@ class CycleSeparation
     {
         for (index_t i = 0; i < _graph.N(); ++i) {
             _dist[i] = INF;
-            _pv[i] = INF;
-            _pl[i] = INF;
+            _pv[i] = std::numeric_limits<index_t>::max();
+            _pl[i] = std::numeric_limits<index_t>::max();
             _heapid[i] = 0;
         }
 
         _heaprun = 0;
         _heap.resize(0);
 
-        const int start = s;
+        const index_t start = s;
         _dist[start] = 0.0;
         _pv[start] = 0;
         _pl[start] = 0;
@@ -93,7 +93,7 @@ class CycleSeparation
         _heapid[start] = _heaprun++;
 
         for (index_t k = 0; k < _graph.indeg()[s]; ++k) {
-            const int t = _graph.inadj()[s][k];
+            const index_t t = _graph.inadj()[s][k];
 
             if constexpr (cut)
                 if (t < s)
@@ -126,7 +126,7 @@ class CycleSeparation
                 }
 
                 for (index_t l = 0; l < _graph.outdeg()[node]; ++l) {
-                    const int j = _graph.outadj()[node][l];
+                    const index_t j = _graph.outadj()[node][l];
 
                     if constexpr (cut)
                         if (j < s)

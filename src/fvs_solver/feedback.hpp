@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 #include <scip/scip.h>
 #include <scip/scipdefplugins.h>
 #include <vector>
@@ -18,7 +19,7 @@ class FeedbackSolver
     SCIP_VAR** _vars;
     SCIP_CONS* _cons;
 
-    ConshdlrCycles* _cycleConsHandler;
+    std::unique_ptr<ConshdlrCycles> _cycleConsHandler;
 
   public:
     explicit FeedbackSolver(const Graph& data)
@@ -47,22 +48,22 @@ class FeedbackSolver
         // ToDo: Check if necessary
         SCIPenableDebugSol(_scip);
 
-        _cycleConsHandler = new ConshdlrCycles(_data, _scip, _vars);
+        _cycleConsHandler = std::make_unique<ConshdlrCycles>(_data, _scip, _vars);
 
         // Turn off presolving
         // SCIP_CALL_EXC(SCIPsetIntParam(_scip, "presolving/maxrounds", 0))
         //    SCIP_CALL_EXC(SCIPsetRealParam(_scip, "limits/time", 600))
         // Add Clique constraint handler
-        SCIP_CALL_EXC(SCIPincludeObjConshdlr(_scip, _cycleConsHandler, FALSE));
+        SCIP_CALL_EXC(SCIPincludeObjConshdlr(_scip, _cycleConsHandler.get(), FALSE));
 
         SCIP_CALL_EXC(SCIPincludeDefaultPlugins(_scip));
         // SCIP_CALL_EXC(SCIPsetIntParam(_scip, "branching/pscost/priority",
         // 536870911))
 
         for (index_t v = 0; v < _data.N(); ++v) {
-            SCIP_VAR* var;
+            SCIP_VAR* var = nullptr;
             SCIP_CALL_EXC(SCIPcreateVarBasic(
-              _scip, &var, NULL, 0.0, 1.0, 1.0, SCIP_VARTYPE_BINARY));
+              _scip, &var, nullptr, 0.0, 1.0, 1.0, SCIP_VARTYPE_BINARY));
             _vars[v] = var;
             SCIP_CALL_EXC(SCIPaddVar(_scip, var));
             SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
@@ -108,13 +109,13 @@ class FeedbackSolver
 
     void set_initial_solution(const FVS& fvs)
     {
-        SCIP_SOL* sol;
-        SCIPcreateSol(_scip, &sol, NULL);
+        SCIP_SOL* sol = nullptr;
+        SCIPcreateSol(_scip, &sol, nullptr);
 
         for (index_t i = 0; i < fvs.size(); ++i)
             SCIPsetSolVal(_scip, sol, _vars[i], (fvs[i]) * 1.0);
 
-        SCIP_Bool kept;
+        SCIP_Bool kept = 0;
         SCIPaddSol(_scip, sol, &kept);
         SCIPfreeSol(_scip, &sol);
 
@@ -150,7 +151,6 @@ class FeedbackSolver
         }
 
         delete[] _vars;
-        delete _cycleConsHandler;
         delete[] _solution;
     }
 };

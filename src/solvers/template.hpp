@@ -1,7 +1,8 @@
 #pragma once
 
+#include <cstdio>
+
 #include "discrete/vc_funnel_handler.hpp"
-#include <stdio.h>
 
 // #define IN stdin
 // #define OUT std::cout

@@ -36,21 +36,18 @@ sepaCycle(SCIP* scip,
 
     *result = SCIP_DIDNOTRUN;
 
-    double* x = new double[data.M()];
-    for (index_t e = 0; e < data.M(); ++e) {
-        int v = data.tails()[e];
-        x[e] = 1.0 - SCIPgetSolVal(scip, sol, vars[v]);
-    }
+    std::vector<double> x(data.M());
+    for (index_t e = 0; e < data.M(); ++e)
+        x[e] = 1.0 - SCIPgetSolVal(scip, sol, vars[data.tails()[e]]);
 
-    index_t nCuts = csep->separate(x);
-
-    delete[] x;
+    csep->separate(x.data());
 
     bool one_efficacious(false);
 
     int effi(0);
-    for (index_t i = 0; i < nCuts && (*result != SCIP_CUTOFF); ++i) {
-        SCIP_ROW* row;
+    const auto& cuts = csep->cuts();
+    for (index_t i = 0; i < cuts.size() && (*result != SCIP_CUTOFF); ++i) {
+        SCIP_ROW* row = nullptr;
         SCIP_CALL(SCIPcreateEmptyRowConshdlr(scip,
                                              &row,
                                              conshdlr,
@@ -63,10 +60,9 @@ sepaCycle(SCIP* scip,
 
         SCIP_CALL(SCIPcacheRowExtensions(scip, row));
 
-        for (index_t s = 0; s < csep->_cuts[i].size(); ++s) {
-            int e = csep->_cuts[i][s];
+        for (const auto& e : cuts[i])
             SCIP_CALL(SCIPaddVarToRow(scip, row, vars[data.tails()[e]], 1.0));
-        }
+
         SCIP_CALL(SCIPflushRowExtensions(scip, row));
 
         if (SCIPisCutEfficacious(scip, sol, row)) {
@@ -91,7 +87,7 @@ sepaCycle(SCIP* scip,
             break;
     }
 
-    if (0 == nCuts) {
+    if (0 == cuts.size()) {
         if (enfo) {
             *result = SCIP_FEASIBLE;
         } else {
@@ -99,7 +95,7 @@ sepaCycle(SCIP* scip,
         }
     }
 
-    if (nCuts && one_efficacious == false) {
+    if (cuts.size() && one_efficacious == false) {
         if (enfo) {
             *result = SCIP_INFEASIBLE;
         } else {
@@ -154,7 +150,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
         assert(result != nullptr);
 
-        double* x = new double[_data.M()];
+        auto* x = new double[_data.M()];
         for (index_t e = 0; e < _data.M(); ++e) {
             int v = _data.tails()[e];
             x[e] = 1.0 - SCIPgetSolVal(scip, sol, _vars[v]);
@@ -346,15 +342,13 @@ SCIPcreateConsCycle(
   SCIP_Bool removable 
 )
 {
-    SCIP_CONSHDLR* conshdlr;
-    SCIP_CONSDATA* consdata;
-
-    conshdlr = SCIPfindConshdlr(scip, "Cycles");
+    SCIP_CONSHDLR* conshdlr = SCIPfindConshdlr(scip, "Cycles");;
     if (conshdlr == nullptr) {
         SCIPerrorMessage("constraint handler not found\n");
         return SCIP_PLUGINNOTFOUND;
     }
 
+    SCIP_CONSDATA* consdata = nullptr;
     SCIP_CALL(SCIPallocBlockMemory(scip, &consdata)); /*lint !e530*/
 
     SCIP_CALL(SCIPcreateCons(scip,

@@ -10,7 +10,7 @@ low_links_sccs(const Graph& graph)
     // TODO: update with
     // https://www.cs.cmu.edu/~15451-f18/lectures/lec19-DFS-strong-components.pdf
     if (graph.N() == 0)
-        return IndexList({});
+        return {};
 
     IndexList components(graph.N(), graph.N());
     IndexList low(graph.N(), graph.N());

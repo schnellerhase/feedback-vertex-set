@@ -20,7 +20,7 @@ solve_fvs(const Graph& graph)
     FeedbackSolver solver(graph);
     bool solved = solver.solve();
     if (solved) {
-        FVS solution(graph.N(), 0);
+        FVS solution(graph.N(), false);
         for (index_t i = 0; i < solution.size(); i++)
             solution[i] = (solver._solution[i] > 0.9);
 

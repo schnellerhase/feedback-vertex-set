@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 #include <scip/scip.h>
 #include <scip/scipdefplugins.h>
 #include <vector>
@@ -12,49 +13,28 @@
 class FeedbackSolver
 {
   private:
-    /** @brief pointer to scip structure
-     *
-     *  SCIP organizes all the problem informations by itself, we can access
-     * them by the SCIP * pointer
-     */
-    SCIP* _scip{};
-
-    /** @brief Graph DataStructure  */
     const Graph& _data;
 
-    /** @brief one binary variable for each edge
-     *
-     * To access variable information (objective value, bounds,
-     * etc.) use the SCIP_VAR * pointer. Since we want to know the
-     * value of each variable in the solution, we have to store
-     * these pointers.
-     */
-
+    SCIP* _scip{};
     SCIP_VAR** _vars;
-
-    /** @brief constraints for each edge
-     *
-     * To access constraint information (right hand side, left hand
-     * side, dual values, etc.) use the SCIP_CONS * pointer. For the
-     * n-queens problem we do not really need to store them but we
-     * do for illustration.
-     */
-
     SCIP_CONS* _cons;
+    int* _solution;
 
-    ConshdlrCycles* _cycleConsHandler;
+    std::unique_ptr<ConshdlrCycles> _cycleConsHandler;
 
   public:
-    /** @brief constructs the BP model for the max cut problem
-     *
-     * @param[in] n the number of nodes
-     */
-    // explicit FeedbackSolver(Graph &data);
+    FeedbackSolver() = delete;
+    FeedbackSolver(const FeedbackSolver& other) = delete;
+    FeedbackSolver(FeedbackSolver&& other) = delete;
+
+    FeedbackSolver& operator=(FeedbackSolver other) = delete;
+    FeedbackSolver& operator=(FeedbackSolver&& other) = delete;
 
     explicit FeedbackSolver(const Graph& data)
       : _data(data)
       , _vars(new SCIP_Var*[_data.N()])
       , _solution(new int[_data.N()])
+      , _cons(nullptr)
     {
         SCIP_CALL_EXC(SCIPcreate(&_scip));
         SCIP_CALL_EXC(SCIPcreateProbBasic(_scip, "feedback problem"));
@@ -77,32 +57,28 @@ class FeedbackSolver
         // ToDo: Check if necessary
         SCIPenableDebugSol(_scip);
 
-        _cycleConsHandler = new ConshdlrCycles(_data, _scip, _vars);
+        _cycleConsHandler =
+          std::make_unique<ConshdlrCycles>(_data, _scip, _vars);
 
         // Turn off presolving
         // SCIP_CALL_EXC(SCIPsetIntParam(_scip, "presolving/maxrounds", 0))
         //    SCIP_CALL_EXC(SCIPsetRealParam(_scip, "limits/time", 600))
         // Add Clique constraint handler
-        SCIP_CALL_EXC(SCIPincludeObjConshdlr(_scip, _cycleConsHandler, FALSE));
+        SCIP_CALL_EXC(
+          SCIPincludeObjConshdlr(_scip, _cycleConsHandler.get(), FALSE));
 
         SCIP_CALL_EXC(SCIPincludeDefaultPlugins(_scip));
         // SCIP_CALL_EXC(SCIPsetIntParam(_scip, "branching/pscost/priority",
         // 536870911))
 
         for (index_t v = 0; v < _data.N(); ++v) {
-            SCIP_VAR* var;
+            SCIP_VAR* var = nullptr;
             SCIP_CALL_EXC(SCIPcreateVarBasic(
-              _scip, &var, NULL, 0.0, 1.0, 1.0, SCIP_VARTYPE_BINARY));
-            _vars[v] = var;
+              _scip, &var, nullptr, 0.0, 1.0, 1.0, SCIP_VARTYPE_BINARY));
+            _vars[v] = var; // NOLINT
             SCIP_CALL_EXC(SCIPaddVar(_scip, var));
             SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
         }
-
-        /*
-         * Add constraint handlers base constraint
-         * This is needed, as otherwise the constraint handlers callbacks will
-         * never be invoked
-         * */
 
         SCIP_CALL_EXC(SCIPcreateConsCycle(_scip,
                                           &_cons,
@@ -124,11 +100,9 @@ class FeedbackSolver
         // Add Clique constraint handler
     }
 
-    int* _solution;
-
     void set_UB(int var, double ub)
     {
-        SCIP_CALL_EXC(SCIPchgVarUb(_scip, _vars[var], ub));
+        SCIP_CALL_EXC(SCIPchgVarUb(_scip, _vars[var], ub)); // NOLINT
     }
 
     void set_time_limit(double seconds)
@@ -142,17 +116,15 @@ class FeedbackSolver
         SCIP_CALL_EXC(SCIPsetIntParam(_scip, "display/freq", 100));
     }
 
-    // fvs shall have the indices of only those vertex which
-    // are in the feedback vertex set, nfvs specifies the number of these.
     void set_initial_solution(const FVS& fvs)
     {
-        SCIP_SOL* sol;
-        SCIPcreateSol(_scip, &sol, NULL);
+        SCIP_SOL* sol = nullptr;
+        SCIPcreateSol(_scip, &sol, nullptr);
 
         for (index_t i = 0; i < fvs.size(); ++i)
-            SCIPsetSolVal(_scip, sol, _vars[i], (fvs[i]) * 1.0);
+            SCIPsetSolVal(_scip, sol, _vars[i], (fvs[i]) * 1.0); // NOLINT
 
-        SCIP_Bool kept;
+        SCIP_Bool kept = 0;
         SCIPaddSol(_scip, sol, &kept);
         SCIPfreeSol(_scip, &sol);
 
@@ -167,27 +139,19 @@ class FeedbackSolver
 
         if (ret == SCIP_OKAY) {
             for (index_t v = 0; v < _data.N(); ++v) {
-                _solution[v] = int(
-                  SCIPgetSolVal(_scip, SCIPgetBestSol(_scip), _vars[v]) + 2e-6);
-                //	std::cout << "(" << SCIPvarGetName(_vars[v]) << ": " <<
-                //_solution[v]  << ") " << std::endl;
+                _solution[v] = int( // NOLINT
+                  SCIPgetSolVal(
+                    _scip, SCIPgetBestSol(_scip), _vars[v]) + // NOLINT
+                  2e-6);                                      // NOLINT
             }
-
-            //    std::cout << "Callback calls: " <<
-            //    _cycleConsHandler->callback_calls << std::endl;
-
-            //        _cycleConsHandler->printStatistics(std::cout);
-
             return true;
         } else {
             return false;
         }
     }
 
-    /** @brief destructor this is the place to release the SCIP_VAR
-     * and SCIP_CONS pointers and to free the SCIP pointer
-     * afterwards
-     */
+    [[nodiscard]] int* solution() { return _solution; }
+
     ~FeedbackSolver()
     {
         try {
@@ -200,7 +164,6 @@ class FeedbackSolver
         }
 
         delete[] _vars;
-        delete _cycleConsHandler;
         delete[] _solution;
     }
 };

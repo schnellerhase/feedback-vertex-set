@@ -67,6 +67,5 @@ extract_subgraph_undirected(const UndirectedGraph& graph,
         local2globalInvert_l[i] = graph.local2globalInvert(nodes[i]);
     }
 
-    return UndirectedGraph(
-      N_l, tails_l, heads_l, local2global_l, local2globalInvert_l);
+    return { N_l, tails_l, heads_l, local2global_l, local2globalInvert_l };
 }

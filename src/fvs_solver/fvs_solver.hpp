@@ -9,7 +9,7 @@ solve_fvs(const Graph& graph)
     // if we want to run this on SCC, then we may assume strongly connected, as
     // specially for case N == 2.
     if (graph.N() == 0 || graph.N() == 1)
-        return FVS(graph.N(), false);
+        return FVS(graph.N(), false); // NOLINT
 
     if (graph.N() == 2) {
         if (graph.M() == 2)
@@ -20,9 +20,9 @@ solve_fvs(const Graph& graph)
     FeedbackSolver solver(graph);
     bool solved = solver.solve();
     if (solved) {
-        FVS solution(graph.N(), 0);
+        FVS solution(graph.N(), false);
         for (index_t i = 0; i < solution.size(); i++)
-            solution[i] = (solver._solution[i] > 0.9);
+            solution[i] = (solver.solution()[i] > 0.9); // NOLINT
 
         return solution;
     }
@@ -37,7 +37,7 @@ solve_fvs_with_initial_solution(const Graph& graph, const FVS& fvs)
     // if we want to run this on SCC, then we may assume strongly connected, as
     // specially for case N == 2.
     if (graph.N() == 0 || graph.N() == 1)
-        return FVS(graph.N(), false);
+        return FVS(graph.N(), false); // NOLINT
 
     if (graph.N() == 2) {
         if (graph.M() == 2)
@@ -52,7 +52,7 @@ solve_fvs_with_initial_solution(const Graph& graph, const FVS& fvs)
     if (solved) {
         FVS solution(graph.N());
         for (index_t i = 0; i < solution.size(); i++)
-            solution[i] = (solver._solution[i] > 0.9);
+            solution[i] = (solver.solution()[i] > 0.9); // NOLINT
 
         return solution;
     }

@@ -5,9 +5,9 @@
 #include "../two_cycles.hpp"
 #include "edge.hpp"
 
-#define PIE_DOUBLE_CYCLE_DENSITY_SWITCH                                        \
-    .3 // TODO: this should be chose, s.t. the method to cosntruc tsubgraph is
-       // always fastest
+constexpr double PIE_DOUBLE_CYCLE_DENSITY_SWITCH =
+  .3; // TODO: this should be chose, s.t. the method to cosntruc tsubgraph is
+      // always fastest
 
 namespace {
 }
@@ -16,12 +16,13 @@ SubGraph
 remove_double_edges(const SubGraph& graph)
 {
     index_t double_edges = double_edges_count(graph);
-    double perc = static_cast<double>(double_edges) * 2 / graph.M();
+    double perc =
+      static_cast<double>(double_edges) * 2 / static_cast<double>(graph.M());
 
     if (perc > PIE_DOUBLE_CYCLE_DENSITY_SWITCH) {
         auto [tails, heads] =
           find_all_none_2_cycle_edges(graph, graph.M() - 2 * double_edges);
-        return SubGraph(graph.N(), tails, heads, graph.local2global());
+        return { graph.N(), tails, heads, graph.local2global() };
     } else {
         // remove double edges.
         IndexList to_remove = two_cycle_edges(graph);
@@ -83,7 +84,7 @@ reduce_PIE(SubGraph& graph)
         index_t head = removed.heads()[m];
         index_t tail = removed.tails()[m];
         if (scc_comp[head] != scc_comp[tail])
-            edges_to_remove.push_back(std::make_tuple(tail, head));
+            edges_to_remove.emplace_back(std::make_tuple(tail, head));
     }
 
     remove_edges_tails_heads_orderd(graph, edges_to_remove);

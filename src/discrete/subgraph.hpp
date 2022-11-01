@@ -76,7 +76,7 @@ class SubGraph : public Graph
 
     ~SubGraph() = default;
 
-    index_t local2global(index_t localIndex) const
+    [[nodiscard]] index_t local2global(index_t localIndex) const
     {
         assert(localIndex < this->N());
         return _local2global[localIndex];
@@ -90,7 +90,7 @@ class SubGraph : public Graph
     }
 
     // TODO: remove this
-    const IndexList local2global(IndexList localIndices) const
+    [[nodiscard]] const IndexList local2global(IndexList localIndices) const
     {
         // TODO do we really want to perform the allocation here?
         IndexList globalIndices = IndexList(localIndices.size());
@@ -102,7 +102,8 @@ class SubGraph : public Graph
         return globalIndices;
     }
 
-    const IndexListList local2global(IndexListList localIndices) const
+    [[nodiscard]] const IndexListList local2global(
+      IndexListList localIndices) const
     {
         IndexListList globalIndices = IndexListList(localIndices.size());
         for (index_t local_idx(0); local_idx < localIndices.size(); local_idx++)
@@ -189,7 +190,7 @@ class SubGraph : public Graph
         for (index_t i = 0; i < N_l; i++)
             local2global_l[i] = graph.local2global(nodes[i]);
 
-        return SubGraph(N_l, tails_l, heads_l, local2global_l);
+        return { N_l, tails_l, heads_l, local2global_l };
     }
 
     static bool is_undirected_graph(const SubGraph& graph)

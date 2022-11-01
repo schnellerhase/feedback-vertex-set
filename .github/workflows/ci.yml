@@ -19,11 +19,12 @@ jobs:
       with:
           submodules: recursive
 
-    - name: cache build dir
-      uses: pat-s/always-upload-cache@v3.0.11
-      with:
-        path: build
-        key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
+    # this does seem to work with changes in the cmake routines
+    # - name: cache build dir
+    #   uses: pat-s/always-upload-cache@v3.0.11
+    #   with:
+    #     path: build
+    #     key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
     
     - name: Installing Software
       run: |
@@ -43,12 +44,12 @@ jobs:
 
     - name: test
       working-directory: build
-      run: ctest -V
+      run: ctest -V -j $(nproc)
 
     - name: clang-format
-      if: success() || failure() 
+      if: ${{ ( success() || failure() ) && matrix.build-type ==  'Release' }}
       run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
 
     - name: clang-tidy
-      if: success() || failure()
-      run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-tidy -p build # -warnings-as-errors=* TODO: readd at some point
+      if: ${{ ( success() || failure() ) && matrix.build-type ==  'Release' }}
+      run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*

@@ -1,10 +1,13 @@
 #pragma once
 
+#include <cstdio>
+
 #include "discrete/vc_funnel_handler.hpp"
-#include <stdio.h>
 
 // #define IN stdin
 // #define OUT std::cout
+
+// NOLINTBEGIN
 
 #define IN argv[1]
 #define OUT argv[1] + std::string(".sol")
@@ -29,3 +32,5 @@
         FVS::write(std::string(argv[1] + std::string(".sol")), vc);            \
         return 0;                                                              \
     }
+
+// NOLINTEND

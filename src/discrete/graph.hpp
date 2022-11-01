@@ -247,20 +247,19 @@ class Graph
 
     static Graph read(FILE* fp)
     {
-        buffer buf{};
-        buf.line = (char*)malloc(buf.cap);
-
-        if (buf.line == nullptr) {
-            fprintf(stderr, "Fatal error while allocating small buffer\n");
-            exit(1);
-        }
+        std::vector<char> buf(BUFFER_DEFAULT_SIZE);
 
         bool header(false);
         size_t n = 0, m = 0, e = 0;
 
-        while (!header && buffer_line(fp, &buf)) {
-            if (buf.line[0] != '#') {
-                int r = sscanf(buf.line, "%zu %zu %zu", &n, &m, &e);
+        while (!header && buffer_line(fp, buf)) {
+            if (buf.front() != '#') {
+                int r =
+                  sscanf(buf.data(), // NOLINT cppcoreguidelines-pro-type-vararg
+                         "%zu %zu %zu",
+                         &n,
+                         &m,
+                         &e);
 
                 if (r == 3 && n >= 1 && m >= 1 && e == 0)
                     header = true;
@@ -270,11 +269,9 @@ class Graph
         }
 
         if (!header) {
-            fclose(fp);
-            free(buf.line);
-
-            fprintf(stdout,
-                    "This should not happen: First line has invalid form.\n");
+            fclose(fp); // NOLINT cppcoreguidelines-owning-memory
+            std::cout << "This should not happen: First line has invalid form."
+                      << std::endl;
             exit(1);
         }
 
@@ -287,15 +284,16 @@ class Graph
         size_t eread = 0;
 
         for (unsigned int i = 0; i < n; ++i) {
-            if (buffer_line(fp, &buf)) {
-                if (strlen(buf.line) > 0 && buf.line[0] == '\n')
+            if (buffer_line(fp, buf)) {
+                if (strlen(buf.data()) > 0 && buf.front() == '\n')
                     continue;
 
                 size_t j = 0;
 
                 int offset = 0;
                 int bytes = 0;
-                while (sscanf(buf.line + offset, "%zu%n", &j, &bytes) > 0) {
+                while (sscanf(&buf[offset], "%zu%n", &j, &bytes) > // NOLINT
+                       0) {
                     --j;
 
                     assert(i < n);
@@ -310,31 +308,30 @@ class Graph
                     offset += bytes;
                 }
             } else {
-                fprintf(
-                  stdout,
-                  "This should not happen: Could not read vertex line %d .\n",
-                  i);
+                std::cout
+                  << "This should not happen: Could not read vertex line " << i
+                  << "." << std::endl;
                 exit(1);
             }
         }
 
-        fclose(fp);
-        free(buf.line);
+        fclose(fp); // NOLINT cppcoreguidelines-owning-memory
 
         if (eread != m) {
-            fprintf(
-              stdout,
-              "This should not happen: Either matrix-entry lines do not match "
-              "specified number or some row or column index does not match the "
-              "specified index bounds.\n");
+            std::cout << "This should not happen: Either matrix-entry lines do "
+                         "not match "
+                      << "specified number or some row or column index does "
+                         "not match the "
+                      << "specified index bounds." << std::endl;
             exit(1);
         }
 
-        return Graph(indeg, outdeg, tails, heads);
+        return { indeg, outdeg, tails, heads };
     }
     static Graph read(const std::string& filename)
     {
-        return read(fopen(filename.c_str(), "r"));
+        return read(fopen(filename.c_str(), // NOLINT
+                          "r"));
     }
 
     static bool is_acyclic(const Graph& graph)

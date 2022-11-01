@@ -47,32 +47,32 @@ class UndirectedGraph
                     IndexListList local2globalInvert)
       : _N(N)
       , _M(tails.size())
-      , _tails(tails)
-      , _heads(heads)
-      , _local2global(local2global)
-      , _local2globalInvert(local2globalInvert)
+      , _tails(std::move(tails))
+      , _heads(std::move(heads))
+      , _local2global(std::move(local2global))
+      , _local2globalInvert(std::move(local2globalInvert))
       , _deg(_N)
       , _adj(_N)
       , _2arc(_N)
     {
-        assert(tails.size() == heads.size());
-        assert(local2global.size() == N);
-        assert(local2globalInvert.size() == N);
+        assert(_tails.size() == _heads.size());
+        assert(_local2global.size() == N);
+        assert(_local2globalInvert.size() == N);
         _compute_adj_lists();
     }
 
     UndirectedGraph(index_t N, IndexList tails, IndexList heads)
       : _N(N)
       , _M(tails.size())
-      , _tails(tails)
-      , _heads(heads)
+      , _tails(std::move(tails))
+      , _heads(std::move(heads))
       , _local2global(_N)
       , _local2globalInvert(_N)
       , _deg(_N)
       , _adj(_N)
       , _2arc(_N)
     {
-        assert(tails.size() == heads.size());
+        assert(_tails.size() == _heads.size());
         _compute_adj_lists();
         for (index_t node(0); node < _N; node++) {
             _local2global[node] = IndexList({ node });
@@ -85,15 +85,15 @@ class UndirectedGraph
                     IndexList local2global)
       : _N(N)
       , _M(tails.size())
-      , _tails(tails)
-      , _heads(heads)
+      , _tails(std::move(tails))
+      , _heads(std::move(heads))
       , _local2global(_N)
       , _local2globalInvert(_N)
       , _deg(_N)
       , _adj(_N)
       , _2arc(_N)
     {
-        assert(tails.size() == heads.size());
+        assert(_tails.size() == _heads.size());
         _compute_adj_lists();
         for (index_t node(0); node < _N; node++) {
             _local2global[node] = IndexList({ local2global[node] });
@@ -200,7 +200,7 @@ class UndirectedGraph
 
         infile.close();
 
-        return UndirectedGraph(N, tails, heads);
+        return { N, tails, heads };
     }
 
     static void write(const UndirectedGraph& graph, std::ostream& os)

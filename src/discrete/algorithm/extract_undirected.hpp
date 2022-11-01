@@ -27,5 +27,5 @@ extract_undirected_graph(const SubGraph& graph)
     assert(tails.size() == M);
     assert(heads.size() == M);
 
-    return UndirectedGraph(N, tails, heads, graph.local2global());
+    return { N, tails, heads, graph.local2global() };
 }

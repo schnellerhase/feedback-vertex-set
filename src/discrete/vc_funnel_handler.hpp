@@ -66,13 +66,19 @@ class VCFunnelHandler
 
     [[nodiscard]] const IndexListList& vInvert() const { return _vInvert; }
 
-    [[nodiscard]] const IndexListList& vNeighbors() const { return _vNeighbors; }
+    [[nodiscard]] const IndexListList& vNeighbors() const
+    {
+        return _vNeighbors;
+    }
 
     [[nodiscard]] const IndexListList& u() const { return _u; }
 
     [[nodiscard]] const IndexListList& uInvert() const { return _uInvert; }
 
-    [[nodiscard]] const IndexListList& uNeighbors() const { return _uNeighbors; }
+    [[nodiscard]] const IndexListList& uNeighbors() const
+    {
+        return _uNeighbors;
+    }
 
     void update(IndexList v,
                 IndexList vInvert,

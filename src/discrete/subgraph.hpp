@@ -102,7 +102,8 @@ class SubGraph : public Graph
         return globalIndices;
     }
 
-    [[nodiscard]] const IndexListList local2global(IndexListList localIndices) const
+    [[nodiscard]] const IndexListList local2global(
+      IndexListList localIndices) const
     {
         IndexListList globalIndices = IndexListList(localIndices.size());
         for (index_t local_idx(0); local_idx < localIndices.size(); local_idx++)
@@ -189,7 +190,7 @@ class SubGraph : public Graph
         for (index_t i = 0; i < N_l; i++)
             local2global_l[i] = graph.local2global(nodes[i]);
 
-        return {N_l, tails_l, heads_l, local2global_l};
+        return { N_l, tails_l, heads_l, local2global_l };
     }
 
     static bool is_undirected_graph(const SubGraph& graph)

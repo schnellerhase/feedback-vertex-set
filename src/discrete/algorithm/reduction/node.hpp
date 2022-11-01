@@ -50,7 +50,7 @@ remove_isolated_node(SubGraph& graph, index_t i)
 
     erase_index(graph.indeg(), i);
     erase_index(graph.outdeg(), i);
-    
+
     erase_index(graph.inadj(), i);
     erase_index(graph.outadj(), i);
 

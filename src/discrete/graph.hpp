@@ -254,7 +254,11 @@ class Graph
 
         while (!header && buffer_line(fp, buf)) {
             if (buf.front() != '#') {
-                int r = sscanf(buf.data(), "%zu %zu %zu", &n, &m, &e); // NOLINT cppcoreguidelines-pro-type-vararg
+                int r = sscanf(buf.data(),
+                               "%zu %zu %zu",
+                               &n,
+                               &m,
+                               &e); // NOLINT cppcoreguidelines-pro-type-vararg
 
                 if (r == 3 && n >= 1 && m >= 1 && e == 0)
                     header = true;
@@ -265,7 +269,8 @@ class Graph
 
         if (!header) {
             fclose(fp); // NOLINT cppcoreguidelines-owning-memory
-            std::cout << "This should not happen: First line has invalid form." << std::endl;
+            std::cout << "This should not happen: First line has invalid form."
+                      << std::endl;
             exit(1);
         }
 
@@ -286,7 +291,8 @@ class Graph
 
                 int offset = 0;
                 int bytes = 0;
-                while (sscanf(&buf[offset], "%zu%n", &j, &bytes) > 0) { // NOLINT
+                while (sscanf(&buf[offset], "%zu%n", &j, &bytes) >
+                       0) { // NOLINT
                     --j;
 
                     assert(i < n);
@@ -301,7 +307,9 @@ class Graph
                     offset += bytes;
                 }
             } else {
-                std::cout << "This should not happen: Could not read vertex line " << i << "." << std::endl;
+                std::cout
+                  << "This should not happen: Could not read vertex line " << i
+                  << "." << std::endl;
                 exit(1);
             }
         }
@@ -309,17 +317,20 @@ class Graph
         fclose(fp); // NOLINT cppcoreguidelines-owning-memory
 
         if (eread != m) {
-            std::cout << "This should not happen: Either matrix-entry lines do not match " <<
-              "specified number or some row or column index does not match the " <<
-              "specified index bounds." << std::endl;
+            std::cout << "This should not happen: Either matrix-entry lines do "
+                         "not match "
+                      << "specified number or some row or column index does "
+                         "not match the "
+                      << "specified index bounds." << std::endl;
             exit(1);
         }
 
-        return {indeg, outdeg, tails, heads};
+        return { indeg, outdeg, tails, heads };
     }
     static Graph read(const std::string& filename)
     {
-        return read(fopen(filename.c_str(), "r")); // NOLINT cppcoreguidelines-owning-memory
+        return read(fopen(filename.c_str(),
+                          "r")); // NOLINT cppcoreguidelines-owning-memory
     }
 
     static bool is_acyclic(const Graph& graph)

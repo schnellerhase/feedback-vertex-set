@@ -49,7 +49,10 @@ class CycleSeparation // NOLINT
         return !find_cycles<false>();
     }
 
-    [[nodiscard]] const std::vector<std::vector<index_t>>& cuts() const {return _cuts;}
+    [[nodiscard]] const std::vector<std::vector<index_t>>& cuts() const
+    {
+        return _cuts;
+    }
 
   private:
     const Graph& _graph;

@@ -57,13 +57,15 @@ class FeedbackSolver
         // ToDo: Check if necessary
         SCIPenableDebugSol(_scip);
 
-        _cycleConsHandler = std::make_unique<ConshdlrCycles>(_data, _scip, _vars);
+        _cycleConsHandler =
+          std::make_unique<ConshdlrCycles>(_data, _scip, _vars);
 
         // Turn off presolving
         // SCIP_CALL_EXC(SCIPsetIntParam(_scip, "presolving/maxrounds", 0))
         //    SCIP_CALL_EXC(SCIPsetRealParam(_scip, "limits/time", 600))
         // Add Clique constraint handler
-        SCIP_CALL_EXC(SCIPincludeObjConshdlr(_scip, _cycleConsHandler.get(), FALSE));
+        SCIP_CALL_EXC(
+          SCIPincludeObjConshdlr(_scip, _cycleConsHandler.get(), FALSE));
 
         SCIP_CALL_EXC(SCIPincludeDefaultPlugins(_scip));
         // SCIP_CALL_EXC(SCIPsetIntParam(_scip, "branching/pscost/priority",
@@ -137,8 +139,9 @@ class FeedbackSolver
 
         if (ret == SCIP_OKAY) {
             for (index_t v = 0; v < _data.N(); ++v) {
-                _solution[v] = int(// NOLINT
-                  SCIPgetSolVal(_scip, SCIPgetBestSol(_scip), _vars[v]) + 2e-6); // NOLINT
+                _solution[v] = int( // NOLINT
+                  SCIPgetSolVal(_scip, SCIPgetBestSol(_scip), _vars[v]) +
+                  2e-6); // NOLINT
             }
             return true;
         } else {
@@ -146,7 +149,7 @@ class FeedbackSolver
         }
     }
 
-    [[nodiscard]] int* solution() {return _solution; }
+    [[nodiscard]] int* solution() { return _solution; }
 
     ~FeedbackSolver()
     {

@@ -200,7 +200,7 @@ class UndirectedGraph
 
         infile.close();
 
-        return {N, tails, heads};
+        return { N, tails, heads };
     }
 
     static void write(const UndirectedGraph& graph, std::ostream& os)

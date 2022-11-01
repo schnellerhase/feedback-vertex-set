@@ -10,12 +10,12 @@ struct SCIP_ConsData
 {};
 
 static SCIP_RETCODE
-sepaCycle(SCIP* scip,              
-          SCIP_CONSHDLR* conshdlr, 
-          SCIP_CONS** conss,       
-          int nconss,              
-          int nusefulconss, 
-          SCIP_SOL* sol,    
+sepaCycle(SCIP* scip,
+          SCIP_CONSHDLR* conshdlr,
+          SCIP_CONS** conss,
+          int nconss,
+          int nusefulconss,
+          SCIP_SOL* sol,
           SCIP_RESULT* result,
           const Graph& data,
           CycleSeparation* csep,
@@ -52,7 +52,8 @@ sepaCycle(SCIP* scip,
         SCIP_CALL(SCIPcacheRowExtensions(scip, row));
 
         for (const auto& e : cuts[i])
-            SCIP_CALL(SCIPaddVarToRow(scip, row, vars[data.tails()[e]], 1.0)); // NOLINT
+            SCIP_CALL(
+              SCIPaddVarToRow(scip, row, vars[data.tails()[e]], 1.0)); // NOLINT
 
         SCIP_CALL(SCIPflushRowExtensions(scip, row));
 
@@ -191,8 +192,11 @@ class ConshdlrCycles : public scip::ObjConshdlr // NOLINT
     virtual SCIP_DECL_CONSLOCK(scip_lock)
     {
         for (index_t v = 0; v < _data.N(); ++v) {
-            SCIPaddVarLocksType(
-              scip, _vars[v], SCIP_LOCKTYPE_MODEL, nlockspos, nlocksneg); // NOLINT
+            SCIPaddVarLocksType(scip,
+                                _vars[v],
+                                SCIP_LOCKTYPE_MODEL,
+                                nlockspos,
+                                nlocksneg); // NOLINT
         }
 
         return SCIP_OKAY;
@@ -282,25 +286,21 @@ class ConshdlrCycles : public scip::ObjConshdlr // NOLINT
 };
 
 SCIP_RETCODE
-SCIPcreateConsCycle(
-  SCIP* scip,        
-  SCIP_CONS** cons,  
-  const char* name,  
-  SCIP_Bool initial, 
-  SCIP_Bool
-    separate, 
-  SCIP_Bool
-    enforce, 
-  SCIP_Bool check,     
-  SCIP_Bool propagate, 
-  SCIP_Bool local,     
-  SCIP_Bool
-    modifiable, 
-  SCIP_Bool dynamic,  
-  SCIP_Bool removable 
-)
+SCIPcreateConsCycle(SCIP* scip,
+                    SCIP_CONS** cons,
+                    const char* name,
+                    SCIP_Bool initial,
+                    SCIP_Bool separate,
+                    SCIP_Bool enforce,
+                    SCIP_Bool check,
+                    SCIP_Bool propagate,
+                    SCIP_Bool local,
+                    SCIP_Bool modifiable,
+                    SCIP_Bool dynamic,
+                    SCIP_Bool removable)
 {
-    SCIP_CONSHDLR* conshdlr = SCIPfindConshdlr(scip, "Cycles");;
+    SCIP_CONSHDLR* conshdlr = SCIPfindConshdlr(scip, "Cycles");
+    ;
     if (conshdlr == nullptr) {
         SCIPerrorMessage("constraint handler not found\n");
         return SCIP_PLUGINNOTFOUND;

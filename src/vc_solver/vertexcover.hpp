@@ -5,8 +5,8 @@
 #include <scip/scip_exception.hpp>
 #include <scip/scipdefplugins.h>
 
-#include <vector>
 #include <span>
+#include <vector>
 
 #include "discrete/discrete.hpp"
 
@@ -63,12 +63,19 @@ class VCoverSolver
         }
 
         for (index_t e = 0; e < _data.M(); ++e) {
-            std::array<SCIP_Real, 2> cvals= { 1.0, 1.0 };
-            std::array<SCIP_VAR*, 2> cvars = {_vars[_data.tails()[e]], _vars[_data.heads()[e]]};
+            std::array<SCIP_Real, 2> cvals = { 1.0, 1.0 };
+            std::array<SCIP_VAR*, 2> cvars = { _vars[_data.tails()[e]],
+                                               _vars[_data.heads()[e]] };
 
             SCIP_CONS* cons = nullptr;
-            SCIPcreateConsBasicLinear(
-              _scip, &cons, "", 2, cvars.data(), cvals.data(), 1.0, SCIPinfinity(_scip));
+            SCIPcreateConsBasicLinear(_scip,
+                                      &cons,
+                                      "",
+                                      2,
+                                      cvars.data(),
+                                      cvals.data(),
+                                      1.0,
+                                      SCIPinfinity(_scip));
             SCIPaddCons(_scip, cons);
             SCIPreleaseCons(_scip, &cons);
         }
@@ -122,7 +129,8 @@ class VCoverSolver
         SCIP_SOL* sol = SCIPgetBestSol(_scip);
         VC vc(_data.N());
         for (index_t i = 0; i < vc.size(); i++)
-            vc[i] = (int(SCIPgetSolVal(_scip, sol, _vars[i]) + ROUNDING_EPS) == 1);
+            vc[i] =
+              (int(SCIPgetSolVal(_scip, sol, _vars[i]) + ROUNDING_EPS) == 1);
 
         return vc;
     }

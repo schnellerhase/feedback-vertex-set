@@ -43,8 +43,8 @@ remove_edge(UndirectedGraph& graph, index_t e)
         graph.adj()[i].erase(graph.adj()[i].begin() + idx);
     }
 
-    graph.tails().erase(graph.tails().begin() + e);
-    graph.heads().erase(graph.heads().begin() + e);
+    erase_index(graph.tails(), e);
+    erase_index(graph.heads(), e);
 
     for (auto& list : graph.to_arc())
         update_indices(list, e);
@@ -113,8 +113,8 @@ remove_edge(SubGraph& graph, index_t e)
         graph.outadj()[i].erase(graph.outadj()[i].begin() + idx);
     }
 
-    graph.tails().erase(graph.tails().begin() + e);
-    graph.heads().erase(graph.heads().begin() + e);
+    erase_index(graph.tails(), e);
+    erase_index(graph.heads(), e);
 
     for (auto& list : graph.in2arc())
         update_indices(list, e);

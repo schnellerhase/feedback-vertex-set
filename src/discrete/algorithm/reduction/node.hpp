@@ -11,11 +11,11 @@ remove_isolated_node(UndirectedGraph& graph, index_t i)
     assert(graph.adj()[i].size() == 0);
     assert(graph.to_arc()[i].size() == 0);
 
-    graph.deg().erase(graph.deg().begin() + i);
-    graph.adj().erase(graph.adj().begin() + i);
-    graph.to_arc().erase(graph.to_arc().begin() + i);
-    graph.local2global().erase(graph.local2global().begin() + i);
-    graph.local2globalInvert().erase(graph.local2globalInvert().begin() + i);
+    erase_index(graph.deg(), i);
+    erase_index(graph.adj(), i);
+    erase_index(graph.to_arc(), i);
+    erase_index(graph.local2global(), i);
+    erase_index(graph.local2globalInvert(), i);
 
     graph.N(graph.N() - 1);
     update_indices(graph.heads(), i);
@@ -48,16 +48,16 @@ remove_isolated_node(SubGraph& graph, index_t i)
     assert(graph.in2arc()[i].size() == 0);
     assert(graph.out2arc()[i].size() == 0);
 
-    graph.indeg().erase(graph.indeg().begin() + i);
-    graph.outdeg().erase(graph.outdeg().begin() + i);
+    erase_index(graph.indeg(), i);
+    erase_index(graph.outdeg(), i);
+    
+    erase_index(graph.inadj(), i);
+    erase_index(graph.outadj(), i);
 
-    graph.inadj().erase(graph.inadj().begin() + i);
-    graph.outadj().erase(graph.outadj().begin() + i);
+    erase_index(graph.in2arc(), i);
+    erase_index(graph.out2arc(), i);
 
-    graph.in2arc().erase(graph.in2arc().begin() + i);
-    graph.out2arc().erase(graph.out2arc().begin() + i);
-
-    graph.local2global().erase(graph.local2global().begin() + i);
+    erase_index(graph.local2global(), i);
 
     graph.N(graph.N() - 1);
 

@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
+#include <vector>
 
 // TODO: move this to a more senseful location
 static constexpr std::size_t BUFFER_DEFAULT_SIZE = 32;
@@ -11,21 +12,20 @@ static constexpr std::size_t BUFFER_DEFAULT_SIZE = 32;
 bool
 buffer_line(FILE* fp, std::vector<char>& b)
 {
-    if (nullptr == fgets(b.data(), b.size(), fp))
+    if (nullptr == fgets(b.data(), static_cast<int>(b.size()), fp))
         return false;
 
     // We can assume here that at least one
     // character was read, so strlen(b->line) is at least 1.
 
-    unsigned int offset = 0;
-
-    while (!(feof(fp) || b.data()[strlen(b.data()) - 1] == '\n')) {
-        offset = b.size();
+    int offset = 0;
+    while (!(feof(fp) || b[strlen(b.data()) - 1] == '\n')) {
+        offset = static_cast<int>(b.size());
         b.resize(b.size() * 2);
 
         // Now append into "newly allocated half" thereby overwriting
         // the nullptr termination of the former fgets call
-        if (nullptr == fgets(b.data() + offset - 1, offset + 1, fp))
+        if (nullptr == fgets(&b[offset - 1], offset + 1, fp))
             return false;
     }
 

@@ -282,7 +282,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
     virtual SCIP_DECL_CONSDELETE(scip_delete)
     { /*lint --e{715}*/
-        assert(consdata != NULL);
+        assert(consdata != nullptr);
 
         SCIPfreeBlockMemory(scip, consdata);
 

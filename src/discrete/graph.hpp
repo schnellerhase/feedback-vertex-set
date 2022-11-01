@@ -253,7 +253,7 @@ class Graph
         size_t n = 0, m = 0, e = 0;
 
         while (!header && buffer_line(fp, buf)) {
-            if (buf.data()[0] != '#') {
+            if (buf.front() != '#') {
                 int r = sscanf(buf.data(), "%zu %zu %zu", &n, &m, &e);
 
                 if (r == 3 && n >= 1 && m >= 1 && e == 0)
@@ -280,14 +280,14 @@ class Graph
 
         for (unsigned int i = 0; i < n; ++i) {
             if (buffer_line(fp, buf)) {
-                if (strlen(buf.data()) > 0 && buf.data()[0] == '\n')
+                if (strlen(buf.data()) > 0 && buf.front() == '\n')
                     continue;
 
                 size_t j = 0;
 
                 int offset = 0;
                 int bytes = 0;
-                while (sscanf(buf.data() + offset, "%zu%n", &j, &bytes) > 0) {
+                while (sscanf(&buf[offset], "%zu%n", &j, &bytes) > 0) {
                     --j;
 
                     assert(i < n);

@@ -140,8 +140,9 @@ class FeedbackSolver
         if (ret == SCIP_OKAY) {
             for (index_t v = 0; v < _data.N(); ++v) {
                 _solution[v] = int( // NOLINT
-                  SCIPgetSolVal(_scip, SCIPgetBestSol(_scip), _vars[v]) + // NOLINT
-                  2e-6); // NOLINT
+                  SCIPgetSolVal(
+                    _scip, SCIPgetBestSol(_scip), _vars[v]) + // NOLINT
+                  2e-6);                                      // NOLINT
             }
             return true;
         } else {

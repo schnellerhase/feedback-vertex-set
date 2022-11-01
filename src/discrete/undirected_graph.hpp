@@ -55,9 +55,9 @@ class UndirectedGraph
       , _adj(_N)
       , _2arc(_N)
     {
-        assert(tails.size() == heads.size());
-        assert(local2global.size() == N);
-        assert(local2globalInvert.size() == N);
+        assert(_tails.size() == _heads.size());
+        assert(_local2global.size() == N);
+        assert(_local2globalInvert.size() == N);
         _compute_adj_lists();
     }
 
@@ -72,7 +72,7 @@ class UndirectedGraph
       , _adj(_N)
       , _2arc(_N)
     {
-        assert(tails.size() == heads.size());
+        assert(_tails.size() == _heads.size());
         _compute_adj_lists();
         for (index_t node(0); node < _N; node++) {
             _local2global[node] = IndexList({ node });
@@ -93,7 +93,7 @@ class UndirectedGraph
       , _adj(_N)
       , _2arc(_N)
     {
-        assert(tails.size() == heads.size());
+        assert(_tails.size() == _heads.size());
         _compute_adj_lists();
         for (index_t node(0); node < _N; node++) {
             _local2global[node] = IndexList({ local2global[node] });

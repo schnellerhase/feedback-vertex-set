@@ -196,7 +196,7 @@ class ConshdlrCycles : public scip::ObjConshdlr // NOLINT
                                 _vars[v], // NOLINT
                                 SCIP_LOCKTYPE_MODEL,
                                 nlockspos,
-                                nlocksneg); 
+                                nlocksneg);
         }
 
         return SCIP_OKAY;

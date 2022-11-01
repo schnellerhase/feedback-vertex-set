@@ -44,7 +44,7 @@ jobs:
 
     - name: test
       working-directory: build
-      run: ctest -V
+      run: ctest -V -j $(nproc)
 
     - name: clang-format
       if: ${{ ( success() || failure() ) && matrix.build-type ==  'Release' }}

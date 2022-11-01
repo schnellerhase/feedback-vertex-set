@@ -18,14 +18,23 @@ class FeedbackSolver
     SCIP* _scip{};
     SCIP_VAR** _vars;
     SCIP_CONS* _cons;
+    int* _solution;
 
     std::unique_ptr<ConshdlrCycles> _cycleConsHandler;
 
   public:
+    FeedbackSolver() = delete;
+    FeedbackSolver(const FeedbackSolver& other) = delete;
+    FeedbackSolver(FeedbackSolver&& other) = delete;
+
+    FeedbackSolver& operator=(FeedbackSolver other) = delete;
+    FeedbackSolver& operator=(FeedbackSolver&& other) = delete;
+
     explicit FeedbackSolver(const Graph& data)
       : _data(data)
       , _vars(new SCIP_Var*[_data.N()])
       , _solution(new int[_data.N()])
+      , _cons(nullptr)
     {
         SCIP_CALL_EXC(SCIPcreate(&_scip));
         SCIP_CALL_EXC(SCIPcreateProbBasic(_scip, "feedback problem"));
@@ -89,8 +98,6 @@ class FeedbackSolver
         // Add Clique constraint handler
     }
 
-    int* _solution;
-
     void set_UB(int var, double ub)
     {
         SCIP_CALL_EXC(SCIPchgVarUb(_scip, _vars[var], ub));
@@ -138,6 +145,8 @@ class FeedbackSolver
             return false;
         }
     }
+
+    [[nodiscard]] int* solution() {return _solution; }
 
     ~FeedbackSolver()
     {

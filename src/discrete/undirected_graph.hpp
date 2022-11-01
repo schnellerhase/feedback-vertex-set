@@ -64,8 +64,8 @@ class UndirectedGraph
     UndirectedGraph(index_t N, IndexList tails, IndexList heads)
       : _N(N)
       , _M(tails.size())
-      , _tails(tails)
-      , _heads(heads)
+      , _tails(std::move(tails))
+      , _heads(std::move(heads))
       , _local2global(_N)
       , _local2globalInvert(_N)
       , _deg(_N)
@@ -200,7 +200,7 @@ class UndirectedGraph
 
         infile.close();
 
-        return UndirectedGraph(N, tails, heads);
+        return {N, tails, heads};
     }
 
     static void write(const UndirectedGraph& graph, std::ostream& os)

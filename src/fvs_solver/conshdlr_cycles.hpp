@@ -6,14 +6,9 @@
 #include "discrete/discrete.hpp"
 #include <objscip/objscip.h>
 
-#ifndef SINGLETON_SCIP_CONSDATA
-#define SINGLETON_SCIP_CONSDATA
 struct SCIP_ConsData
 {};
-#endif
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
 static SCIP_RETCODE
 sepaCycle(SCIP* scip,              
           SCIP_CONSHDLR* conshdlr, 
@@ -101,7 +96,6 @@ sepaCycle(SCIP* scip,
 
     return SCIP_OKAY;
 }
-#pragma GCC diagnostic pop
 
 /** C++ constraint handler for cycle inequalities (on edge variables) */
 class ConshdlrCycles : public scip::ObjConshdlr
@@ -134,21 +128,19 @@ class ConshdlrCycles : public scip::ObjConshdlr
     {
     }
 
-    virtual ~ConshdlrCycles() { delete _csep; }
+    ~ConshdlrCycles() override { delete _csep; }
 
     virtual SCIP_DECL_CONSCHECK(scip_check)
-    { /*lint --e{715}*/
+    {
         assert(result != nullptr);
 
-        auto* x = new double[_data.M()];
+        std::vector<double> x(_data.M());
         for (index_t e = 0; e < _data.M(); ++e) {
-            int v = _data.tails()[e];
+            index_t v = _data.tails()[e];
             x[e] = 1.0 - SCIPgetSolVal(scip, sol, _vars[v]);
         }
 
-        bool feasible = _csep->check(x);
-
-        delete[] x;
+        bool feasible = _csep->check(x.data());
 
         if (feasible)
             *result = SCIP_FEASIBLE;
@@ -159,7 +151,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
     }
 
     virtual SCIP_DECL_CONSENFOLP(scip_enfolp)
-    { /*lint --e{715}*/
+    {
         assert(result != nullptr);
 
         SCIP_CALL(sepaCycle(scip,
@@ -178,7 +170,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
     }
 
     virtual SCIP_DECL_CONSENFOPS(scip_enfops)
-    { /*lint --e{715}*/
+    {
         assert(result != nullptr);
 
         SCIP_CALL(sepaCycle(scip,
@@ -197,7 +189,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
     }
 
     virtual SCIP_DECL_CONSLOCK(scip_lock)
-    { /*lint --e{715}*/
+    {
         for (index_t v = 0; v < _data.N(); ++v) {
             SCIPaddVarLocksType(
               scip, _vars[v], SCIP_LOCKTYPE_MODEL, nlockspos, nlocksneg);
@@ -238,8 +230,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
         return SCIP_OKAY;
     }
 
-    virtual SCIP_DECL_CONSHDLRCLONE(
-      scip::ObjProbCloneable* clone) /*lint !e665*/
+    virtual SCIP_DECL_CONSHDLRCLONE(scip::ObjProbCloneable* clone)
     {
         assert(valid != nullptr);
         *valid = true;
@@ -281,7 +272,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
     }
 
     virtual SCIP_DECL_CONSDELETE(scip_delete)
-    { /*lint --e{715}*/
+    {
         assert(consdata != nullptr);
 
         SCIPfreeBlockMemory(scip, consdata);
@@ -316,7 +307,7 @@ SCIPcreateConsCycle(
     }
 
     SCIP_CONSDATA* consdata = nullptr;
-    SCIP_CALL(SCIPallocBlockMemory(scip, &consdata)); /*lint !e530*/
+    SCIP_CALL(SCIPallocBlockMemory(scip, &consdata));
 
     SCIP_CALL(SCIPcreateCons(scip,
                              cons,

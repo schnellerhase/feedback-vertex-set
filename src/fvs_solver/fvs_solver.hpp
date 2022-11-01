@@ -22,7 +22,7 @@ solve_fvs(const Graph& graph)
     if (solved) {
         FVS solution(graph.N(), false);
         for (index_t i = 0; i < solution.size(); i++)
-            solution[i] = (solver._solution[i] > 0.9);
+            solution[i] = (solver.solution()[i] > 0.9);
 
         return solution;
     }
@@ -52,7 +52,7 @@ solve_fvs_with_initial_solution(const Graph& graph, const FVS& fvs)
     if (solved) {
         FVS solution(graph.N());
         for (index_t i = 0; i < solution.size(); i++)
-            solution[i] = (solver._solution[i] > 0.9);
+            solution[i] = (solver.solution()[i] > 0.9);
 
         return solution;
     }

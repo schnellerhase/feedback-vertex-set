@@ -189,7 +189,7 @@ class SubGraph : public Graph
         for (index_t i = 0; i < N_l; i++)
             local2global_l[i] = graph.local2global(nodes[i]);
 
-        return SubGraph(N_l, tails_l, heads_l, local2global_l);
+        return {N_l, tails_l, heads_l, local2global_l};
     }
 
     static bool is_undirected_graph(const SubGraph& graph)

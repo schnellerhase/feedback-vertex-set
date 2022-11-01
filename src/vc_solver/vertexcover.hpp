@@ -6,20 +6,30 @@
 #include <scip/scipdefplugins.h>
 
 #include <vector>
+#include <span>
 
 #include "discrete/discrete.hpp"
+
+static constexpr double ROUNDING_EPS = 2e-6;
 
 class VCoverSolver
 {
   private:
     SCIP* _scip{};
-    SCIP_VAR** _vars;
+    std::span<SCIP_VAR*> _vars;
     const UndirectedGraph& _data;
 
   public:
-    VCoverSolver(const UndirectedGraph& data)
+    VCoverSolver() = delete;
+    VCoverSolver(const VCoverSolver& other) = delete;
+    VCoverSolver(VCoverSolver&& other) = delete;
+
+    VCoverSolver& operator=(VCoverSolver other) = delete;
+    VCoverSolver& operator=(VCoverSolver&& other) = delete;
+
+    explicit VCoverSolver(const UndirectedGraph& data)
       : _data(data)
-      , _vars(new SCIP_Var*[data.N()])
+      , _vars(new SCIP_Var*[data.N()], data.N())
     {
         SCIP_CALL_EXC(SCIPcreate(&_scip));
         SCIP_CALL_EXC(SCIPcreateProbBasic(_scip, "vertex cover problem"));
@@ -73,7 +83,7 @@ class VCoverSolver
         } catch (SCIPException& e) {
         }
 
-        delete[] _vars;
+        delete[] _vars.data();
     }
 
     void set_time_limit(double seconds)
@@ -92,12 +102,12 @@ class VCoverSolver
         assert(vc.size() == _data.N());
 
         SCIP_SOL* sol = nullptr;
-        SCIPcreateSol(_scip, &sol, NULL);
+        SCIPcreateSol(_scip, &sol, nullptr);
 
         for (index_t i = 0; i < vc.size(); i++)
             SCIPsetSolVal(_scip, sol, _vars[i], (vc[i]) * 1.0);
 
-        SCIP_Bool kept;
+        SCIP_Bool kept = 0;
         SCIPaddSol(_scip, sol, &kept);
         SCIPfreeSol(_scip, &sol);
 
@@ -112,7 +122,7 @@ class VCoverSolver
         SCIP_SOL* sol = SCIPgetBestSol(_scip);
         VC vc(_data.N());
         for (index_t i = 0; i < vc.size(); i++)
-            vc[i] = (int(SCIPgetSolVal(_scip, sol, _vars[i]) + 2e-6) == 1);
+            vc[i] = (int(SCIPgetSolVal(_scip, sol, _vars[i]) + ROUNDING_EPS) == 1);
 
         return vc;
     }

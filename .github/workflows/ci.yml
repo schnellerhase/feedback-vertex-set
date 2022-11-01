@@ -19,11 +19,12 @@ jobs:
       with:
           submodules: recursive
 
-    - name: cache build dir
-      uses: pat-s/always-upload-cache@v3.0.11
-      with:
-        path: build
-        key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
+    # this does seem to work with changes in the cmake routines
+    # - name: cache build dir
+    #   uses: pat-s/always-upload-cache@v3.0.11
+    #   with:
+    #     path: build
+    #     key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
     
     - name: Installing Software
       run: |

@@ -329,7 +329,7 @@ class Graph
     }
     static Graph read(const std::string& filename)
     {
-        return read(fopen(filename.c_str(),
+        return read(fopen(filename.c_str(), // NOLINT
                           "r")); // NOLINT cppcoreguidelines-owning-memory
     }
 

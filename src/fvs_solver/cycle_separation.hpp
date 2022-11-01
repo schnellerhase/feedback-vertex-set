@@ -13,7 +13,7 @@
 static const double INF = std::numeric_limits<double>::max();
 static const double EPS = 1e-6;
 
-class CycleSeparation
+class CycleSeparation // NOLINT
 {
   public:
     CycleSeparation(const Graph& graph)
@@ -63,12 +63,12 @@ class CycleSeparation
 
     std::vector<index_t> _heap;
     std::vector<int> _heapid;
-    int _heaprun;
+    int _heaprun; // NOLINT
 
     void update_weights(double* x)
     {
         for (index_t e = 0; e < _graph.M(); ++e)
-            _weight[e] = (1.0 - x[e]);
+            _weight[e] = (1.0 - x[e]); // NOLINT
     }
 
     template<bool cut>

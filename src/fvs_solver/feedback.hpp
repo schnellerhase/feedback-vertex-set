@@ -73,7 +73,7 @@ class FeedbackSolver
             SCIP_VAR* var = nullptr;
             SCIP_CALL_EXC(SCIPcreateVarBasic(
               _scip, &var, nullptr, 0.0, 1.0, 1.0, SCIP_VARTYPE_BINARY));
-            _vars[v] = var;
+            _vars[v] = var; // NOLINT
             SCIP_CALL_EXC(SCIPaddVar(_scip, var));
             SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
         }
@@ -100,7 +100,7 @@ class FeedbackSolver
 
     void set_UB(int var, double ub)
     {
-        SCIP_CALL_EXC(SCIPchgVarUb(_scip, _vars[var], ub));
+        SCIP_CALL_EXC(SCIPchgVarUb(_scip, _vars[var], ub)); // NOLINT
     }
 
     void set_time_limit(double seconds)
@@ -120,7 +120,7 @@ class FeedbackSolver
         SCIPcreateSol(_scip, &sol, nullptr);
 
         for (index_t i = 0; i < fvs.size(); ++i)
-            SCIPsetSolVal(_scip, sol, _vars[i], (fvs[i]) * 1.0);
+            SCIPsetSolVal(_scip, sol, _vars[i], (fvs[i]) * 1.0); // NOLINT
 
         SCIP_Bool kept = 0;
         SCIPaddSol(_scip, sol, &kept);
@@ -137,8 +137,8 @@ class FeedbackSolver
 
         if (ret == SCIP_OKAY) {
             for (index_t v = 0; v < _data.N(); ++v) {
-                _solution[v] = int(
-                  SCIPgetSolVal(_scip, SCIPgetBestSol(_scip), _vars[v]) + 2e-6);
+                _solution[v] = int(// NOLINT
+                  SCIPgetSolVal(_scip, SCIPgetBestSol(_scip), _vars[v]) + 2e-6); // NOLINT
             }
             return true;
         } else {

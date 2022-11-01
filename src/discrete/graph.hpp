@@ -286,7 +286,7 @@ class Graph
 
                 int offset = 0;
                 int bytes = 0;
-                while (sscanf(&buf[offset], "%zu%n", &j, &bytes) > 0) {
+                while (sscanf(&buf[offset], "%zu%n", &j, &bytes) > 0) { // NOLINT
                     --j;
 
                     assert(i < n);

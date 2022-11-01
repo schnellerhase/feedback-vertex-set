@@ -29,7 +29,7 @@ sepaCycle(SCIP* scip,
 
     std::vector<double> x(data.M());
     for (index_t e = 0; e < data.M(); ++e)
-        x[e] = 1.0 - SCIPgetSolVal(scip, sol, vars[data.tails()[e]]);
+        x[e] = 1.0 - SCIPgetSolVal(scip, sol, vars[data.tails()[e]]); // NOLINT
 
     csep->separate(x.data());
 
@@ -52,7 +52,7 @@ sepaCycle(SCIP* scip,
         SCIP_CALL(SCIPcacheRowExtensions(scip, row));
 
         for (const auto& e : cuts[i])
-            SCIP_CALL(SCIPaddVarToRow(scip, row, vars[data.tails()[e]], 1.0));
+            SCIP_CALL(SCIPaddVarToRow(scip, row, vars[data.tails()[e]], 1.0)); // NOLINT
 
         SCIP_CALL(SCIPflushRowExtensions(scip, row));
 
@@ -74,7 +74,7 @@ sepaCycle(SCIP* scip,
         }
         SCIP_CALL(SCIPreleaseRow(scip, &row));
 
-        if (effi > 20000)
+        if (effi > 20000) // NOLINT
             break;
     }
 
@@ -98,7 +98,7 @@ sepaCycle(SCIP* scip,
 }
 
 /** C++ constraint handler for cycle inequalities (on edge variables) */
-class ConshdlrCycles : public scip::ObjConshdlr
+class ConshdlrCycles : public scip::ObjConshdlr // NOLINT
 {
 
   public:
@@ -110,13 +110,13 @@ class ConshdlrCycles : public scip::ObjConshdlr
       : ObjConshdlr(scip,
                     "Cycles",
                     "Edge-based Cycle Separator",
-                    2147483646,
-                    2147483646,
-                    2147483646,
+                    2147483646, // NOLINT
+                    2147483646, // NOLINT
+                    2147483646, // NOLINT
                     1,
                     1,
                     1,
-                    100,
+                    100, // NOLINT
                     FALSE,
                     FALSE,
                     TRUE,
@@ -137,7 +137,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
         std::vector<double> x(_data.M());
         for (index_t e = 0; e < _data.M(); ++e) {
             index_t v = _data.tails()[e];
-            x[e] = 1.0 - SCIPgetSolVal(scip, sol, _vars[v]);
+            x[e] = 1.0 - SCIPgetSolVal(scip, sol, _vars[v]); // NOLINT
         }
 
         bool feasible = _csep->check(x.data());
@@ -192,7 +192,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
     {
         for (index_t v = 0; v < _data.N(); ++v) {
             SCIPaddVarLocksType(
-              scip, _vars[v], SCIP_LOCKTYPE_MODEL, nlockspos, nlocksneg);
+              scip, _vars[v], SCIP_LOCKTYPE_MODEL, nlockspos, nlocksneg); // NOLINT
         }
 
         return SCIP_OKAY;

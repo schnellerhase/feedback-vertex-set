@@ -39,7 +39,14 @@ class DFS
     std::vector<index_t> _stack;
 
   public:
-    DFS(const graph_t& graph)
+    DFS() = delete;
+    DFS(const DFS& other) = delete;
+    DFS(DFS&& other) = delete;
+
+    DFS& operator=(DFS other) = delete;
+    DFS& operator=(DFS&& other) = delete;
+
+    explicit DFS(const graph_t& graph)
       : _graph(graph)
       , _current(0)
       , _visited(new bool[graph.N()], graph.N())

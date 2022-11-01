@@ -72,10 +72,10 @@ decompose_nhoods(const UndirectedGraph& graph, index_t v, index_t u)
 
     if (nhooduItt < nhoodu.size())
         uExclusive.insert(
-          uExclusive.end(), (nhoodu.begin() + nhooduItt), nhoodu.end());
+          uExclusive.end(), (nhoodu.begin() + static_cast<long>(nhooduItt)), nhoodu.end());
     else if (nhoodvItt < nhoodv.size())
         vExclusive.insert(
-          vExclusive.end(), (nhoodv.begin() + nhoodvItt), nhoodv.end());
+          vExclusive.end(), (nhoodv.begin() + static_cast<long>(nhoodvItt)), nhoodv.end());
 
     return std::make_tuple(
       std::move(intersection), std::move(vExclusive), std::move(uExclusive));

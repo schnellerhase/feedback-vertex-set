@@ -105,7 +105,7 @@ scc_double_version(const Graph& graph, index_t removed_node)
     IndexList components(graph.N(), graph.N());
 
     if (graph.N() == 0)
-        return IndexList({});
+        return {};
 
     IndexList lowLinks(graph.N(),
                        graph.N()); // lowest vertex(foundat value) reachable

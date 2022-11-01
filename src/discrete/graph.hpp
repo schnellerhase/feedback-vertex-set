@@ -254,11 +254,11 @@ class Graph
 
         while (!header && buffer_line(fp, buf)) {
             if (buf.front() != '#') {
-                int r = sscanf(buf.data(),
+                int r = sscanf(buf.data(), // NOLINT cppcoreguidelines-pro-type-vararg
                                "%zu %zu %zu",
                                &n,
                                &m,
-                               &e); // NOLINT cppcoreguidelines-pro-type-vararg
+                               &e); 
 
                 if (r == 3 && n >= 1 && m >= 1 && e == 0)
                     header = true;
@@ -291,8 +291,8 @@ class Graph
 
                 int offset = 0;
                 int bytes = 0;
-                while (sscanf(&buf[offset], "%zu%n", &j, &bytes) >
-                       0) { // NOLINT
+                while (sscanf(&buf[offset], "%zu%n", &j, &bytes) > // NOLINT
+                       0) { 
                     --j;
 
                     assert(i < n);

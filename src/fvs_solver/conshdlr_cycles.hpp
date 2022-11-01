@@ -193,10 +193,10 @@ class ConshdlrCycles : public scip::ObjConshdlr // NOLINT
     {
         for (index_t v = 0; v < _data.N(); ++v) {
             SCIPaddVarLocksType(scip,
-                                _vars[v],
+                                _vars[v], // NOLINT
                                 SCIP_LOCKTYPE_MODEL,
                                 nlockspos,
-                                nlocksneg); // NOLINT
+                                nlocksneg); 
         }
 
         return SCIP_OKAY;

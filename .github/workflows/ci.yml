@@ -31,13 +31,14 @@ jobs:
     #   run: |
     #     sudo apt update
     #     sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
-
+    - uses: ilammy/msvc-dev-cmd@v1
+    
     - name: create build dir
       run: mkdir -p build
 
     - name: cmake
       working-directory: build
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_CXX_COMPILER=cl -DCCMAKE_CC_COMPILER=cl -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja -DUSE_SYSTEM_GOOGLETEST=FALSE
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_CXX_COMPILER=cl -DCMAKE_CC_COMPILER=cl -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja -DUSE_SYSTEM_GOOGLETEST=FALSE
 
     - name: ninja
       working-directory: build

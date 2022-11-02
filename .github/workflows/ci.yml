@@ -19,8 +19,9 @@ jobs:
       uses: actions/checkout@v1
       with:
           submodules: recursive
-    - name: Install software:
-      run: brew install ninja
+
+    - name: Install software
+      run: brew install ninja google-test
 
     - name: create build dir
       run: mkdir -p build
@@ -29,10 +30,15 @@ jobs:
       working-directory: build
       run: cmake .. -GNinja \
         -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+        -DENABLE_TESTS=TRUE
 
     - name: ninja
       working-directory: build
       run: ninja
+    
+    - name: test
+      working-directory: build
+      run: ctest -V -j $(nproc)
 
   windows:
     strategy:

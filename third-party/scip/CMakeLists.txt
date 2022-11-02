@@ -1,6 +1,10 @@
 include(ExternalProject)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
+if (UNIX)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wno-dev")
+else()
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
+endif()
 
 ExternalProject_Add(scip
     GIT_REPOSITORY https://github.com/scipopt/scip

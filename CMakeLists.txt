@@ -5,35 +5,33 @@ project(PACE_2022)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE RELEASE)
 endif()
 
-if (CMAKE_BUILD_TYPE MATCHES Release)
+option(ENABLE_TESTS "Compile tests" OFF)
+option(ENABLE_PROFILING "Profiling support" OFF)
+option(ENABLE_BENCHMARK "Compile benchmarks" OFF)
+
+if (CMAKE_BUILD_TYPE MATCHES RELEASE)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3") # TODO: experiment with -Ofast
 endif()
 
-if (CMAKE_BUILD_TYPE MATCHES Debug)
+if (CMAKE_BUILD_TYPE MATCHES DEBUG)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 endif()
 
-if (NOT PROFILING)
-    SET(PROFILING FALSE)
-endif()
 if (PROFILING)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 endif()
 
-enable_testing() # flag this or something
-
 add_subdirectory(third-party)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -w") 
 
-# add_subdirectory(discrete)
-if(CMAKE_TESTING_ENABLED)
+if (ENABLE_TESTS)
     add_subdirectory(test)
 endif()
 
@@ -69,7 +67,9 @@ SOLVER(vc_reduce)
 SOLVER(reduce_deg_1)
 SOLVER(reduce_deg_1_scc)
 
-add_subdirectory(benchmark/solvers)
+if (ENABLE_BENCHMARK)
+    add_subdirectory(benchmark/solvers)
+endif()
 # add_subdirectory(tools) # flag this -> we do not want to build this by default. (OGDF only required if tools...)
 
 # download graphs -> move to some ohter place?

@@ -1,3 +1,8 @@
+find_package(GTest REQUIRED)
+
+set_target_properties(GTest::GTest PROPERTIES IMPORTED_GLOBAL TRUE)
+set_target_properties(GTest::Main PROPERTIES IMPORTED_GLOBAL TRUE)
+
 link_libraries(GTest::Main)
 
 file(COPY data DESTINATION .)

@@ -1,6 +1,3 @@
-if(CMAKE_TESTING_ENABLED)
-    add_subdirectory(gtest)
-endif()
 add_subdirectory(google-benchmark)
 add_subdirectory(json)
 # add_subdirectory(ogdf)

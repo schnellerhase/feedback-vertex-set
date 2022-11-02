@@ -21,7 +21,7 @@ jobs:
           submodules: recursive
 
     - name: Install software
-      run: brew install ninja google-test
+      run: brew install ninja googletest
 
     - name: create build dir
       run: mkdir -p build

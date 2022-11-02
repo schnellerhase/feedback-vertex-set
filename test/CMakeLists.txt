@@ -1,3 +1,5 @@
+enable_testing()
+
 find_package(GTest REQUIRED)
 
 set_target_properties(GTest::GTest PROPERTIES IMPORTED_GLOBAL TRUE)

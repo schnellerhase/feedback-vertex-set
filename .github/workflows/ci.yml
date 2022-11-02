@@ -37,7 +37,7 @@ jobs:
 
     - name: cmake
       working-directory: build
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCXX=cl -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCXX=cl -DCC=cl -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja -DUSE_SYSTEM_GOOGLETEST=FALSE
 
     - name: ninja
       working-directory: build

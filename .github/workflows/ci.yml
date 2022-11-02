@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-22.04]
+        os: [windows-latest]
         build-type: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
@@ -27,21 +27,22 @@ jobs:
     #     path: build
     #     key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
     
-    - name: Installing Software
-      run: |
-        sudo apt update
-        sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
+    # - name: Installing Software
+    #   run: |
+    #     sudo apt update
+    #     sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
 
     - name: create build dir
       run: mkdir -p build
 
     - name: cmake
       working-directory: build
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCXX=cl -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja
 
     - name: ninja
       working-directory: build
       run: ninja
+
   ubuntu:
     strategy:
       fail-fast: true

@@ -1,4 +1,4 @@
-link_libraries(third_party::gtest third_party::gtest_main)
+link_libraries(GTest::Main)
 
 file(COPY data DESTINATION .)
 

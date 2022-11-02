@@ -42,7 +42,7 @@ add_subdirectory(third-party)
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -w") 
     if (APPLE)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -undefined dynamic_lookup") 
+        # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -undefined dynamic_lookup") 
     endif()
 else()
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
@@ -72,7 +72,7 @@ function(SOLVER NAME)
     # add_dependencies(${NAME} scip soplex)
 
     # UNCOMMEN THIS FOR SHARED BUILD
-    target_link_libraries(${NAME} scip.so soplex.so)
+    target_link_libraries(${NAME} libscip.so soplex.so)
     add_dependencies(${NAME} scip soplex)
 endfunction()
 

@@ -14,11 +14,19 @@ option(ENABLE_PROFILING "Profiling support" OFF)
 option(ENABLE_BENCHMARK "Compile benchmarks" OFF)
 
 if (CMAKE_BUILD_TYPE MATCHES RELEASE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3") # TODO: experiment with -Ofast
+    if (UNIX)
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3") # TODO: experiment with -Ofast
+    else()
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /02")
+    endif()
 endif()
 
 if (CMAKE_BUILD_TYPE MATCHES DEBUG)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+    if (UNIX)
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+    else()
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Z7")
+    endif()
 endif()
 
 if (PROFILING)
@@ -29,7 +37,11 @@ endif()
 
 add_subdirectory(third-party)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -w") 
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -w") 
+else()
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
+endif()
 
 if (ENABLE_TESTS)
     add_subdirectory(test)

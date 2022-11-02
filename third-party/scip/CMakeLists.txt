@@ -38,6 +38,3 @@ ExternalProject_Add(scip
 )
 
 add_dependencies(scip soplex)
-
-add_library(scip_static_lib STATIC IMPORTED GLOBAL)
-set_target_properties(scip_static_lib PROPERTIES IMPORTED_LOCATION "${CMAKE_BINARY_DIR}/scip-build/lib/libscip.a")

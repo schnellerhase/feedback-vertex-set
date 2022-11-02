@@ -6,11 +6,11 @@ on:
   pull_request:
 
 jobs:
-  CI:
+  windows:
     strategy:
-      # fail-fast: false ENABLE
+      fail-fast: true
       matrix:
-        os: [ubuntu-22.04, windows-latest]
+        os: [ubuntu-22.04]
         build-type: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
@@ -28,15 +28,45 @@ jobs:
     #     key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
     
     - name: Installing Software
-      if: startsWith(matrix.os, 'ubuntu')
       run: |
         sudo apt update
         sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
 
+    - name: create build dir
+      run: mkdir -p build
+
+    - name: cmake
+      working-directory: build
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja
+
+    - name: ninja
+      working-directory: build
+      run: ninja
+  ubuntu:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-22.04]
+        build-type: [Debug, Release]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+          submodules: recursive
+
+    # this does seem to work with changes in the cmake routines
+    # - name: cache build dir
+    #   uses: pat-s/always-upload-cache@v3.0.11
+    #   with:
+    #     path: build
+    #     key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
+    
     - name: Installing Software
-      if: startsWith(matrix.os, 'windows')
       run: |
-        echo "installing software"
+        sudo apt update
+        sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
 
     - name: create build dir
       run: mkdir -p build

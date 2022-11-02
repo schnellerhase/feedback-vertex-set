@@ -28,7 +28,7 @@ jobs:
       working-directory: build
       run: cmake .. -GNinja \
         -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-        -DENABLE_TESTS=ON
+        -DBUILD_TESTING=ON
 
     - name: ninja
       working-directory: build
@@ -90,7 +90,7 @@ jobs:
       working-directory: build
       run: cmake .. -GNinja \
         -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-        -DENABLE_TESTS=ON \
+        -DBUILD_TESTING=ON \
         -DENABLE_BENCHMARK=TRUE \
         -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 

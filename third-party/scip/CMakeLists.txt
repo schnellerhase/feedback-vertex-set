@@ -34,7 +34,7 @@ ExternalProject_Add(scip
     INSTALL_COMMAND ""
     COMMENT ""
     DOWNLOAD_NO_PROGRESS TRUE
-    BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/scip-build/lib/libscip.a"
+    # BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/scip-build/lib/libscip.a"
 )
 
 add_dependencies(scip soplex)

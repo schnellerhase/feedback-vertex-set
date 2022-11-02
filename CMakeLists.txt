@@ -9,9 +9,11 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RELEASE)
 endif()
 
-option(ENABLE_TESTS "Compile tests" OFF)
+option(BUILD_TESTING "Compile tests" OFF)
 option(ENABLE_PROFILING "Profiling support" OFF)
 option(ENABLE_BENCHMARK "Compile benchmarks" OFF)
+
+include(CTest)
 
 if (CMAKE_BUILD_TYPE MATCHES RELEASE)
     if (UNIX)
@@ -43,11 +45,10 @@ else()
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
 endif()
 
-if (ENABLE_TESTS)
+if (BUILD_TESTING)
     enable_testing()
     add_subdirectory(test)
 endif()
-
 # file(GLOB_RECURSE DISCRETE_SRCS "src/discrete/*.cpp")
 # add_library(discrete_LIB STATIC ${DISCRETE_SRCS})
 

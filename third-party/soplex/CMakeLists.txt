@@ -29,10 +29,10 @@ ExternalProject_Add(soplex
         -DGMP=FALSE
         -DBOOST=FALSE
     INSTALL_COMMAND ""
-    BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/soplex-build/lib/libsoplex.a"
+    # BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/soplex-build/lib/libsoplex.a"
     COMMENT ""
     DOWNLOAD_NO_PROGRESS TRUE
 )
 
-add_library(soplex_static_lib STATIC IMPORTED GLOBAL)
-set_target_properties(soplex_static_lib PROPERTIES IMPORTED_LOCATION "${CMAKE_BINARY_DIR}/soplex-build/lib/libsoplex.a")
+# add_library(soplex_static_lib STATIC IMPORTED GLOBAL)
+# set_target_properties(soplex_static_lib PROPERTIES IMPORTED_LOCATION "${CMAKE_BINARY_DIR}/soplex-build/lib/libsoplex.a")

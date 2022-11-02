@@ -58,10 +58,10 @@ else()
   set(GTEST_INTERFACE_COMPILE_DEFINITIONS "GTEST_LANG_CXX11")
 
   set(ADDITIONAL_ARGS)
-  if(WIN32)
-    list(APPEND ADDITIONAL_ARGS PATCH_COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/internal_utils.cmake.patched" <SOURCE_DIR>/googletest/cmake/internal_utils.cmake)
-    list(APPEND GTEST_INTERFACE_COMPILE_DEFINITIONS "_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING")
-  endif()
+  # if(WIN32)
+  #   list(APPEND ADDITIONAL_ARGS PATCH_COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/internal_utils.cmake.patched" <SOURCE_DIR>/googletest/cmake/internal_utils.cmake)
+  #   list(APPEND GTEST_INTERFACE_COMPILE_DEFINITIONS "_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING")
+  # endif()
 
   ExternalProject_Add(gtest-external
     URL https://github.com/google/googletest/archive/release-1.8.0.tar.gz

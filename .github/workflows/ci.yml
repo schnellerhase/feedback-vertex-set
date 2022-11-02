@@ -26,9 +26,10 @@ jobs:
 
     - name: cmake
       working-directory: build
-      run: cmake .. -GNinja \
-        -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-        -DBUILD_TESTING=ON
+      run: |
+        cmake .. -GNinja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DBUILD_TESTING=ON
 
     - name: ninja
       working-directory: build
@@ -57,10 +58,11 @@ jobs:
 
     - name: cmake
       working-directory: build
-      run: cmake .. -GNinja \
-        -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-        -DCMAKE_CXX_COMPILER=cl \
-        -DCMAKE_CC_COMPILER=cl
+      run: |
+        cmake .. -GNinja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DCMAKE_CXX_COMPILER=cl \
+          -DCMAKE_CC_COMPILER=cl
 
     - name: ninja
       working-directory: build
@@ -88,11 +90,12 @@ jobs:
 
     - name: cmake
       working-directory: build
-      run: cmake .. -GNinja \
-        -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-        -DBUILD_TESTING=ON \
-        -DENABLE_BENCHMARK=TRUE \
-        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      run: |
+        cmake .. -GNinja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DBUILD_TESTING=ON \
+          -DENABLE_BENCHMARK=TRUE \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
     - name: ninja
       working-directory: build

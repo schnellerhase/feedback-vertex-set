@@ -21,7 +21,7 @@ ExternalProject_Add(scip
         -DIPOPT=false
         -DPAPILO=false
         -DREADLINE=false
-        -DSHARED=false # this also indicates to build static only
+        -DSHARED=true # this also indicates to build static only
         -DSOPLEX_DIR=${CMAKE_BINARY_DIR}/soplex-build
         -DTPI=none
         -DZIMPL=false

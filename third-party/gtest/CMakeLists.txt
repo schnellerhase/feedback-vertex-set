@@ -5,7 +5,7 @@ if (FETCH_GOOGLETEST)
   FetchContent_Declare(
     googletest
     # Specify the commit you depend on and update it regularly.
-    URL https://github.com/google/googletest/archive/5376968f6948923e2411081fd9372e71a59d8e77.zip
+    URL https://github.com/google/googletest/archive/3026483ae575e2de942db5e760cf95e973308dd5.zip
   )
 endif()
 

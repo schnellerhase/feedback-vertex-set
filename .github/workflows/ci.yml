@@ -19,6 +19,8 @@ jobs:
       uses: actions/checkout@v1
       with:
           submodules: recursive
+    - name: Install software:
+      run: brew install ninja
 
     - name: create build dir
       run: mkdir -p build
@@ -27,8 +29,6 @@ jobs:
       working-directory: build
       run: cmake .. -GNinja \
         -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-        -DCMAKE_CXX_COMPILER=cl \
-        -DCMAKE_CC_COMPILER=cl
 
     - name: ninja
       working-directory: build

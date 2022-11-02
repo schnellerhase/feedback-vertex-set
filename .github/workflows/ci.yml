@@ -22,15 +22,12 @@ jobs:
 
     - uses: ilammy/msvc-dev-cmd@v1
 
-    # - name: Installing GTest
-    #   run: |
-    #     git clone https://github.com/google/googletest.git
-    #     cd googletest
-    #     cmake . -GNinja
-    #     ninja install
-
-    - name: Install gtest
-      uses: MarkusJx/googletest-installer@v1.1
+    - name: Installing GTest
+      run: |
+        git clone https://github.com/google/googletest.git
+        cd googletest
+        cmake . -GNinja
+        ninja install
 
     - name: create build dir
       run: mkdir -p build

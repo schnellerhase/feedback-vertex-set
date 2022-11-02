@@ -59,7 +59,7 @@ function(SOLVER NAME)
     target_include_directories(${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-build)
     target_include_directories(${NAME} SYSTEM PUBLIC third-party)
 
-    target_link_directories(${NAME} PUBLIC ${CMAKE_BINARY_DIR}/scip-shared-build/lib)
+    target_link_directories(${NAME} PUBLIC ${CMAKE_BINARY_DIR}/scip-build/lib)
     target_link_directories(${NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
 
     # UNCOMMENT THIS FOR STATIC BUILD
@@ -69,7 +69,7 @@ function(SOLVER NAME)
 
     # UNCOMMEN THIS FOR SHARED BUILD
     target_link_libraries(${NAME} scip.so soplex.so)
-    add_dependencies(${NAME} scip-shared soplex)
+    add_dependencies(${NAME} scip soplex)
 endfunction()
 
 SOLVER(naive)

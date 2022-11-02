@@ -62,13 +62,13 @@ function(SOLVER NAME)
     target_link_directories(${NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
 
     # UNCOMMENT THIS FOR STATIC BUILD
-    target_link_libraries(${NAME} -static)
-    target_link_libraries(${NAME} scip_static_lib soplex_static_lib)
-    add_dependencies(${NAME} scip soplex)
+    # target_link_libraries(${NAME} -static)
+    # target_link_libraries(${NAME} scip_static_lib soplex_static_lib)
+    # add_dependencies(${NAME} scip soplex)
 
     # UNCOMMEN THIS FOR SHARED BUILD
-    # target_link_libraries(${NAME} scip.so soplex.so)
-    # add_dependencies(${NAME} scip-shared soplex)
+    target_link_libraries(${NAME} scip.so soplex.so)
+    add_dependencies(${NAME} scip-shared soplex)
 endfunction()
 
 SOLVER(naive)

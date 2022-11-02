@@ -8,8 +8,9 @@ on:
 jobs:
   CI:
     strategy:
+      # fail-fast: false ENABLE
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-22.04, windows-latest]
         build-type: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
@@ -27,9 +28,15 @@ jobs:
     #     key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
     
     - name: Installing Software
+      if: startsWith(matrix.os, 'ubuntu')
       run: |
         sudo apt update
         sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
+
+    - name: Installing Software
+      if: startsWith(matrix.os, 'windows')
+      run: |
+        echo "installing software"
 
     - name: create build dir
       run: mkdir -p build

@@ -1,5 +1,6 @@
 include(ExternalProject)
 
+# MSVC fails with this
 # set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-dev")
 
 # set (SOPLEX_SOURCE_DIR "" PARENT_SCOPE )

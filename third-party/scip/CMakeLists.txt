@@ -26,7 +26,6 @@ ExternalProject_Add(scip
         -DTPI=none
         -DZIMPL=false
         -DZLIB=false
-        -DSHARED=false
         -DBUILD_TESTING=OFF
     INSTALL_COMMAND ""
     COMMENT ""

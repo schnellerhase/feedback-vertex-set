@@ -6,6 +6,34 @@ on:
   pull_request:
 
 jobs:
+  apple:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [macos-latest]
+        build-type: [Debug, Release]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+          submodules: recursive
+
+    - name: create build dir
+      run: mkdir -p build
+
+    - name: cmake
+      working-directory: build
+      run: cmake .. -GNinja \
+        -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+        -DCMAKE_CXX_COMPILER=cl \
+        -DCMAKE_CC_COMPILER=cl
+
+    - name: ninja
+      working-directory: build
+      run: ninja
+
   windows:
     strategy:
       fail-fast: true

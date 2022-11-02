@@ -34,7 +34,7 @@ jobs:
 
     - name: cmake
       working-directory: build
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_CXX_COMPILER=cl -DCMAKE_CC_COMPILER=cl -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja 
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_CXX_COMPILER=cl -DCMAKE_CC_COMPILER=cl -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja -DFETCH_GOOGLETEST=TRUE
 
     - name: ninja
       working-directory: build

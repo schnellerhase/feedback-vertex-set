@@ -74,6 +74,9 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         build-type: [Debug, Release]
+        compiler:
+          - { compiler: GNU,  CC: gcc,   CXX: g++ }
+          - { compiler: LLVM, CC: clang, CXX: clang++ }
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -91,8 +94,8 @@ jobs:
     - name: cmake
       working-directory: build
       env:
-        CC: clang
-        CXX: clang++
+        CC: ${{ matrix.compiler.CC }}
+        CXX: ${{ matrix.compiler.CXX }}
       run: |
         cmake .. -GNinja \
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \

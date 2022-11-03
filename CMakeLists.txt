@@ -72,7 +72,7 @@ function(SOLVER NAME)
     # add_dependencies(${NAME} scip soplex)
 
     # UNCOMMEN THIS FOR SHARED BUILD
-    target_link_libraries(${NAME} libscip.so soplex.so)
+    target_link_libraries(${NAME} libscip.so libsoplex.so)
     add_dependencies(${NAME} scip soplex)
 endfunction()
 

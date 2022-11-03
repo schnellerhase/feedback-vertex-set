@@ -28,8 +28,8 @@ jobs:
       working-directory: build
       run: |
         cmake .. -GNinja \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
           -DBUILD_TESTING=ON \
+          --config ${{ matrix.build-type }} \
 
     - name: ninja
       working-directory: build
@@ -112,9 +112,9 @@ jobs:
       run: ctest -V -j $(nproc)
 
     - name: clang-format
-      if: ${{ ( success() || failure() ) && matrix.build-type ==  'Release' }}
+      if: ${{ ( success() || failure() ) && matrix.build-type ==  'Release' && matrix.compiler == 'GNU' }}
       run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
 
     - name: clang-tidy
-      if: ${{ ( success() || failure() ) && matrix.build-type ==  'Release' }}
+      if: ${{ ( success() || failure() ) && matrix.build-type ==  'Release' && matrix.compiler == 'GNU' }}
       run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*

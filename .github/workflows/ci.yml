@@ -83,13 +83,16 @@ jobs:
     - name: Installing Software
       run: |
         sudo apt update
-        sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
+        sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
 
     - name: create build dir
       run: mkdir -p build
 
     - name: cmake
       working-directory: build
+      env:
+        CC: clang
+        CXX: clang++
       run: |
         cmake .. -GNinja \
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \

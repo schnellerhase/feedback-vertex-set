@@ -28,8 +28,9 @@ jobs:
       working-directory: build
       run: |
         cmake .. -GNinja \
-          -DBUILD_TESTING=ON \
-          --config ${{ matrix.build-type }} \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DCMAKE_CXX_COMPILER=cl \
+          -DCMAKE_CC_COMPILER=cl
 
     - name: ninja
       working-directory: build
@@ -60,9 +61,8 @@ jobs:
       working-directory: build
       run: |
         cmake .. -GNinja \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-          -DCMAKE_CXX_COMPILER=cl \
-          -DCMAKE_CC_COMPILER=cl
+          -DBUILD_TESTING=ON \
+          --config ${{ matrix.build-type }} \
 
     - name: ninja
       working-directory: build

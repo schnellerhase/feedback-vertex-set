@@ -28,9 +28,7 @@ jobs:
       working-directory: build
       run: |
         cmake .. -GNinja \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-          -DCMAKE_CXX_COMPILER=cl \
-          -DCMAKE_CC_COMPILER=cl
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
 
     - name: ninja
       working-directory: build

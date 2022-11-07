@@ -6,65 +6,65 @@ on:
   pull_request:
 
 jobs:
-  apple:
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [macos-latest]
-        build-type: [Debug, Release]
+  # apple:
+  #   strategy:
+  #     fail-fast: true
+  #     matrix:
+  #       os: [macos-latest]
+  #       build-type: [Debug, Release]
 
-    runs-on: ${{ matrix.os }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v1
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v1
 
-    - name: Install software
-      run: brew install ninja googletest
+  #   - name: Install software
+  #     run: brew install ninja googletest
 
-    - name: create build dir
-      run: mkdir -p build
+  #   - name: create build dir
+  #     run: mkdir -p build
 
-    - name: cmake
-      working-directory: build
-      run: |
-        cmake .. -GNinja \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+  #   - name: cmake
+  #     working-directory: build
+  #     run: |
+  #       cmake .. -GNinja \
+  #         -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
 
-    - name: ninja
-      working-directory: build
-      run: ninja
+  #   - name: ninja
+  #     working-directory: build
+  #     run: ninja
     
-    - name: test
-      working-directory: build
-      run: ctest -V -j $(nproc)
+  #   - name: test
+  #     working-directory: build
+  #     run: ctest -V -j $(nproc)
 
-  windows:
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [windows-latest]
-        build-type: [Debug, Release]
+  # windows:
+  #   strategy:
+  #     fail-fast: true
+  #     matrix:
+  #       os: [windows-latest]
+  #       build-type: [Debug, Release]
 
-    runs-on: ${{ matrix.os }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v1
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v1
 
-    - uses: ilammy/msvc-dev-cmd@v1
+  #   - uses: ilammy/msvc-dev-cmd@v1
 
-    - name: create build dir
-      run: mkdir -p build
+  #   - name: create build dir
+  #     run: mkdir -p build
 
-    - name: cmake
-      working-directory: build
-      run: |
-        cmake .. -GNinja \
-          -DBUILD_TESTING=ON \
-          --config ${{ matrix.build-type }} \
+  #   - name: cmake
+  #     working-directory: build
+  #     run: |
+  #       cmake .. -GNinja \
+  #         -DBUILD_TESTING=ON \
+  #         --config ${{ matrix.build-type }} \
 
-    - name: ninja
-      working-directory: build
-      run: ninja
+  #   - name: ninja
+  #     working-directory: build
+  #     run: ninja
 
   ubuntu:
     strategy:

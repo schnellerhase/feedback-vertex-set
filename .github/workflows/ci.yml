@@ -71,10 +71,10 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-22.04]
-        build-type: [Debug, Release]
         compiler:
           - { compiler: GNU,  CC: gcc,   CXX: g++ }
           - { compiler: LLVM, CC: clang, CXX: clang++ }
+        build-type: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
     steps:

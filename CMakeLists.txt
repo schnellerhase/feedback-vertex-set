@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 
-project(PACE_2022)
+project(FVS)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,8 +10,8 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 option(BUILD_TESTING "Compile tests" OFF)
+option(BUILD_BENCHMARKS "Compile benchmarks" OFF)
 option(ENABLE_PROFILING "Profiling support" OFF)
-option(ENABLE_BENCHMARK "Compile benchmarks" OFF)
 
 include(CTest)
 
@@ -48,12 +48,23 @@ else()
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
 endif()
 
+# download graphs -> move to some ohter place?
+if (BUILD_TESTING OR BUILD_BENCHMARKS)
+    include(ExternalProject)
+    ExternalProject_Add(
+        tracks 
+        SOURCE_DIR "${CMAKE_BINARY_DIR}/tracks"
+        URL https://heibox.uni-heidelberg.de/f/be4337d9e4234bca8606/?dl=1
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ""
+        INSTALL_COMMAND ""
+    )
+endif()
+
 if (BUILD_TESTING)
     enable_testing()
     add_subdirectory(test)
 endif()
-# file(GLOB_RECURSE DISCRETE_SRCS "src/discrete/*.cpp")
-# add_library(discrete_LIB STATIC ${DISCRETE_SRCS})
 
 function(SOLVER NAME)
     add_executable(${NAME} src/solvers/${NAME}.cpp)
@@ -84,18 +95,32 @@ SOLVER(vc_reduce)
 SOLVER(reduce_deg_1)
 SOLVER(reduce_deg_1_scc)
 
-if (ENABLE_BENCHMARK)
-    add_subdirectory(benchmark/solvers)
-endif()
-# add_subdirectory(tools) # flag this -> we do not want to build this by default. (OGDF only required if tools...)
+if (BUILD_BENCHMARKS)
+    find_package(benchmark REQUIRED)
 
-# download graphs -> move to some ohter place?
-include(ExternalProject)
-ExternalProject_Add(
-    tracks 
-    SOURCE_DIR "${CMAKE_BINARY_DIR}/tracks"
-    URL https://heibox.uni-heidelberg.de/f/be4337d9e4234bca8606/?dl=1
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
-    INSTALL_COMMAND ""
-)
+    function(build_benchmark FILE)
+        get_filename_component(NAME ${FILE} NAME_WE)
+        add_executable(benchmark_${NAME} ${FILE})
+
+        target_include_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/google-benchmark-src/include)
+        target_include_directories(benchmark_${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-src/src)
+        target_include_directories(benchmark_${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-build)
+        target_include_directories(benchmark_${NAME} SYSTEM PUBLIC ../../third-party/)
+        target_include_directories(benchmark_${NAME} PUBLIC ../../src)
+        target_include_directories(benchmark_${NAME} PUBLIC ../../fvs_solver/src)
+
+        target_include_directories(benchmark_${NAME} PUBLIC ../src)
+
+        target_link_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/scip-build/lib)
+        target_link_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
+
+        add_dependencies(benchmark_${NAME} scip soplex tracks)
+
+        target_link_libraries(benchmark_${NAME} benchmark::benchmark pthread scip.so soplex.so)
+    endfunction()
+
+    file(GLOB_RECURSE CPPS "benchmark/*.cpp")
+    foreach(CPP ${CPPS})
+        build_benchmark(${CPP})
+    endforeach()
+endif()

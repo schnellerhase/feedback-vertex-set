@@ -1,5 +1,2 @@
-add_subdirectory(google-benchmark)
-add_subdirectory(json)
-# add_subdirectory(ogdf)
 add_subdirectory(scip)
 add_subdirectory(soplex)

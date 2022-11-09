@@ -61,6 +61,14 @@ jobs:
             CC: clang
             CXX: clang
             build-type: Release
+          - os: macos-latest
+            CC: gcc
+            CXX: g++
+            build-type: Debug
+          - os: macos-latest
+            CC: gcc
+            CXX: g++
+            build-type: Release
 
     runs-on: ${{ matrix.os }}
     steps:

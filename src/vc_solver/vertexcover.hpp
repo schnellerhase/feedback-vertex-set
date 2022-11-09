@@ -5,6 +5,7 @@
 #include <scip/scip_exception.hpp>
 #include <scip/scipdefplugins.h>
 
+#include <array>
 #include <span>
 #include <vector>
 

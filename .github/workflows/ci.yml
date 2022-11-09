@@ -42,18 +42,13 @@ jobs:
           - os: ubuntu-22.04
             CC: clang
             CXX: clang++
-            build-type: Debug
-          - os: ubuntu-22.04
-            CC: clang
-            CXX: clang++
-            build-type: Release
 
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Installing Software
+    - name: Install Software
       if: matrix.os == 'ubuntu-22.04'
       run: |
         sudo apt update

@@ -36,12 +36,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-latest]
-        build-type: [Debug, Release]
         include:
           - os: ubuntu-22.04
             CC: clang
             CXX: clang++
+            build-type: Debug
+          - os: ubuntu-22.04
+            CC: clang
+            CXX: clang++
+            build-type: Release
+          - os: ubuntu-22.04
+            CC: gcc
+            CXX: g++
+            build-type: Debug
+          - os: ubuntu-22.04
+            CC: gcc
+            CXX: g++
+            build-type: Release
+          - os: macos-latest
+            CC: clang
+            CXX: clang
+            build-type: Debug
+          - os: macos-latest
+            CC: clang
+            CXX: clang
+            build-type: Release
 
     runs-on: ${{ matrix.os }}
     steps:

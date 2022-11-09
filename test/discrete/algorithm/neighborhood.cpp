@@ -2,6 +2,8 @@
 
 #include "discrete/algorithm/neighborhood.hpp"
 
+using namespace fvs;
+
 TEST(neighborhood, single_node)
 {
     SubGraph graph(1, IndexList{}, IndexList{}, IndexList{ 0 });
@@ -27,9 +29,3 @@ TEST(neighborhood, four_nodes)
     ASSERT_EQ(neighborhood(graph, 1), IndexList({ 0, 1, 2, 3 }));
 }
 
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}

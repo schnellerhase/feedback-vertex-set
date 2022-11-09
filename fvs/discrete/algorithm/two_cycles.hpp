@@ -3,6 +3,9 @@
 #include "../subgraph.hpp"
 #include "diclique.hpp"
 
+namespace fvs
+{
+
 index_t
 double_edges_count(const SubGraph& graph)
 {
@@ -56,4 +59,5 @@ find_all_none_2_cycle_edges(const SubGraph& graph, index_t exp_count)
     }
 
     return std::make_pair(std::move(tails), std::move(heads));
+}
 }

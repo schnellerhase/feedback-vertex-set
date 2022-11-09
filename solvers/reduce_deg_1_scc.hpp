@@ -41,7 +41,7 @@ reduce_deg_1_scc(SubGraph& graph, FVS& fvs)
             if (graph.N() < last_N || graph.N() <= 1)
                 continue;
 
-            if (!is_strongly_connected(graph)) {
+            if (!strongly_connected(graph)) {
                 IndexListList sccs = strongly_connected_components(graph);
                 assert(sccs.size() > 1);
                 for (const auto& scc : sccs)

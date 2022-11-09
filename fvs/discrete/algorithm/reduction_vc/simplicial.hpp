@@ -6,6 +6,9 @@
 #include "../reduction/node.hpp"
 #include "../vc.hpp"
 
+namespace fvs
+{
+
 inline void
 reduce_SIMPLICIAL(UndirectedGraph& graph,
                   index_t i,
@@ -23,4 +26,5 @@ reduce_SIMPLICIAL(UndirectedGraph& graph,
             add_invert_to_vc(vc, nhood[j], graph);
         remove_node(graph, nhood[j]);
     }
+}
 }

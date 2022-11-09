@@ -7,6 +7,7 @@
 #include <numeric>
 
 #include "util/types.hpp"
+namespace fvs {
 
 class UndirectedGraph
 {
@@ -270,17 +271,18 @@ class UndirectedGraph
     }
 };
 
-std::ostream&
-operator<<(std::ostream& os, const UndirectedGraph& graph)
-{
-    os << "N= " << graph.N() << "\n"
-       << "M= " << graph.M() << "\n"
-       << "heads= " << graph.heads() << "\n"
-       << "tails= " << graph.tails() << "\n"
-       << "deg= " << graph.deg() << "\n"
-       << "adj= " << graph.adj() << "\n"
-       << "2arc= " << graph.to_arc() << "\n"
-       << "local2global= " << graph.local2global() << "\n"
-       << "local2globalInvert= " << graph.local2globalInvert() << "\n";
-    return os;
+// std::ostream&
+// operator<<(std::ostream& os, const UndirectedGraph& graph)
+// {
+//     os << "N= " << graph.N() << "\n"
+//        << "M= " << graph.M() << "\n"
+//        << "heads= " << graph.heads() << "\n"
+//        << "tails= " << graph.tails() << "\n"
+//        << "deg= " << graph.deg() << "\n"
+//        << "adj= " << graph.adj() << "\n"
+//        << "2arc= " << graph.to_arc() << "\n"
+//        << "local2global= " << graph.local2global() << "\n"
+//        << "local2globalInvert= " << graph.local2globalInvert() << "\n";
+//     return os;
+// }
 }

@@ -6,6 +6,8 @@
 #include "node.hpp"
 #include "util.hpp"
 
+namespace fvs
+{
 inline bool
 reduce_OUT(SubGraph& graph, index_t i, FVS& fvs)
 {
@@ -75,4 +77,5 @@ reduce_OUT(SubGraph& graph, index_t i, FVS& fvs)
     }
 
     return false;
+}
 }

@@ -2,6 +2,8 @@
 #include "vc_reduce.hpp"
 #include "vc_solver/vc_solver.hpp"
 
+using namespace fvs;
+
 inline FVS
 solve_reduce(SubGraph& graph)
 {

@@ -5,6 +5,8 @@
 #include "../reduction/edge.hpp"
 #include "../reduction/node.hpp"
 
+namespace fvs {
+
 inline void
 fold(UndirectedGraph& graph, index_t bendFrom, index_t bendTo)
 {
@@ -118,4 +120,6 @@ reduce_folding(UndirectedGraph& graph, index_t i, IndexList foldingNodes)
         update_indices(foldingNodes, foldingNodes[foldingNode]);
         i -= (i > foldingNodes[foldingNode]);
     }
+}
+
 }

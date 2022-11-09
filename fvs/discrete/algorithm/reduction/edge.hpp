@@ -5,6 +5,9 @@
 #include "../../undirected_graph.hpp"
 #include "../diclique.hpp"
 
+namespace fvs
+{
+
 inline void
 remove_edge(UndirectedGraph& graph, index_t e)
 {
@@ -123,4 +126,5 @@ remove_edge(SubGraph& graph, index_t e)
         update_indices(list, e);
 
     graph.M(graph.M() - 1);
+}
 }

@@ -15,6 +15,7 @@
 #include "util/types.hpp"
 #include "vertex_marker.hpp"
 
+namespace fvs {
 using VC = VertexMarker;
 
 class VCFunnelHandler
@@ -172,14 +173,16 @@ class VCFunnelHandler
     // }
 };
 
-std::ostream&
-operator<<(std::ostream& os, const VCFunnelHandler& vcHandler)
-{
-    os << "v =" << vcHandler.v() << "\n"
-       << "vInvert =" << vcHandler.vInvert() << "\n"
-       << "u =" << vcHandler.u() << "\n"
-       << "uInvert =" << vcHandler.uInvert() << "\n"
-       << "vNeighbors =" << vcHandler.vNeighbors() << "\n"
-       << "uNeighbors =" << vcHandler.uNeighbors() << "\n";
-    return os;
+// std::ostream&
+// operator<<(std::ostream& os, const VCFunnelHandler& vcHandler)
+// {
+//     os << "v =" << vcHandler.v() << "\n"
+//        << "vInvert =" << vcHandler.vInvert() << "\n"
+//        << "u =" << vcHandler.u() << "\n"
+//        << "uInvert =" << vcHandler.uInvert() << "\n"
+//        << "vNeighbors =" << vcHandler.vNeighbors() << "\n"
+//        << "uNeighbors =" << vcHandler.uNeighbors() << "\n";
+//     return os;
+// }
+
 }

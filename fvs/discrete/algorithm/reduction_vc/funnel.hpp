@@ -7,6 +7,10 @@
 #include "../reduction/node.hpp"
 #include "../vc.hpp"
 
+namespace fvs
+{
+    
+
 using VC = VertexMarker;
 
 inline void
@@ -60,4 +64,5 @@ reduce_FUNNEL(UndirectedGraph& graph,
     remove_node(graph, u);
 
     return;
+}
 }

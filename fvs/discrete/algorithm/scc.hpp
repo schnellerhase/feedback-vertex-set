@@ -4,6 +4,10 @@
 
 #include "../subgraph.hpp"
 
+namespace fvs
+{
+
+
 IndexList
 low_links_sccs(const Graph& graph)
 {
@@ -179,4 +183,6 @@ scc_double_version(const Graph& graph, index_t removed_node)
     }
     components[removed_node] = result;
     return components;
+}
+
 }

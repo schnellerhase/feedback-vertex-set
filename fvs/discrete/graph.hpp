@@ -19,6 +19,7 @@
 #include "util/types.hpp"
 #include "vertex_marker.hpp"
 
+namespace fvs {
 using FVS = VertexMarker;
 
 class Graph
@@ -481,20 +482,21 @@ class Graph
     }
 };
 
-std::ostream&
-operator<<(std::ostream& os, const Graph& graph)
-{
-    // maybe use std::setw(...)
-    os << "N=" << graph.N() << "\n"
-       << "M=" << graph.M() << "\n"
-       << "heads=" << graph.heads() << "\n"
-       << "tails=" << graph.tails() << "\n"
-       << "indeg=" << graph.indeg() << "\n"
-       << "outdeg=" << graph.outdeg() << "\n"
-       << "inadj=" << graph.inadj() << "\n"
-       << "outadj=" << graph.outadj() << "\n"
-       << "in2arc=" << graph.in2arc() << "\n"
-       << "out2arc=" << graph.out2arc() << "\n";
+// std::ostream&
+// operator<<(std::ostream& os, const Graph& graph)
+// {
+//     // maybe use std::setw(...)
+//     os << "N=" << graph.N() << "\n"
+//        << "M=" << graph.M() << "\n"
+//        << "heads=" << graph.heads() << "\n"
+//        << "tails=" << graph.tails() << "\n"
+//        << "indeg=" << graph.indeg() << "\n"
+//        << "outdeg=" << graph.outdeg() << "\n"
+//        << "inadj=" << graph.inadj() << "\n"
+//        << "outadj=" << graph.outadj() << "\n"
+//        << "in2arc=" << graph.in2arc() << "\n"
+//        << "out2arc=" << graph.out2arc() << "\n";
 
-    return os;
+//     return os;
+// }
 }

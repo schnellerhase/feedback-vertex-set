@@ -7,8 +7,11 @@
 #include <stack>
 #include <vector>
 
-#include "../subgraph.hpp"
 #include "../undirected_graph.hpp"
+#include "../subgraph.hpp"
+
+namespace fvs
+{
 
 const IndexList&
 DFS_forward(const SubGraph& graph, index_t i)
@@ -89,3 +92,5 @@ class DFS
         return true;
     }
 };
+
+}

@@ -4,6 +4,10 @@
 #include "../reduction/node.hpp"
 #include "../vc.hpp"
 
+namespace fvs
+{
+    
+
 using VC = VertexMarker;
 
 inline bool
@@ -30,4 +34,5 @@ reduce_domination(UndirectedGraph& graph, index_t dominator, VC& vc)
 {
     add_to_vc(vc, dominator, graph);
     remove_node(graph, dominator);
+}
 }

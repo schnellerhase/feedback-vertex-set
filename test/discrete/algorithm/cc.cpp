@@ -2,6 +2,8 @@
 
 #include "discrete/algorithm/cc.hpp"
 
+using namespace fvs;
+
 TEST(connected, empty)
 {
     UndirectedGraph graph(0, IndexList(), IndexList(), IndexList());

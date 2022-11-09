@@ -10,6 +10,8 @@
 #include "reduction_vc/funnel.hpp"
 #include "reduction_vc/simplicial.hpp"
 
+namespace fvs {
+
 using VC = VertexMarker;
 
 std::list<UndirectedGraph>
@@ -57,7 +59,7 @@ reduce_graph_VC(UndirectedGraph& graph, VC& vc, VCFunnelHandler& vcHandler)
             if (graph.M() == 0 || graph.N() <= 1)
                 continue;
 
-            if (!is_connected(graph)) {
+            if (!connected(graph)) {
                 for (const auto& cc : connected_components(graph))
                     graphs.push_back(extract_subgraph_undirected(graph, cc));
 
@@ -167,4 +169,5 @@ reduce_graph_VC(UndirectedGraph& graph, VC& vc, VCFunnelHandler& vcHandler)
         g.shrink_to_fit();
 
     return finished;
+}
 }

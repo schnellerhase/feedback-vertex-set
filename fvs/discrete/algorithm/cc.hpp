@@ -6,6 +6,9 @@
 #include "dfs.hpp"
 #include "fvs.hpp"
 
+namespace fvs
+{
+
 IndexListList
 connected_components(const UndirectedGraph& graph)
 {
@@ -68,4 +71,6 @@ extract_subgraph_undirected(const UndirectedGraph& graph,
     }
 
     return { N_l, tails_l, heads_l, local2global_l, local2globalInvert_l };
+}
+
 }

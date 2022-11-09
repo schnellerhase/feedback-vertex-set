@@ -4,6 +4,9 @@
 #include "../subgraph.hpp"
 #include "../undirected_graph.hpp"
 
+namespace fvs
+{
+
 using FVS = VertexMarker;
 
 inline void
@@ -31,4 +34,6 @@ equivalent_fvs(const FVS& a, const FVS& b, const Graph& graph)
         return false;
 
     return Graph::is_acyclic(graph, a) && Graph::is_acyclic(graph, b);
+}
+
 }

@@ -2,8 +2,11 @@
 
 #include "../../subgraph.hpp"
 #include "../scc.hpp"
-void
 
+namespace fvs
+{
+
+void
 reduce_DOUBLE(const SubGraph& subgraph,
               index_t v,
               index_t w,
@@ -37,4 +40,6 @@ reduce_DOUBLE(const SubGraph& subgraph,
                 edges_to_remove.push_back(m);
         }
     }
+}
+
 }

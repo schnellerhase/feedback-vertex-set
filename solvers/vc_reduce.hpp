@@ -2,6 +2,8 @@
 
 #include "vc_solver/vc_solver.hpp"
 
+using namespace fvs;
+
 // TODO: should return a VC on graph, not output variable passed in
 inline void
 vc_solve_reduce(UndirectedGraph& graph, VC& vc)

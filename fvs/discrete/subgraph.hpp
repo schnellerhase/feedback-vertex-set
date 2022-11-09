@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "graph.hpp"
-
+namespace fvs {
 class SubGraph : public Graph
 {
 
@@ -218,10 +218,11 @@ class SubGraph : public Graph
     }
 };
 
-std::ostream&
-operator<<(std::ostream& os, const SubGraph& graph)
-{
-    os << dynamic_cast<const Graph&>(graph);
-    os << "local2global=" << graph.local2global();
-    return os;
+// std::ostream&
+// operator<<(std::ostream& os, const SubGraph& graph)
+// {
+//     os << dynamic_cast<const Graph&>(graph);
+//     os << "local2global=" << graph.local2global();
+//     return os;
+// }
 }

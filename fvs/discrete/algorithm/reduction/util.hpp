@@ -4,6 +4,7 @@
 #include "../../undirected_graph.hpp"
 #include "../../util/types.hpp"
 
+namespace fvs{
 inline void
 update_indices(IndexList& list, index_t i)
 {
@@ -58,4 +59,5 @@ apply_permutation(std::vector<T>& vec, const std::vector<std::size_t>& p)
 
         std::swap(vec[i], vec[ind]);
     }
+}
 }

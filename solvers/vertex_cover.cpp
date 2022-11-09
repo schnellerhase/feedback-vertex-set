@@ -1,6 +1,8 @@
 #include "template.hpp"
 #include "vc_solver/vc_solver.hpp"
 
+using namespace fvs;
+
 // TODO: ugly!
 inline void
 export_solve_vc(UndirectedGraph& graph, VC& vc)

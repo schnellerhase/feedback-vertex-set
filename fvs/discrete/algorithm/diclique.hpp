@@ -3,7 +3,10 @@
 #include "../subgraph.hpp"
 #include "../undirected_graph.hpp"
 
-inline bool
+namespace fvs
+{
+
+bool
 neighborhood_is_clique(const UndirectedGraph& graph, index_t i)
 {
     for (const index_t& from : graph.adj()[i]) {
@@ -19,7 +22,7 @@ neighborhood_is_clique(const UndirectedGraph& graph, index_t i)
     return true;
 }
 
-inline bool
+bool
 neighborhood_is_clique_funnel(const UndirectedGraph& graph,
                               index_t v,
                               index_t u)
@@ -37,7 +40,7 @@ neighborhood_is_clique_funnel(const UndirectedGraph& graph,
     return true;
 }
 
-inline bool
+bool
 neighborhood_is_clique(const SubGraph& graph, index_t i)
 {
     if (graph.indeg()[i] != graph.outdeg()[i])
@@ -58,4 +61,6 @@ neighborhood_is_clique(const SubGraph& graph, index_t i)
     }
 
     return true;
+}
+
 }

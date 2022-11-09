@@ -3,6 +3,10 @@
 #include "../subgraph.hpp"
 #include "../undirected_graph.hpp"
 
+namespace fvs 
+{
+
+
 UndirectedGraph
 extract_undirected_graph(const SubGraph& graph)
 {
@@ -28,4 +32,6 @@ extract_undirected_graph(const SubGraph& graph)
     assert(heads.size() == M);
 
     return { N, tails, heads, graph.local2global() };
+}
+
 }

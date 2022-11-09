@@ -2,6 +2,10 @@
 
 #include "../vertex_marker.hpp"
 
+
+namespace fvs
+{
+
 using VC = VertexMarker;
 
 inline bool
@@ -49,4 +53,5 @@ add_invert_to_vc(VC& vc, index_t i, const UndirectedGraph& graph)
 {
     for (const auto& gl_i : graph.local2globalInvert(i))
         vc[gl_i] = true;
+}
 }

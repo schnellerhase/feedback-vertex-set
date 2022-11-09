@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 
+namespace fvs {
 class VertexMarker;
 
 #include "undirected_graph.hpp"
@@ -75,3 +76,4 @@ class VertexMarker : public std::vector<bool>
         return fvs;
     }
 };
+}

@@ -3,6 +3,9 @@
 #include "../subgraph.hpp"
 #include "../undirected_graph.hpp"
 
+namespace fvs
+{
+
 namespace {
 inline void
 sort_and_uniquify(IndexList& list)
@@ -103,4 +106,5 @@ neighborhood(const SubGraph& graph, index_t i)
 
     sort_and_uniquify(nhood);
     return nhood;
+}
 }

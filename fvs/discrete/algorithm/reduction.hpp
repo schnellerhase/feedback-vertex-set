@@ -17,6 +17,8 @@
 #include "reduction/out.hpp"
 #include "reduction/pie.hpp"
 
+using namespace fvs;
+
 std::tuple<std::list<SubGraph>, FVS, std::list<UndirectedGraph>>
 fully_reduce_graph(const SubGraph& graph)
 {
@@ -79,7 +81,7 @@ fully_reduce_graph(const SubGraph& graph)
                 continue;
             }
 
-            if (!is_strongly_connected(
+            if (!strongly_connected(
                   subgraph)) // TOOD: run this check once, if graph does not get
                              // reduced
             {

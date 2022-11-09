@@ -2,6 +2,8 @@
 
 #include "discrete/algorithm/two_cycles.hpp"
 
+using namespace fvs;
+
 TEST(double_edges_count, empty)
 {
     SubGraph graph(0, IndexList(), IndexList(), IndexList());
@@ -39,11 +41,4 @@ TEST(double_edges_count, two_double_edges)
                    IndexList{ 0, 1, 2 });
     ASSERT_EQ(double_edges_count(graph), 2);
     ASSERT_EQ(two_cycle_edges(graph), IndexList({ 0, 1, 2, 3 }));
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

@@ -2,6 +2,8 @@
 
 #include "discrete/algorithm/reduction_vc/simplicial.hpp"
 
+using namespace fvs;
+
 // TODO: this triggers assert, but is this not correct?!?
 // TEST(reduce_SIMPLICIAL, empty)
 // {
@@ -46,11 +48,4 @@ TEST(reduce_SIMPLICIAL, three_nodes_attached)
     ASSERT_EQ(graph,
               UndirectedGraph(1, IndexList(), IndexList(), IndexList({ 3 })));
     ASSERT_EQ(vc, VC({ false, true, true, false }));
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

@@ -8,6 +8,9 @@
 
 #include "node.hpp"
 
+namespace fvs
+{
+
 inline void
 reduce_CORE(SubGraph& graph, index_t i, const IndexList& nhood, FVS& fvs)
 {
@@ -19,4 +22,5 @@ reduce_CORE(SubGraph& graph, index_t i, const IndexList& nhood, FVS& fvs)
         fvs[graph.local2global(nhood[j])] = (nhood[j] != i);
         remove_node(graph, nhood[j]);
     }
+}
 }

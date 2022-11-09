@@ -2,6 +2,8 @@
 
 #include "../../graph.hpp"
 
+namespace fvs{
+
 using FVS = VertexMarker;
 
 FVS
@@ -36,4 +38,5 @@ greedy_reduction(const Graph& graph, index_t batch_size)
     }
 
     return fvs;
+}
 }

@@ -3,6 +3,8 @@
 #include "edge.hpp"
 #include "util.hpp"
 
+namespace fvs
+{
 inline void
 remove_isolated_node(UndirectedGraph& graph, index_t i)
 {
@@ -83,4 +85,5 @@ remove_node(SubGraph& graph, index_t i)
         remove_edge(graph, out2arc[out2arc.size() - 1]);
 
     remove_isolated_node(graph, i);
+}
 }

@@ -2,6 +2,8 @@
 
 #include "discrete/algorithm/dfs.hpp"
 
+using namespace fvs;
+
 // TEST(DFS, empty)
 // {
 //     SubGraph graph(0, IndexList(), IndexList());

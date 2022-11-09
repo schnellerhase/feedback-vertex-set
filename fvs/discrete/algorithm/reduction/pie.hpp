@@ -5,12 +5,12 @@
 #include "../two_cycles.hpp"
 #include "edge.hpp"
 
+namespace fvs
+{
+
 constexpr double PIE_DOUBLE_CYCLE_DENSITY_SWITCH =
   .3; // TODO: this should be chose, s.t. the method to cosntruc tsubgraph is
       // always fastest
-
-namespace {
-}
 
 SubGraph
 remove_double_edges(const SubGraph& graph)
@@ -88,4 +88,5 @@ reduce_PIE(SubGraph& graph)
     }
 
     remove_edges_tails_heads_orderd(graph, edges_to_remove);
+}
 }

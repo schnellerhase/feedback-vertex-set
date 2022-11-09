@@ -11,6 +11,7 @@
 #include <io.h>
 #endif
 
+namespace fvs {
 // TODO: move this to a more senseful location
 static constexpr std::size_t BUFFER_DEFAULT_SIZE = 32;
 
@@ -35,4 +36,5 @@ buffer_line(FILE* fp, std::vector<char>& b)
     }
 
     return true;
+}
 }

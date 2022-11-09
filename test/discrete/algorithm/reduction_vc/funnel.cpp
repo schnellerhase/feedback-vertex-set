@@ -5,6 +5,8 @@
 //#include "vc_solver/vc_solver.hpp"
 #include "discrete/util/types.hpp"
 
+using namespace fvs;
+
 TEST(reduce_funnel, three_nodes_attached)
 {
     UndirectedGraph graph(4, IndexList{ 0, 1, 2, 2 }, IndexList{ 1, 2, 0, 3 });
@@ -60,11 +62,4 @@ TEST(reduce_funnel, three_nodes_attache2)
     // ASSERT_EQ(vc, VC({true, false, false, false}));
     ASSERT_EQ(handler, handlerShould);
     ASSERT_EQ(vc, VC({ true, false, true, false }));
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

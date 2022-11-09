@@ -4,8 +4,11 @@
 #include "../undirected_graph.hpp"
 #include "dfs.hpp"
 
+namespace fvs
+{
+
 bool
-is_connected(const UndirectedGraph& graph)
+connected(const UndirectedGraph& graph)
 {
     if (graph.N() == 0)
         return true;
@@ -20,7 +23,7 @@ is_connected(const UndirectedGraph& graph)
 }
 
 bool
-is_strongly_connected(const SubGraph& graph)
+strongly_connected(const SubGraph& graph)
 {
     if (graph.N() == 0)
         return true;
@@ -39,4 +42,6 @@ is_strongly_connected(const SubGraph& graph)
         count++;
 
     return (count == graph.N());
+}
+
 }

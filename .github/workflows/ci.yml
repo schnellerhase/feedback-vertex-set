@@ -60,10 +60,11 @@ jobs:
     - name: cmake
       working-directory: build
       run: |
-        cmake .. -GNinja \
+        cmake -G Ninja \
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
           -DBUILD_TESTING=ON \
           -DBUILD_BENCHMARKS=ON \
+          .. \
 
     - name: ninja
       working-directory: build

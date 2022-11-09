@@ -1,7 +1,7 @@
 include(ExternalProject)
 
 if (UNIX)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wno-dev")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -Wno-dev")
 else()
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
 endif()

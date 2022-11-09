@@ -41,11 +41,9 @@ add_subdirectory(third-party)
 
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -w") 
-    if (APPLE)
-        # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -undefined dynamic_lookup") 
-    endif()
 else()
     # SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
 endif()
 
 # download graphs -> move to some ohter place?

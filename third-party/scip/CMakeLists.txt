@@ -6,7 +6,7 @@ else()
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
 endif()
 
-ExternalProject_Add(scip
+ExternalProject_Add(scip-project
     GIT_REPOSITORY https://github.com/scipopt/scip
     GIT_TAG v800
     GIT_SHALLOW TRUE
@@ -39,4 +39,4 @@ ExternalProject_Add(scip
     # BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/scip-build/lib/libscip.a"
 )
 
-add_dependencies(scip soplex)
+add_dependencies(scip-project soplex-project)

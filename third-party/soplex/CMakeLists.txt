@@ -9,7 +9,7 @@ endif()
 # set (SOPLEX_SOURCE_DIR "" PARENT_SCOPE )
 # set (SOPLEX_BINARY_DIR "" PARENT_SCOPE )
 
-ExternalProject_Add(soplex
+ExternalProject_Add(soplex-project
     GIT_REPOSITORY https://github.com/scipopt/soplex
     GIT_TAG release-600
     GIT_SHALLOW TRUE

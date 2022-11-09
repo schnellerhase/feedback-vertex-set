@@ -81,8 +81,8 @@ function(SOLVER NAME)
     # add_dependencies(${NAME} scip soplex)
 
     # UNCOMMEN THIS FOR SHARED BUILD
-    target_link_libraries(${NAME} libscip.so libsoplex.so)
-    add_dependencies(${NAME} scip soplex)
+    target_link_libraries(${NAME} scip soplex)
+    add_dependencies(${NAME} scip-project soplex-project)
 endfunction()
 
 SOLVER(naive)
@@ -111,9 +111,9 @@ if (BUILD_BENCHMARKS)
         target_link_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/scip-build/lib)
         target_link_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
 
-        add_dependencies(benchmark_${NAME} scip soplex tracks)
+        add_dependencies(benchmark_${NAME} scip-project soplex-project tracks)
 
-        target_link_libraries(benchmark_${NAME} benchmark::benchmark pthread scip.so soplex.so)
+        target_link_libraries(benchmark_${NAME} benchmark::benchmark pthread scip soplex)
     endfunction()
 
     file(GLOB_RECURSE CPPS "benchmark/*.cpp")

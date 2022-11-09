@@ -3,8 +3,13 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <unistd.h>
 #include <vector>
+
+#ifdef __unix__
+      #include <unistd.h>
+#elif __MSDOS__ || __WIN32__ || _MSC_VER
+      #include <io.h>
+#endif
 
 // TODO: move this to a more senseful location
 static constexpr std::size_t BUFFER_DEFAULT_SIZE = 32;

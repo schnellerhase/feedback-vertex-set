@@ -6,37 +6,99 @@ on:
   pull_request:
 
 jobs:
-  CI:
+
+  # windows:
+  #   strategy:
+  #     fail-fast: true
+  #     matrix:
+  #       os: [windows-latest]
+  #       build-type: [Debug, Release]
+
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v1
+
+  #   - uses: ilammy/msvc-dev-cmd@v1
+
+  #   - name: create build dir
+  #     run: mkdir -p build
+
+  #   - name: cmake
+  #     run: >
+  #       cmake -S . -B build/
+  #       -G Ninja
+
+  #   - name: build
+  #     run: cmake --build build/ --config ${{ matrix.build-type }}
+
+  unix:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-22.04]
-        build-type: [Debug, Release]
+        include:
+          - os: ubuntu-22.04
+            CC: clang
+            CXX: clang++
+            build-type: Debug
+          - os: ubuntu-22.04
+            CC: clang
+            CXX: clang++
+            build-type: Release
+          - os: ubuntu-22.04
+            CC: gcc
+            CXX: g++
+            build-type: Debug
+          - os: ubuntu-22.04
+            CC: gcc
+            CXX: g++
+            build-type: Release
+          - os: macos-latest
+            CC: clang
+            CXX: clang++
+            build-type: Debug
+          - os: macos-latest
+            CC: clang
+            CXX: clang++
+            build-type: Release
+          - os: macos-latest
+            CC: gcc
+            CXX: g++
+            build-type: Debug
+          - os: macos-latest
+            CC: gcc
+            CXX: g++
+            build-type: Release
 
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v1
-      with:
-          submodules: recursive
 
-    # this does seem to work with changes in the cmake routines
-    # - name: cache build dir
-    #   uses: pat-s/always-upload-cache@v3.0.11
-    #   with:
-    #     path: build
-    #     key: ${{ matrix.os }}-build-cache-${{ matrix.build-type }}
-    
-    - name: Installing Software
+    - name: Install Software
+      if: matrix.os == 'ubuntu-22.04'
       run: |
         sudo apt update
-        sudo apt install clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
+        sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev libbenchmark-dev git -y
+
+    - name: Install software
+      if: matrix.os == 'macOS-latest'
+      run: brew install ninja googletest google-benchmark
 
     - name: create build dir
       run: mkdir -p build
 
     - name: cmake
       working-directory: build
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -GNinja
+      env:
+        CC: ${{ matrix.CC }}
+        CXX: ${{ matrix.CXX }}
+      run: |
+        cmake .. -GNinja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DBUILD_TESTING=ON \
+          -DBUILD_BENCHMARKS=ON \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 
     - name: ninja
       working-directory: build
@@ -47,9 +109,9 @@ jobs:
       run: ctest -V -j $(nproc)
 
     - name: clang-format
-      if: ${{ ( success() || failure() ) && matrix.build-type ==  'Release' }}
+      if: ${{ ( success() || failure() ) && matrix.os == 'ubuntu-22.04' && matrix.build-type == 'Release' && matrix.cxx == 'g++' }}
       run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
 
     - name: clang-tidy
-      if: ${{ ( success() || failure() ) && matrix.build-type ==  'Release' }}
+      if: ${{ ( success() || failure() ) && matrix.os == 'ubuntu-22.04' && matrix.build-type == 'Release' && matrix.cxx == 'g++' }}
       run: find src -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*

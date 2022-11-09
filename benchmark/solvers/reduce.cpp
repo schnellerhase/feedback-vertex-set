@@ -5,8 +5,6 @@
 #include "discrete/discrete.hpp"
 #include "solvers/reduce.hpp"
 
-// ./benchmark/solvers/benchmark_reduce --benchmark_out=benchmark_reduce.csv --benchmark_out_format=csv
-
 static void
 BM_reduce(benchmark::State& state)
 {

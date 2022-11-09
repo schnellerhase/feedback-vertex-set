@@ -1,11 +1,15 @@
 include(ExternalProject)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-dev")
+if (UNIX)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -Wno-dev")
+else()
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
+endif()
 
 # set (SOPLEX_SOURCE_DIR "" PARENT_SCOPE )
 # set (SOPLEX_BINARY_DIR "" PARENT_SCOPE )
 
-ExternalProject_Add(soplex
+ExternalProject_Add(soplex-project
     GIT_REPOSITORY https://github.com/scipopt/soplex
     GIT_TAG release-600
     GIT_SHALLOW TRUE
@@ -14,6 +18,8 @@ ExternalProject_Add(soplex
     SOURCE_DIR "${CMAKE_BINARY_DIR}/soplex-src"
     BINARY_DIR "${CMAKE_BINARY_DIR}/soplex-build"
     CMAKE_ARGS
+        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+        -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
         -DCMAKE_CXX_FLAGS_DEBUG=${CMAKE_CXX_FLAGS_DEBUG}
@@ -25,10 +31,10 @@ ExternalProject_Add(soplex
         -DGMP=FALSE
         -DBOOST=FALSE
     INSTALL_COMMAND ""
-    BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/soplex-build/lib/libsoplex.a"
+    # BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/soplex-build/lib/libsoplex.a"
     COMMENT ""
     DOWNLOAD_NO_PROGRESS TRUE
 )
 
-add_library(soplex_static_lib STATIC IMPORTED GLOBAL)
-set_target_properties(soplex_static_lib PROPERTIES IMPORTED_LOCATION "${CMAKE_BINARY_DIR}/soplex-build/lib/libsoplex.a")
+# add_library(soplex_static_lib STATIC IMPORTED GLOBAL)
+# set_target_properties(soplex_static_lib PROPERTIES IMPORTED_LOCATION "${CMAKE_BINARY_DIR}/soplex-build/lib/libsoplex.a")

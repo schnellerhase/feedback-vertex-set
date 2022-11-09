@@ -7,8 +7,11 @@
 #include <fstream>
 #include <iostream>
 #include <numeric>
+#ifdef __unix__
 #include <unistd.h>
-
+#elif __MSDOS__ || __WIN32__ || _MSC_VER
+#include <io.h>
+#endif
 #include "util/types.hpp"
 #include "vertex_marker.hpp"
 

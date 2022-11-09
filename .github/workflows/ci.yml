@@ -54,13 +54,13 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Installing Software
-      if: ${{ matrix.os }} == 'ubuntu-22.04'
+      if: matrix.os == 'ubuntu-22.04'
       run: |
         sudo apt update
         sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev libbenchmark-dev git -y
 
     - name: Install software
-      if: ${{ matrix.os }} == 'macos-latest'
+      if: matrix.os == 'macOS-latest'
       run: brew install ninja googletest google-benchmark
 
     - name: create build dir

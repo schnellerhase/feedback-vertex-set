@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "discrete/discrete.hpp"
-#include "solvers/naive.hpp"
+#include "naive.hpp"
 
 static void
 BM_naive(benchmark::State& state)

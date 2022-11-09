@@ -1,4 +1,4 @@
-#include "solvers/naive.hpp"
+#include "naive.hpp"
 #include "solver_tests.hpp"
 
 TEST_SORTED_ADJ(solve_naive)

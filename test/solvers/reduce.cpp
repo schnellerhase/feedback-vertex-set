@@ -1,4 +1,4 @@
-#include "solvers/reduce.hpp"
+#include "reduce.hpp"
 #include "solver_tests.hpp"
 
 TEST_SORTED_ADJ(solve_reduce)

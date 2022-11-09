@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "discrete/discrete.hpp"
-#include "solvers/reduce.hpp"
+#include "reduce.hpp"
 
 static void
 BM_reduce(benchmark::State& state)

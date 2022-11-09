@@ -60,7 +60,7 @@ jobs:
     - name: cmake
       working-directory: build
       run: |
-        cmake -G Ninja \
+        cmake \
           -DBUILD_TESTING=ON \
           -DBUILD_BENCHMARKS=ON \
           .. \

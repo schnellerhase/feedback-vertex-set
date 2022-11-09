@@ -55,11 +55,11 @@ jobs:
             build-type: Release
           - os: macos-latest
             CC: clang
-            CXX: clang
+            CXX: clang++
             build-type: Debug
           - os: macos-latest
             CC: clang
-            CXX: clang
+            CXX: clang++
             build-type: Release
           - os: macos-latest
             CC: gcc

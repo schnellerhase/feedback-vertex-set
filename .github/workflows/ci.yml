@@ -6,88 +6,62 @@ on:
   pull_request:
 
 jobs:
-  macos:
+
+  # windows:
+  #   strategy:
+  #     fail-fast: true
+  #     matrix:
+  #       os: [windows-latest]
+  #       build-type: [Debug, Release]
+
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v1
+
+  #   - uses: ilammy/msvc-dev-cmd@v1
+
+  #   - name: create build dir
+  #     run: mkdir -p build
+
+  #   - name: cmake
+  #     run: >
+  #       cmake -S . -B build/
+  #       -G Ninja
+
+  #   - name: build
+  #     run: cmake --build build/ --config ${{ matrix.build-type }}
+
+  unix:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest]
+        os: [ubuntu-22.04, macos-latest]
         build-type: [Debug, Release]
+        include:
+          - os: ubuntu-22.04
+            CC: clang
+            CXX: clang++
+            build-type: Debug
+          - os: ubuntu-22.04
+            CC: clang
+            CXX: clang++
+            build-type: Release
 
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Install software
-      run: brew install ninja googletest google-benchmark
-
-    - name: create build dir
-      run: mkdir -p build
-
-    - name: cmake
-      working-directory: build
-      run: |
-        cmake .. -GNinja \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-          -DBUILD_TESTING=ON \
-          -DBUILD_BENCHMARKS=ON \
-
-    - name: ninja
-      working-directory: build
-      run: ninja
-    
-    - name: test
-      working-directory: build
-      run: ctest -V -j $(nproc)
-
-  windows:
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [windows-latest]
-        build-type: [Debug, Release]
-
-    runs-on: ${{ matrix.os }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-
-    - uses: ilammy/msvc-dev-cmd@v1
-
-    - name: create build dir
-      run: mkdir -p build
-
-    - name: cmake
-      run: >
-        cmake -S . -B build/
-        -G Ninja
-
-    - name: build
-      run: cmake --build build/ --config ${{ matrix.build-type }}
-
-    # - name: ninja
-    #   working-directory: build
-    #   run: ninja
-
-  ubuntu:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-22.04]
-        compiler:
-          - { compiler: GNU,  CC: gcc,   CXX: g++ }
-          - { compiler: LLVM, CC: clang, CXX: clang++ }
-        build-type: [Debug, Release]
-
-    runs-on: ${{ matrix.os }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-    
     - name: Installing Software
+      if: ${{ matrix.os }} == 'ubuntu-22.04'
       run: |
         sudo apt update
         sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev libbenchmark-dev git -y
+
+    - name: Install software
+      if: ${{ matrix.os }} == 'macos-latest'
+      run: brew install ninja googletest google-benchmark
 
     - name: create build dir
       run: mkdir -p build

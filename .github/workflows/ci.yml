@@ -58,16 +58,16 @@ jobs:
       run: mkdir -p build
 
     - name: cmake
-      working-directory: build
-      run: |
-        cmake \
-          -DBUILD_TESTING=ON \
-          -DBUILD_BENCHMARKS=ON \
-          .. \
+      run: >
+        cmake -S . -B build/
+        -G Ninja
 
-    - name: ninja
-      working-directory: build
-      run: ninja
+    - name: build
+      run: cmake --build build/ --config ${{ matrix.build-type }}
+
+    # - name: ninja
+    #   working-directory: build
+    #   run: ninja
 
   ubuntu:
     strategy:

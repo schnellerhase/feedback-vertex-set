@@ -86,11 +86,11 @@ jobs:
         sudo apt update
         sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev git -y
 
-    - name: Cache
-      uses: actions/cache@v3
-      with:
-        path: build
-        key: build-cache-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.build-type }}
+    # - name: Cache
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: build
+    #     key: build-cache-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.build-type }}
 
     - name: create build dir
       run: mkdir -p build

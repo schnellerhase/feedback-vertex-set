@@ -64,8 +64,8 @@ jobs:
     - name: cmake
       working-directory: build
       env:
-        CC: ${{ matrix.compiler.CC }}
-        CXX: ${{ matrix.compiler.CXX }}
+        CC: ${{ matrix.CC }}
+        CXX: ${{ matrix.CXX }}
       run: |
         cmake .. -GNinja \
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \

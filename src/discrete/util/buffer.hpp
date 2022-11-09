@@ -6,9 +6,9 @@
 #include <vector>
 
 #ifdef __unix__
-      #include <unistd.h>
+#include <unistd.h>
 #elif __MSDOS__ || __WIN32__ || _MSC_VER
-      #include <io.h>
+#include <io.h>
 #endif
 
 // TODO: move this to a more senseful location

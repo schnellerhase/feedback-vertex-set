@@ -1,5 +1,4 @@
-#ifndef SOLVER_TESTS_HPP
-#define SOLVER_TESTS_HPP
+#pragma once
 
 #include <gtest/gtest.h>
 
@@ -72,5 +71,3 @@
         FVS fvs = solver(graph);                                               \
         ASSERT_TRUE(equivalent_fvs(fvs, fvsShould, graph));                    \
     }
-
-#endif // SOLVER_TESTS_HPP

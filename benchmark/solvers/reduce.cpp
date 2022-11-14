@@ -2,8 +2,8 @@
 #include <iomanip>
 #include <iostream>
 
-#include "discrete/discrete.hpp"
-#include "reduce.hpp"
+#include "fvs/discrete/discrete.hpp"
+#include "solvers/reduce.hpp"
 
 static void
 BM_reduce(benchmark::State& state)

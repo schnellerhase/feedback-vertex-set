@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/scc.hpp"
-#include "discrete/graph.hpp"
+#include "fvs/discrete/algorithm/scc.hpp"
+#include "fvs/discrete/graph.hpp"
 
 using namespace fvs;
 

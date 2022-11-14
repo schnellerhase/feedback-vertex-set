@@ -1,6 +1,6 @@
-#include "fvs_solver/fvs_solver.hpp"
+#include "fvs/fvs_solver/fvs_solver.hpp"
 
-#include "discrete/discrete.hpp"
+#include "fvs/discrete/discrete.hpp"
 
 inline FVS
 solve_greedy_reduction(const SubGraph& graph)

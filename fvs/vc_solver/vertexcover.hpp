@@ -9,7 +9,7 @@
 #include <span>
 #include <vector>
 
-#include "discrete/discrete.hpp"
+#include "fvs/discrete/discrete.hpp"
 
 static constexpr double ROUNDING_EPS = 2e-6;
 

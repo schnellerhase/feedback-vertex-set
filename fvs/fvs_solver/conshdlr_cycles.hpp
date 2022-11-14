@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "cycle_separation.hpp"
-#include "discrete/discrete.hpp"
+#include "fvs/discrete/discrete.hpp"
 #include <objscip/objscip.h>
 
 struct SCIP_ConsData

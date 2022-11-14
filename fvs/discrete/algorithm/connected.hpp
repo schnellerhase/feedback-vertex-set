@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../subgraph.hpp"
-#include "../undirected_graph.hpp"
-#include "dfs.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
+#include "fvs/discrete/subgraph.hpp"
+#include "fvs/discrete/algorithm/dfs.hpp"
 
 namespace fvs
 {

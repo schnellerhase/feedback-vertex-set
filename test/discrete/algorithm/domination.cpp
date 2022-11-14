@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/reduction_vc/domination.hpp"
+#include "fvs/discrete/algorithm/reduction_vc/domination.hpp"
 
 using namespace fvs;
 

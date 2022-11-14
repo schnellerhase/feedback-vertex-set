@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/reduction/out.hpp"
+#include "fvs/discrete/algorithm/reduction/out.hpp"
+
+using namespace fvs;
 
 TEST(reduce_OUT, double_edge)
 {

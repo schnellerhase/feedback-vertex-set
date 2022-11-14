@@ -1,7 +1,9 @@
 #pragma once
 
-#include "discrete/discrete.hpp"
-#include "fvs_solver/feedback.hpp"
+#include "fvs/discrete/discrete.hpp"
+#include "fvs/fvs_solver/feedback.hpp"
+
+// using namespace fvs;
 
 FVS
 solve_fvs(const Graph& graph)

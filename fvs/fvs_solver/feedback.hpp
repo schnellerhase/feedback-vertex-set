@@ -6,8 +6,8 @@
 #include <scip/scipdefplugins.h>
 #include <vector>
 
+#include "fvs/discrete/discrete.hpp"
 #include "conshdlr_cycles.hpp"
-#include "discrete/discrete.hpp"
 #include "scip/scip_exception.hpp"
 
 class FeedbackSolver

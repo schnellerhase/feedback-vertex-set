@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/reduction/edge.hpp"
+#include "fvs/discrete/algorithm/reduction/edge.hpp"
+
+using namespace fvs;
 
 TEST(edge_redcution_undirected, simple)
 {

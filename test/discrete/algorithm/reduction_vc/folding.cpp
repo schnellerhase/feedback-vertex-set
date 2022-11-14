@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/reduction_vc/folding.hpp"
+#include "fvs/discrete/algorithm/reduction_vc/folding.hpp"
+
+using namespace fvs;
 
 TEST(reduce_folding, three_nodes)
 {

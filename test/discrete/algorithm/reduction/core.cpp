@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/neighborhood.hpp"
-#include "discrete/algorithm/reduction/core.hpp"
+#include "fvs/discrete/algorithm/neighborhood.hpp"
+#include "fvs/discrete/algorithm/reduction/core.hpp"
 
 using namespace fvs;
 

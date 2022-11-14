@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/neighborhood.hpp"
+#include "fvs/discrete/algorithm/neighborhood.hpp"
 
 using namespace fvs;
 

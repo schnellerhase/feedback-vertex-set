@@ -8,7 +8,7 @@
 #include <stack>
 #include <vector>
 
-#include "discrete/discrete.hpp"
+#include "fvs/discrete/discrete.hpp"
 
 static const double INF = std::numeric_limits<double>::max();
 static const double EPS = 1e-6;

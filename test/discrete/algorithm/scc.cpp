@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/scc.hpp"
+#include "fvs/discrete/algorithm/scc.hpp"
 
 using namespace fvs;
 

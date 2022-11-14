@@ -1,5 +1,5 @@
-#include "discrete/discrete.hpp"
-#include "fvs_solver/fvs_solver.hpp"
+#include "fvs/discrete/discrete.hpp"
+#include "fvs/fvs_solver/fvs_solver.hpp"
 
 // TODO: add to testing
 

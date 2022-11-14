@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/undirected_graph.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
+
+using namespace fvs;
 
 TEST(UndirectedGraph, empty)
 {

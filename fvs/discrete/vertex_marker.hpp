@@ -3,10 +3,9 @@
 #include <sstream>
 #include <vector>
 
-namespace fvs {
-class VertexMarker;
-
 #include "undirected_graph.hpp"
+
+namespace fvs {
 
 class VertexMarker : public std::vector<bool>
 {

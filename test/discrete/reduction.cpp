@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/reduction.hpp"
-#include "discrete/algorithm/reduction/in.hpp"
-#include "discrete/algorithm/reduction/out.hpp"
-#include "discrete/util/types.hpp"
+#include "fvs/discrete/algorithm/reduction.hpp"
+#include "fvs/discrete/algorithm/reduction/in.hpp"
+#include "fvs/discrete/algorithm/reduction/out.hpp"
+#include "fvs/discrete/util/types.hpp"
 
 // TEST(Reduction, empty)
 // {

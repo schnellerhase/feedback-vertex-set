@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/two_cycles.hpp"
+#include "fvs/discrete/algorithm/two_cycles.hpp"
 
 using namespace fvs;
 

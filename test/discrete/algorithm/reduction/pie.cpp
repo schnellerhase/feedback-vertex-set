@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/reduction/pie.hpp"
+#include "fvs/discrete/algorithm/reduction/pie.hpp"
 
 using namespace fvs;
 

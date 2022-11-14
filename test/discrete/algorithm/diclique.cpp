@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/diclique.hpp"
+#include "fvs/discrete/algorithm/diclique.hpp"
 
 using namespace fvs;
 

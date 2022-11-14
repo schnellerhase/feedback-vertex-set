@@ -1,4 +1,4 @@
-#include "greedy_reduction.hpp"
+#include "solvers/greedy_reduction.hpp"
 #include "solver_tests.hpp"
 
 // TODO:!

@@ -1,4 +1,4 @@
-#include "fvs_solver/fvs_solver.hpp"
+#include "fvs/fvs_solver/fvs_solver.hpp"
 
 inline FVS
 solve_naive(const Graph& graph)

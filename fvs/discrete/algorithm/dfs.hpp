@@ -7,8 +7,8 @@
 #include <stack>
 #include <vector>
 
-#include "../undirected_graph.hpp"
-#include "../subgraph.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
+#include "fvs/discrete/subgraph.hpp"
 
 namespace fvs
 {

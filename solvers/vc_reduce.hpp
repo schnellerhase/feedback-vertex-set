@@ -1,6 +1,6 @@
 #include <memory>
 
-#include "vc_solver/vc_solver.hpp"
+#include "fvs/vc_solver/vc_solver.hpp"
 
 using namespace fvs;
 

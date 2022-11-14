@@ -1,5 +1,5 @@
 #include "template.hpp"
-#include "fvs/vc_solver/vc_solver.hpp"
+#include "fvs/solvers/vc.hpp"
 
 using namespace fvs;
 

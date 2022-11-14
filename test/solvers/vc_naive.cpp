@@ -1,4 +1,4 @@
-#include "fvs/vc_solver/vc_solver.hpp"
+#include "fvs/solvers/vc.hpp"
 #include "vc_solver_tests.hpp"
 
 // TODO: ugly!

@@ -1,6 +1,6 @@
 #include "fvs/fvs_solver/fvs_solver.hpp"
 #include "vc_reduce.hpp"
-#include "fvs/vc_solver/vc_solver.hpp"
+#include "fvs/solvers/vc.hpp"
 
 using namespace fvs;
 

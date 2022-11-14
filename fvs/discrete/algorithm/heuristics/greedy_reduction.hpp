@@ -2,7 +2,7 @@
 
 #include "../../graph.hpp"
 
-namespace fvs{
+namespace fvs {
 
 using FVS = VertexMarker;
 

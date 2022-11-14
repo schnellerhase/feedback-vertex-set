@@ -8,8 +8,7 @@
 
 #include "node.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 inline void
 reduce_CORE(SubGraph& graph, index_t i, const IndexList& nhood, FVS& fvs)

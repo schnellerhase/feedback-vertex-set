@@ -28,4 +28,3 @@ TEST(neighborhood, four_nodes)
       4, IndexList{ 0, 1, 1 }, IndexList{ 1, 2, 3 }, IndexList{ 0, 1, 2, 3 });
     ASSERT_EQ(neighborhood(graph, 1), IndexList({ 0, 1, 2, 3 }));
 }
-

@@ -6,8 +6,7 @@
 #include "node.hpp"
 #include "util.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 inline bool
 reduce_IN(SubGraph& graph, index_t i, FVS& fvs)

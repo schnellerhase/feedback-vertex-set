@@ -81,9 +81,8 @@ fully_reduce_graph(const SubGraph& graph)
                 continue;
             }
 
-            if (!strongly_connected(
-                  subgraph)) // TOOD: run this check once, if graph does not get
-                             // reduced
+            if (!strongly_connected(subgraph)) // TOOD: run this check once, if
+                                               // graph does not get reduced
             {
                 IndexListList sccs = strongly_connected_components(subgraph);
                 assert(sccs.size() > 1);

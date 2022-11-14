@@ -6,8 +6,7 @@
 #include "dfs.hpp"
 #include "fvs.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 IndexListList
 connected_components(const UndirectedGraph& graph)

@@ -6,8 +6,7 @@
 #include "../reduction/node.hpp"
 #include "../vc.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 inline void
 reduce_SIMPLICIAL(UndirectedGraph& graph,

@@ -3,8 +3,7 @@
 #include "../subgraph.hpp"
 #include "../undirected_graph.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 bool
 neighborhood_is_clique(const UndirectedGraph& graph, index_t i)

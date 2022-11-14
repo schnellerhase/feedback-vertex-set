@@ -1,11 +1,10 @@
 #pragma once
 
-#include "fvs/discrete/undirected_graph.hpp"
-#include "fvs/discrete/subgraph.hpp"
 #include "fvs/discrete/algorithm/dfs.hpp"
+#include "fvs/discrete/subgraph.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 bool
 connected(const UndirectedGraph& graph)

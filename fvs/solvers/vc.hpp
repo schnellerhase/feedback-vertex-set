@@ -2,8 +2,7 @@
 
 #include "fvs/solvers/detail/vc.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 VC
 solve_vc(const UndirectedGraph& graph)

@@ -11,7 +11,7 @@
 
 #include "fvs/discrete/discrete.hpp"
 
-namespace fvs{
+namespace fvs {
 
 namespace detail {
 

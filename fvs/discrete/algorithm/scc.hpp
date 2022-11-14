@@ -4,9 +4,7 @@
 
 #include "../subgraph.hpp"
 
-namespace fvs
-{
-
+namespace fvs {
 
 IndexList
 low_links_sccs(const Graph& graph)

@@ -10,8 +10,7 @@
 #include "fvs/solvers/detail/cycle_separation.hpp"
 #include "scip/scip_exception.hpp"
 
-namespace fvs::detail
-{
+namespace fvs::detail {
 
 class FeedbackSolver
 {

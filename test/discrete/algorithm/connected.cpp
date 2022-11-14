@@ -54,8 +54,8 @@ TEST(connected, empty)
 
 // TEST(strongly_connected, two_nodes_1)
 // {
-//     SubGraph graph(2, IndexList{ 0, 1 }, IndexList{ 1, 0 }, IndexList{ 0, 1 });
-//     ASSERT_TRUE(strongly_connected(graph));
+//     SubGraph graph(2, IndexList{ 0, 1 }, IndexList{ 1, 0 }, IndexList{ 0, 1
+//     }); ASSERT_TRUE(strongly_connected(graph));
 // }
 
 // TEST(strongly_connected, four_node_circle)

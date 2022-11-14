@@ -3,8 +3,7 @@
 #include "edge.hpp"
 #include "util.hpp"
 
-namespace fvs
-{
+namespace fvs {
 inline void
 remove_isolated_node(UndirectedGraph& graph, index_t i)
 {

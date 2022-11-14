@@ -9,8 +9,7 @@
 struct SCIP_ConsData
 {};
 
-namespace fvs::detail{
-
+namespace fvs::detail {
 
 static const double INF = std::numeric_limits<double>::max();
 static const double EPS = 1e-6;

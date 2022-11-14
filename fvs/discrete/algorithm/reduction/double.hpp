@@ -3,8 +3,7 @@
 #include "../../subgraph.hpp"
 #include "../scc.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 void
 reduce_DOUBLE(const SubGraph& subgraph,

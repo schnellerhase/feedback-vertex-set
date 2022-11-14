@@ -59,7 +59,7 @@
     TEST(solver, no)                                                           \
     {                                                                          \
         std::string track = #no;                                               \
-        auto graph = SubGraph(Graph::read(("../tracks/e_" + track).c_str()));       \
+        auto graph = SubGraph(Graph::read(("../tracks/e_" + track).c_str()));  \
         auto fvs = FVS::read("data/e_" + track + ".sol", graph.N());           \
         ASSERT_TRUE(equivalent_fvs(solver(graph), fvs, graph));                \
     }

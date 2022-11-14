@@ -5,8 +5,7 @@
 #include "../two_cycles.hpp"
 #include "edge.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 constexpr double PIE_DOUBLE_CYCLE_DENSITY_SWITCH =
   .3; // TODO: this should be chose, s.t. the method to cosntruc tsubgraph is

@@ -3,8 +3,7 @@
 #include "../subgraph.hpp"
 #include "diclique.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 index_t
 double_edges_count(const SubGraph& graph)

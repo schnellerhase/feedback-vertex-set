@@ -3,9 +3,7 @@
 #include "../subgraph.hpp"
 #include "../undirected_graph.hpp"
 
-namespace fvs 
-{
-
+namespace fvs {
 
 UndirectedGraph
 extract_undirected_graph(const SubGraph& graph)

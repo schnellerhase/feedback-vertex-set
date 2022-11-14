@@ -4,7 +4,7 @@
 #include "../../undirected_graph.hpp"
 #include "../../util/types.hpp"
 
-namespace fvs{
+namespace fvs {
 inline void
 update_indices(IndexList& list, index_t i)
 {

@@ -7,9 +7,7 @@
 #include "../reduction/node.hpp"
 #include "../vc.hpp"
 
-namespace fvs
-{
-    
+namespace fvs {
 
 using VC = VertexMarker;
 

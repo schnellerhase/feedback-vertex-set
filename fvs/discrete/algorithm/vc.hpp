@@ -2,9 +2,7 @@
 
 #include "../vertex_marker.hpp"
 
-
-namespace fvs
-{
+namespace fvs {
 
 using VC = VertexMarker;
 

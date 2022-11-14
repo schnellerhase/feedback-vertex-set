@@ -4,8 +4,7 @@
 #include "../subgraph.hpp"
 #include "../undirected_graph.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 using FVS = VertexMarker;
 

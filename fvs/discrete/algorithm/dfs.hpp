@@ -7,11 +7,10 @@
 #include <stack>
 #include <vector>
 
-#include "fvs/discrete/undirected_graph.hpp"
 #include "fvs/discrete/subgraph.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 const IndexList&
 DFS_forward(const SubGraph& graph, index_t i)

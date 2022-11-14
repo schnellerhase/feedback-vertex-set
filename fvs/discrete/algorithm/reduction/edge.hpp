@@ -5,8 +5,7 @@
 #include "../../undirected_graph.hpp"
 #include "../diclique.hpp"
 
-namespace fvs
-{
+namespace fvs {
 
 inline void
 remove_edge(UndirectedGraph& graph, index_t e)

@@ -7,8 +7,11 @@
 #include <vector>
 
 #include "fvs/discrete/discrete.hpp"
-#include "conshdlr_cycles.hpp"
+#include "fvs/solvers/detail/cycle_separation.hpp"
 #include "scip/scip_exception.hpp"
+
+namespace fvs::detail
+{
 
 class FeedbackSolver
 {
@@ -167,3 +170,5 @@ class FeedbackSolver
         delete[] _solution;
     }
 };
+
+}

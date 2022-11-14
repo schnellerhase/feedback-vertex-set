@@ -1,4 +1,4 @@
-#include "fvs/fvs_solver/fvs_solver.hpp"
+#include "fvs/solvers/fvs.hpp"
 
 #include "fvs/discrete/discrete.hpp"
 

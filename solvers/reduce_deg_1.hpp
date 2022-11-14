@@ -1,5 +1,5 @@
 #include "fvs/discrete/discrete.hpp"
-#include "fvs/fvs_solver/fvs_solver.hpp"
+#include "fvs/solvers/fvs.hpp"
 
 // TODO: add to testing
 inline FVS

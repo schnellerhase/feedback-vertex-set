@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-#include "fvs/fvs_solver/fvs_solver.hpp"
+#include "fvs/solvers/fvs.hpp"
 
 #define TEST_SINGLE_NODE(solver)                                               \
     TEST(solver, single_node)                                                  \

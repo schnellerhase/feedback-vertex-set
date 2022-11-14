@@ -1,6 +1,6 @@
 #pragma once
 
-#include "fvs/solvers/detail/vc_solver.hpp"
+#include "fvs/solvers/detail/vc.hpp"
 
 namespace fvs
 {

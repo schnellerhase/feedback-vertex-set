@@ -1,7 +1,7 @@
 #pragma once
 
 #include "fvs/discrete/discrete.hpp"
-#include "fvs/fvs_solver/feedback.hpp"
+#include "fvs/solvers/detail/fvs.hpp"
 
 // using namespace fvs;
 
@@ -19,7 +19,7 @@ solve_fvs(const Graph& graph)
         else
             return FVS({ false, false });
     }
-    FeedbackSolver solver(graph);
+    detail::FeedbackSolver solver(graph);
     bool solved = solver.solve();
     if (solved) {
         FVS solution(graph.N(), false);
@@ -48,7 +48,7 @@ solve_fvs_with_initial_solution(const Graph& graph, const FVS& fvs)
             return FVS({ false, false });
     }
 
-    FeedbackSolver solver(graph);
+    detail::FeedbackSolver solver(graph);
     solver.set_initial_solution(fvs);
     bool solved = solver.solve();
     if (solved) {

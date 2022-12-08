@@ -1,117 +1,117 @@
-name: CI
+# name: CI
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
 
-jobs:
+# jobs:
 
-  # windows:
-  #   strategy:
-  #     fail-fast: true
-  #     matrix:
-  #       os: [windows-latest]
-  #       build-type: [Debug, Release]
+#   # windows:
+#   #   strategy:
+#   #     fail-fast: true
+#   #     matrix:
+#   #       os: [windows-latest]
+#   #       build-type: [Debug, Release]
 
-  #   runs-on: ${{ matrix.os }}
-  #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v1
+#   #   runs-on: ${{ matrix.os }}
+#   #   steps:
+#   #   - name: Checkout
+#   #     uses: actions/checkout@v1
 
-  #   - uses: ilammy/msvc-dev-cmd@v1
+#   #   - uses: ilammy/msvc-dev-cmd@v1
 
-  #   - name: create build dir
-  #     run: mkdir -p build
+#   #   - name: create build dir
+#   #     run: mkdir -p build
 
-  #   - name: cmake
-  #     run: >
-  #       cmake -S . -B build/
-  #       -G Ninja
+#   #   - name: cmake
+#   #     run: >
+#   #       cmake -S . -B build/
+#   #       -G Ninja
 
-  #   - name: build
-  #     run: cmake --build build/ --config ${{ matrix.build-type }}
+#   #   - name: build
+#   #     run: cmake --build build/ --config ${{ matrix.build-type }}
 
-  unix:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-22.04
-            CC: clang
-            CXX: clang++
-            build-type: Debug
-          - os: ubuntu-22.04
-            CC: clang
-            CXX: clang++
-            build-type: Release
-          - os: ubuntu-22.04
-            CC: gcc
-            CXX: g++
-            build-type: Debug
-          - os: ubuntu-22.04
-            CC: gcc
-            CXX: g++
-            build-type: Release
-          - os: macos-latest
-            CC: clang
-            CXX: clang++
-            build-type: Debug
-          - os: macos-latest
-            CC: clang
-            CXX: clang++
-            build-type: Release
-          - os: macos-latest
-            CC: gcc
-            CXX: g++
-            build-type: Debug
-          - os: macos-latest
-            CC: gcc
-            CXX: g++
-            build-type: Release
+#   unix:
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         include:
+#           - os: ubuntu-22.04
+#             CC: clang
+#             CXX: clang++
+#             build-type: Debug
+#           - os: ubuntu-22.04
+#             CC: clang
+#             CXX: clang++
+#             build-type: Release
+#           - os: ubuntu-22.04
+#             CC: gcc
+#             CXX: g++
+#             build-type: Debug
+#           - os: ubuntu-22.04
+#             CC: gcc
+#             CXX: g++
+#             build-type: Release
+#           - os: macos-latest
+#             CC: clang
+#             CXX: clang++
+#             build-type: Debug
+#           - os: macos-latest
+#             CC: clang
+#             CXX: clang++
+#             build-type: Release
+#           - os: macos-latest
+#             CC: gcc
+#             CXX: g++
+#             build-type: Debug
+#           - os: macos-latest
+#             CC: gcc
+#             CXX: g++
+#             build-type: Release
 
-    runs-on: ${{ matrix.os }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v1
+#     runs-on: ${{ matrix.os }}
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v1
 
-    - name: Install Software
-      if: matrix.os == 'ubuntu-22.04'
-      run: |
-        sudo apt update
-        sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev libbenchmark-dev git -y
+#     - name: Install Software
+#       if: matrix.os == 'ubuntu-22.04'
+#       run: |
+#         sudo apt update
+#         sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev libbenchmark-dev git -y
 
-    - name: Install software
-      if: matrix.os == 'macOS-latest'
-      run: brew install ninja googletest google-benchmark
+#     - name: Install software
+#       if: matrix.os == 'macOS-latest'
+#       run: brew install ninja googletest google-benchmark
 
-    - name: create build dir
-      run: mkdir -p build
+#     - name: create build dir
+#       run: mkdir -p build
 
-    - name: cmake
-      working-directory: build
-      env:
-        CC: ${{ matrix.CC }}
-        CXX: ${{ matrix.CXX }}
-      run: |
-        cmake .. -GNinja \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-          -DBUILD_TESTING=ON \
-          -DBUILD_BENCHMARKS=ON \
-          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+#     - name: cmake
+#       working-directory: build
+#       env:
+#         CC: ${{ matrix.CC }}
+#         CXX: ${{ matrix.CXX }}
+#       run: |
+#         cmake .. -GNinja \
+#           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+#           -DBUILD_TESTING=ON \
+#           -DBUILD_BENCHMARKS=ON \
+#           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 
-    - name: ninja
-      working-directory: build
-      run: ninja
+#     - name: ninja
+#       working-directory: build
+#       run: ninja
 
-    - name: test
-      working-directory: build
-      run: ctest -V -j $(nproc)
+#     - name: test
+#       working-directory: build
+#       run: ctest -V -j $(nproc)
 
-    - name: clang-format
-      if: ${{ ( success() || failure() ) && matrix.os == 'ubuntu-22.04' && matrix.build-type == 'Release' && matrix.cxx == 'g++' }}
-      run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
+#     - name: clang-format
+#       if: ${{ ( success() || failure() ) && matrix.os == 'ubuntu-22.04' && matrix.build-type == 'Release' && matrix.cxx == 'g++' }}
+#       run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
 
-    - name: clang-tidy
-      if: ${{ ( success() || failure() ) && matrix.os == 'ubuntu-22.04' && matrix.build-type == 'Release' && matrix.cxx == 'g++' }}
-      run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*
+#     - name: clang-tidy
+#       if: ${{ ( success() || failure() ) && matrix.os == 'ubuntu-22.04' && matrix.build-type == 'Release' && matrix.cxx == 'g++' }}
+#       run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*

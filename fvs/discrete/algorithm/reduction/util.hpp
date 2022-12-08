@@ -17,7 +17,7 @@ template<typename T>
 void
 erase_index(std::vector<T>& vec, index_t idx)
 {
-    assert(0 <= idx && idx < vec.size());
+    assert(idx < vec.size());
     vec.erase(vec.begin() + static_cast<std::size_t>(idx));
 }
 

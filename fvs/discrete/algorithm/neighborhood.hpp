@@ -6,7 +6,7 @@
 namespace fvs {
 
 namespace {
-inline void
+void
 sort_and_uniquify(IndexList& list)
 {
     std::sort(list.begin(), list.end());
@@ -15,7 +15,7 @@ sort_and_uniquify(IndexList& list)
 }
 }
 
-inline IndexList
+IndexList
 neighborhood(const UndirectedGraph& graph, index_t i)
 {
     IndexList nhood;
@@ -29,7 +29,7 @@ neighborhood(const UndirectedGraph& graph, index_t i)
     return nhood;
 }
 
-inline IndexList
+IndexList
 neighborhood_funnel(const UndirectedGraph& graph, index_t i, index_t j)
 {
     IndexList nhood;
@@ -46,7 +46,7 @@ neighborhood_funnel(const UndirectedGraph& graph, index_t i, index_t j)
     return nhood;
 }
 
-inline std::tuple<IndexList, IndexList, IndexList>
+std::tuple<IndexList, IndexList, IndexList>
 decompose_nhoods(const UndirectedGraph& graph, index_t v, index_t u)
 {
     IndexList intersection({});
@@ -85,7 +85,7 @@ decompose_nhoods(const UndirectedGraph& graph, index_t v, index_t u)
       std::move(intersection), std::move(vExclusive), std::move(uExclusive));
 }
 
-inline IndexList
+IndexList
 neighborhood(const SubGraph& graph, index_t i)
 {
     IndexList nhood;

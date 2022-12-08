@@ -11,9 +11,7 @@
 
 #include "fvs/discrete/discrete.hpp"
 
-namespace fvs {
-
-namespace detail {
+namespace fvs::detail {
 
 static constexpr double ROUNDING_EPS = 2e-6;
 
@@ -140,5 +138,4 @@ class VCoverSolver
         return vc;
     }
 };
-}
 }

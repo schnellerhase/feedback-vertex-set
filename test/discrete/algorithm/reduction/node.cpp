@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/reduction/node.hpp"
+#include "fvs/discrete/algorithm/reduction/node.hpp"
+
+using namespace fvs;
 
 TEST(node_reduction_undirected, isolated)
 {

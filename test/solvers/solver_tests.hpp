@@ -1,9 +1,8 @@
-#ifndef SOLVER_TESTS_HPP
-#define SOLVER_TESTS_HPP
+#pragma once
 
 #include <gtest/gtest.h>
 
-#include "fvs_solver/fvs_solver.hpp"
+#include "fvs/solvers/fvs.hpp"
 
 #define TEST_SINGLE_NODE(solver)                                               \
     TEST(solver, single_node)                                                  \
@@ -59,7 +58,7 @@
     TEST(solver, no)                                                           \
     {                                                                          \
         std::string track = #no;                                               \
-        auto graph = SubGraph(Graph::read(("../tracks/e_" + track).c_str()));       \
+        auto graph = SubGraph(Graph::read(("../tracks/e_" + track).c_str()));  \
         auto fvs = FVS::read("data/e_" + track + ".sol", graph.N());           \
         ASSERT_TRUE(equivalent_fvs(solver(graph), fvs, graph));                \
     }
@@ -72,5 +71,3 @@
         FVS fvs = solver(graph);                                               \
         ASSERT_TRUE(equivalent_fvs(fvs, fvsShould, graph));                    \
     }
-
-#endif // SOLVER_TESTS_HPP

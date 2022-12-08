@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "discrete/discrete.hpp"
+#include "fvs/discrete/discrete.hpp"
 
 TEST(SimpleReductions, remove_edge_single)
 {

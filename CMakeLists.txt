@@ -40,10 +40,9 @@ endif()
 add_subdirectory(third-party)
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -w") 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror") 
 else()
-    # SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
 endif()
 
 # download graphs -> move to some ohter place?
@@ -65,9 +64,9 @@ if (BUILD_TESTING)
 endif()
 
 function(SOLVER NAME)
-    add_executable(${NAME} src/solvers/${NAME}.cpp)
+    add_executable(${NAME} solvers/${NAME}.cpp)
 
-    target_include_directories(${NAME} PUBLIC src)
+    target_include_directories(${NAME} PUBLIC ${CMAKE_SOURCE_DIR})
     target_include_directories(${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-src/src)
     target_include_directories(${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-build)
     target_include_directories(${NAME} SYSTEM PUBLIC third-party)
@@ -100,13 +99,10 @@ if (BUILD_BENCHMARKS)
         get_filename_component(NAME ${FILE} NAME_WE)
         add_executable(benchmark_${NAME} ${FILE})
 
-        target_include_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/google-benchmark-src/include)
+        target_include_directories(benchmark_${NAME} PUBLIC ${CMAKE_SOURCE_DIR})
         target_include_directories(benchmark_${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-src/src)
         target_include_directories(benchmark_${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-build)
         target_include_directories(benchmark_${NAME} SYSTEM PUBLIC third-party/)
-        target_include_directories(benchmark_${NAME} PUBLIC src)
-
-        target_include_directories(benchmark_${NAME} PUBLIC src)
 
         target_link_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/scip-build/lib)
         target_link_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)

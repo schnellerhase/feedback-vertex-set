@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/dfs.hpp"
+#include "fvs/discrete/algorithm/dfs.hpp"
+
+using namespace fvs;
 
 // TEST(DFS, empty)
 // {

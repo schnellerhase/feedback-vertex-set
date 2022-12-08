@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/reduction_vc/funnel.hpp"
+#include "fvs/discrete/algorithm/reduction_vc/funnel.hpp"
 // #include "discrete/util/types.hpp"
 //#include "vc_solver/vc_solver.hpp"
-#include "discrete/util/types.hpp"
+#include "fvs/discrete/util/types.hpp"
+
+using namespace fvs;
 
 TEST(reduce_funnel, three_nodes_attached)
 {
@@ -23,10 +25,10 @@ TEST(reduce_funnel, three_nodes_attached)
     VCFunnelHandler handler;
     reduce_FUNNEL(graph, 2, 3, vc, handler);
 
-    std::cout << " before update vc: " << vc << std::endl;
+    // std::cout << " before update vc: " << vc << std::endl;
     handler.update_vc_all(vc);
 
-    std::cout << " after update vc: " << vc << std::endl;
+    // std::cout << " after update vc: " << vc << std::endl;
 
     ASSERT_EQ(graph, UndirectedGraph(2, IndexList({ 0 }), IndexList({ 1 })));
     // ASSERT_EQ(vc, VC({false, false, false, false}));
@@ -50,21 +52,14 @@ TEST(reduce_funnel, three_nodes_attache2)
     VC vc(graph.N(), false);
     VCFunnelHandler handler;
     reduce_FUNNEL(graph, 2, 1, vc, handler);
-    std::cout << " before update vc: " << vc << std::endl;
+    // std::cout << " before update vc: " << vc << std::endl;
     handler.update_vc_all(vc);
 
-    std::cout << " after update vc: " << vc << std::endl;
+    // std::cout << " after update vc: " << vc << std::endl;
 
     ASSERT_EQ(graph,
               UndirectedGraph(1, IndexList(), IndexList(), IndexList({ 3 })));
     // ASSERT_EQ(vc, VC({true, false, false, false}));
     ASSERT_EQ(handler, handlerShould);
     ASSERT_EQ(vc, VC({ true, false, true, false }));
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

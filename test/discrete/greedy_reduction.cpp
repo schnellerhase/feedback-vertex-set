@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <stack>
 
-#include "discrete/discrete.hpp"
+#include "fvs/discrete/discrete.hpp"
 
 TEST(greedy_reduction, empty)
 {

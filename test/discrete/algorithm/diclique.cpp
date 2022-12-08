@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/diclique.hpp"
+#include "fvs/discrete/algorithm/diclique.hpp"
+
+using namespace fvs;
 
 TEST(diclique, first)
 {
@@ -28,11 +30,4 @@ TEST(diclique, third)
     ASSERT_TRUE(neighborhood_is_clique(graph, 1));
     ASSERT_FALSE(neighborhood_is_clique(graph, 2));
     ASSERT_FALSE(neighborhood_is_clique(graph, 3));
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

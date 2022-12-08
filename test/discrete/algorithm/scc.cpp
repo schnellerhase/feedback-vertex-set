@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/scc.hpp"
+#include "fvs/discrete/algorithm/scc.hpp"
+
+using namespace fvs;
 
 TEST(scc, empty)
 {
@@ -60,11 +62,4 @@ TEST(Graph, scc_complex_4)
                    IndexList{ 0, 1, 2, 3, 4, 5, 6 });
     ASSERT_EQ(strongly_connected_components(graph),
               IndexListList({ { 5 }, { 3 }, { 0, 1, 2 }, { 4 }, { 6 } }));
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

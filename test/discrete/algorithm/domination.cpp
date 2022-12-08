@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/reduction_vc/domination.hpp"
+#include "fvs/discrete/algorithm/reduction_vc/domination.hpp"
+
+using namespace fvs;
 
 TEST(domination, two_nodes)
 {
@@ -45,11 +47,4 @@ TEST(reduce_domination, three_nodes_attached)
       UndirectedGraph(
         3, IndexList({ 0, 1 }), IndexList({ 1, 2 }), IndexList({ 1, 2, 3 })));
     ASSERT_EQ(vc, VC({ true, false, false, false }));
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

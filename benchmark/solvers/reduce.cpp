@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <iostream>
 
-#include "discrete/discrete.hpp"
+#include "fvs/discrete/discrete.hpp"
 #include "solvers/reduce.hpp"
 
 static void

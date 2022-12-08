@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/neighborhood.hpp"
-#include "discrete/algorithm/reduction/core.hpp"
+#include "fvs/discrete/algorithm/neighborhood.hpp"
+#include "fvs/discrete/algorithm/reduction/core.hpp"
+
+using namespace fvs;
 
 // TEST(reduction_CORE, empty)
 // {
@@ -49,11 +51,4 @@ TEST(reduction_CORE, three_nodes)
     reduce_CORE(g, 0, nhood, fvs);
     ASSERT_EQ(fvs, FVS({ false, true, true }));
     ASSERT_EQ(g, SubGraph(0, IndexList(), IndexList(), IndexList()));
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/neighborhood.hpp"
+#include "fvs/discrete/algorithm/neighborhood.hpp"
+
+using namespace fvs;
 
 TEST(neighborhood, single_node)
 {
@@ -25,11 +27,4 @@ TEST(neighborhood, four_nodes)
     SubGraph graph(
       4, IndexList{ 0, 1, 1 }, IndexList{ 1, 2, 3 }, IndexList{ 0, 1, 2, 3 });
     ASSERT_EQ(neighborhood(graph, 1), IndexList({ 0, 1, 2, 3 }));
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

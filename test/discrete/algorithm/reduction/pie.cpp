@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/reduction/pie.hpp"
+#include "fvs/discrete/algorithm/reduction/pie.hpp"
+
+using namespace fvs;
 
 TEST(pie, empty)
 {
@@ -38,11 +40,4 @@ TEST(pie, simple_dense)
                        IndexList({ 0, 1, 1, 2, 2, 3 }),
                        IndexList({ 1, 0, 2, 1, 3, 2 }),
                        IndexList({ 0, 1, 2, 3 })));
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

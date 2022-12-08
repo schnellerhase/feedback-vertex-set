@@ -2,8 +2,10 @@
 #include <iomanip>
 #include <iostream>
 
-#include "discrete/discrete.hpp"
+#include "fvs/discrete/discrete.hpp"
 #include "solvers/naive.hpp"
+
+// using namespace fvs;
 
 static void
 BM_naive(benchmark::State& state)

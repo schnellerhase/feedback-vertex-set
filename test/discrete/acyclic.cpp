@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "discrete/discrete.hpp" // TODO only import specifc file
+#include "fvs/discrete/discrete.hpp" // TODO only import specifc file
 
 TEST(is_acyclic, empty)
 {

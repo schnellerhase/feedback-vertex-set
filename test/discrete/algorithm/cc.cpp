@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/cc.hpp"
+#include "fvs/discrete/algorithm/cc.hpp"
+
+using namespace fvs;
 
 TEST(connected, empty)
 {

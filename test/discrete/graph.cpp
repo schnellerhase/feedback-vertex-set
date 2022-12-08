@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "discrete/algorithm/scc.hpp"
-#include "discrete/graph.hpp"
+#include "fvs/discrete/algorithm/scc.hpp"
+#include "fvs/discrete/graph.hpp"
+
+using namespace fvs;
 
 TEST(Graph, empty)
 {
@@ -90,11 +92,4 @@ TEST(Graph, rw_e_001)
 
     auto scc = strongly_connected_components(graph);
     ASSERT_EQ(scc.size(), 434);
-}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

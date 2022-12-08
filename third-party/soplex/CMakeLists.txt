@@ -30,6 +30,7 @@ ExternalProject_Add(soplex-project
         -DZLIB=FALSE
         -DGMP=FALSE
         -DBOOST=FALSE
+        -DMT=TRUE
     INSTALL_COMMAND ""
     # BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/soplex-build/lib/libsoplex.a"
     COMMENT ""

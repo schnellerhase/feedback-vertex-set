@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tuple>
+
 #include "../../subgraph.hpp"
 #include "../scc.hpp"
 #include "../two_cycles.hpp"

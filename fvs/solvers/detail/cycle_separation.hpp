@@ -6,6 +6,8 @@
 #include "fvs/discrete/discrete.hpp"
 #include <objscip/objscip.h>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 struct SCIP_ConsData
 {};
 
@@ -532,3 +534,5 @@ SCIPcreateConsCycle(SCIP* scip,
     return SCIP_OKAY;
 }
 }
+
+#pragma GCC diagnostic pop

@@ -33,7 +33,7 @@ ExternalProject_Add(scip-project
         -DZIMPL=false
         -DZLIB=false
         -DBUILD_TESTING=OFF
-        -DMT=ON
+        # -DMT=ON
     INSTALL_COMMAND ""
     COMMENT ""
     DOWNLOAD_NO_PROGRESS TRUE

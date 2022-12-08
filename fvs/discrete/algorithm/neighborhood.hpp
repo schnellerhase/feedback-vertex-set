@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tuple>
+
 #include "../subgraph.hpp"
 #include "../undirected_graph.hpp"
 

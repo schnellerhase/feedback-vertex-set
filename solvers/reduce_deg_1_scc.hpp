@@ -16,7 +16,7 @@ reduce_deg_1_scc(SubGraph& graph, FVS& fvs)
         auto graph = std::move(to_reduce.top());
         to_reduce.pop();
         while (graph.N() < last_N) {
-            bool restart = false;
+            // bool restart = false;
             last_N = graph.N();
 
             if (graph.N() == 0)

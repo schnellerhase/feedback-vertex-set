@@ -19,15 +19,15 @@ class CycleSeparation // NOLINT
   public:
     CycleSeparation(const Graph& graph)
       : _graph(graph)
-      , _pv(graph.N())
+      , _cuts()
       , _pe(graph.N())
+      , _pv(graph.N())
       , _pl(graph.N())
       , _dist(graph.N())
       , _weight(graph.M())
       , _heap()
       , _heapid(graph.M())
       , _heaprun(0)
-      , _cuts()
     {
         _heap.reserve(graph.M());
         _cuts.reserve(graph.M());
@@ -216,9 +216,9 @@ class CycleSeparation // NOLINT
 static SCIP_RETCODE
 sepaCycle(SCIP* scip,
           SCIP_CONSHDLR* conshdlr,
-          SCIP_CONS** conss,
-          int nconss,
-          int nusefulconss,
+          SCIP_CONS** /* conss */,
+          int /* nconss */,
+          int /* nusefulconss */,
           SCIP_SOL* sol,
           SCIP_RESULT* result,
           const Graph& data,

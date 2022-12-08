@@ -35,8 +35,8 @@ class FeedbackSolver
     explicit FeedbackSolver(const Graph& data)
       : _data(data)
       , _vars(new SCIP_Var*[_data.N()])
-      , _solution(new int[_data.N()])
       , _cons(nullptr)
+      , _solution(new int[_data.N()])
     {
         SCIP_CALL_EXC(SCIPcreate(&_scip));
         SCIP_CALL_EXC(SCIPcreateProbBasic(_scip, "feedback problem"));
@@ -114,7 +114,8 @@ class FeedbackSolver
 
     void set_verbosity(int level)
     {
-        SCIP_CALL_EXC(SCIPsetIntParam(_scip, "display/verblevel", 4));
+        // SCIP_CALL_EXC(SCIPsetIntParam(_scip, "display/verblevel", 4));
+        SCIP_CALL_EXC(SCIPsetIntParam(_scip, "display/verblevel", level));
         SCIP_CALL_EXC(SCIPsetIntParam(_scip, "display/freq", 100));
     }
 

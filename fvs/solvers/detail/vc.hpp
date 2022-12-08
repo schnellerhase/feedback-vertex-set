@@ -31,8 +31,8 @@ class VCoverSolver
     VCoverSolver& operator=(VCoverSolver&& other) = delete;
 
     explicit VCoverSolver(const UndirectedGraph& data)
-      : _data(data)
-      , _vars(new SCIP_Var*[data.N()], data.N())
+      : _vars(new SCIP_Var*[data.N()], data.N())
+      , _data(data)
     {
         SCIP_CALL_EXC(SCIPcreate(&_scip));
         SCIP_CALL_EXC(SCIPcreateProbBasic(_scip, "vertex cover problem"));

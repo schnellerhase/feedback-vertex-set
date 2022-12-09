@@ -23,13 +23,12 @@ jobs:
     - name: create build dir
       run: mkdir -p build
 
-    - name: Install gtest
-      uses: MarkusJx/googletest-installer@v1.1
+    # - name: Install gtest
+    #   uses: MarkusJx/googletest-installer@v1.1
 
     - name: cmake
-      run: cmake -S . -B build/ -G Ninja \
-        -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
-        -D BUILD_TESTING=ON 
+      run: cmake -S . -B build/ -G Ninja -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
+        # -D BUILD_TESTING=ON 
         # -D BUILD_BENCHMARKS=ON
 
     - name: build

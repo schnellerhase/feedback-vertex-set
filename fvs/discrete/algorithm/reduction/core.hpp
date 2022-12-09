@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../subgraph.hpp"
+#include "fvs/discrete/subgraph.hpp"
 
-#include "../diclique.hpp"
-#include "../fvs.hpp"
-#include "../neighborhood.hpp"
+#include "fvs/discrete/algorithm/diclique.hpp"
+#include "fvs/discrete/algorithm/fvs.hpp"
+#include "fvs/discrete/algorithm/neighborhood.hpp"
 
 #include "node.hpp"
 

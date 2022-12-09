@@ -2,7 +2,7 @@
 
 #include <numeric>
 
-#include "../undirected_graph.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
 #include "cc.hpp"
 #include "connected.hpp"
 #include "reduction_vc/domination.hpp"

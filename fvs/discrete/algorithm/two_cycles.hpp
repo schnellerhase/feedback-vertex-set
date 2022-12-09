@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../subgraph.hpp"
+#include "fvs/discrete/subgraph.hpp"
 #include "diclique.hpp"
 
 namespace fvs {

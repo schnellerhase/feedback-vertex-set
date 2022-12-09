@@ -9,7 +9,7 @@
 #include <numeric>
 #ifdef __unix__
 #include <unistd.h>
-#elif __MSDOS__ || __WIN32__ || _MSC_VER
+#elif _MSC_VER //  __MSDOS__ || __WIN32__ ||
 #include <io.h>
 #endif
 #include "util/types.hpp"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../fvs.hpp"
+#include "fvs/discrete/algorithm/fvs.hpp"
 
 #include "edge.hpp"
 #include "node.hpp"

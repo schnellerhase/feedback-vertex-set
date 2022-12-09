@@ -2,8 +2,8 @@
 
 #include "util.hpp"
 
-#include "../../undirected_graph.hpp"
-#include "../diclique.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
+#include "fvs/discrete/algorithm/diclique.hpp"
 
 namespace fvs {
 

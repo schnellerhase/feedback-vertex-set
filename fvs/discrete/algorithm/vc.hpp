@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../vertex_marker.hpp"
+#include "fvs/discrete/vertex_marker.hpp"
 
 namespace fvs {
 

@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "../undirected_graph.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
 #include "dfs.hpp"
 #include "fvs.hpp"
 

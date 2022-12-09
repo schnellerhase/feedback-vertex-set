@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../undirected_graph.hpp"
-#include "../diclique.hpp"
-#include "../neighborhood.hpp"
-#include "../reduction/node.hpp"
-#include "../vc.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
+#include "fvs/discrete/algorithm/diclique.hpp"
+#include "fvs/discrete/algorithm/neighborhood.hpp"
+#include "fvs/discrete/algorithm/reduction/node.hpp"
+#include "fvs/discrete/algorithm/vc.hpp"
 
 namespace fvs {
 

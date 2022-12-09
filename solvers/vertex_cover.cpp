@@ -12,9 +12,13 @@ export_solve_vc(UndirectedGraph& graph, VC& vc)
         vc[i] = sol[i];
 }
 
+#ifndef __unix__
 #pragma warning(push)
 #pragma warning(disable: 4068)
+#endif
 
 EXPORT_VC(export_solve_vc)
 
+#ifndef __unix__
 #pragma warning(pop)
+#endif

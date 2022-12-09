@@ -163,7 +163,7 @@ class FeedbackSolver
             SCIPfree(&_scip);
 
             BMScheckEmptyMemory();
-        } catch (SCIPException& e) {
+        } catch (SCIPException& /* e */ ) {
         }
 
         delete[] _vars;

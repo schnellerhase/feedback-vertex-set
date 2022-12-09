@@ -258,12 +258,21 @@ class Graph
 
         while (!header && buffer_line(fp, buf)) {
             if (buf.front() != '#') {
+                #ifdef __unix__
                 int r =
                   sscanf(buf.data(), // NOLINT cppcoreguidelines-pro-type-vararg
                          "%zu %zu %zu",
                          &n,
                          &m,
                          &e);
+                #else
+                int r =
+                 sscanf_s(buf.data(), // NOLINT cppcoreguidelines-pro-type-vararg
+                         "%zu %zu %zu",
+                         &n,
+                         &m,
+                         &e);
+                #endif 
 
                 if (r == 3 && n >= 1 && m >= 1 && e == 0)
                     header = true;
@@ -296,8 +305,13 @@ class Graph
 
                 int offset = 0;
                 int bytes = 0;
+                #ifdef __unix__
                 while (sscanf(&buf[offset], "%zu%n", &j, &bytes) > // NOLINT
                        0) {
+                #else
+                while (sscanf_s(&buf[offset], "%zu%n", &j, &bytes) > // NOLINT
+                       0) {
+                #endif
                     --j;
 
                     assert(i < n);
@@ -334,8 +348,14 @@ class Graph
     }
     static Graph read(const std::string& filename)
     {
+        #ifdef __unix__
         return read(fopen(filename.c_str(), // NOLINT
                           "r"));
+        #else
+        FILE* file;
+        fopen_s(&file, filename.c_str(), "r"); // NOLINT
+        return read(file);
+        #endif
     }
 
     static bool is_acyclic(const Graph& graph)

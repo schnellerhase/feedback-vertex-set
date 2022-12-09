@@ -24,7 +24,10 @@ jobs:
       run: mkdir -p build
 
     - name: cmake
-      run: cmake -S . -B build/ -G Ninja -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
+      run: cmake -S . -B build/ -G Ninja \
+        -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
+        -D BUILD_TESTING=ON \
+        -D BUILD_BENCHMARKS=ON
 
     - name: build
       run: cmake --build build/ --config ${{ matrix.build-type }}

@@ -5,7 +5,7 @@
 #include <cstring>
 #include <vector>
 
-#ifdef __unix__
+#ifdef __unix__ || __APPLE__
 #include <unistd.h>
 #elif _MSC_VER // __MSDOS__ || __WIN32__ ||
 #include <io.h>

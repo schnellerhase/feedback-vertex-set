@@ -10,7 +10,7 @@
 #include <numeric>
 #include <queue>
 #include <stack>
-#ifdef __unix__
+#ifdef __unix__ || __APPLE__
 #include <unistd.h>
 #elif _MSC_VER // __MSDOS__ || __WIN32__ ||
 #include <io.h>
@@ -258,7 +258,7 @@ class Graph
 
         while (!header && buffer_line(fp, buf)) {
             if (buf.front() != '#') {
-                #ifdef __unix__
+                #ifdef __unix__ || __APPLE__
                 int r =
                   sscanf(buf.data(), // NOLINT cppcoreguidelines-pro-type-vararg
                          "%zu %zu %zu",
@@ -305,7 +305,7 @@ class Graph
 
                 int offset = 0;
                 int bytes = 0;
-                #ifdef __unix__
+                #ifdef __unix__ || __APPLE__
                 while (sscanf(&buf[offset], "%zu%n", &j, &bytes) > // NOLINT
                        0) {
                 #else
@@ -348,7 +348,7 @@ class Graph
     }
     static Graph read(const std::string& filename)
     {
-        #ifdef __unix__
+        #ifdef __unix__ || __APPLE__
         return read(fopen(filename.c_str(), // NOLINT
                           "r"));
         #else

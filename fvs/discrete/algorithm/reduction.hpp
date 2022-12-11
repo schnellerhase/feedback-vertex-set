@@ -2,7 +2,7 @@
 
 #include <list>
 
-#include "../undirected_graph.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
 
 #include "connected.hpp"
 #include "extract_undirected.hpp"

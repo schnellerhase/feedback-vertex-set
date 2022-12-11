@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../graph.hpp"
+#include "fvs/discrete/graph.hpp"
 
 namespace fvs {
 

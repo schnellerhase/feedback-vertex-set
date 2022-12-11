@@ -6,31 +6,35 @@ on:
   pull_request:
 
 jobs:
+  windows:
+    strategy:
+      fail-fast: true
+      matrix:
+        build-type: [Debug, Release]
 
-  # windows:
-  #   strategy:
-  #     fail-fast: true
-  #     matrix:
-  #       os: [windows-latest]
-  #       build-type: [Debug, Release]
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
 
-  #   runs-on: ${{ matrix.os }}
-  #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v1
+    - uses: ilammy/msvc-dev-cmd@v1
 
-  #   - uses: ilammy/msvc-dev-cmd@v1
+    - name: create build dir
+      run: mkdir -p build
 
-  #   - name: create build dir
-  #     run: mkdir -p build
+    # - name: Install gtest
+    #   uses: MarkusJx/googletest-installer@v1.1
 
-  #   - name: cmake
-  #     run: >
-  #       cmake -S . -B build/
-  #       -G Ninja
+    - name: cmake
+      run: cmake -S . -B build/ -G Ninja -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
+        # -D BUILD_TESTING=ON 
+        # -D BUILD_BENCHMARKS=ON
 
-  #   - name: build
-  #     run: cmake --build build/ --config ${{ matrix.build-type }}
+    - name: build
+      run: cmake --build build/ --config ${{ matrix.build-type }}
+    
+    - name: test
+      run: ctest -V -j $(nproc)
 
   unix:
     strategy:

@@ -42,7 +42,7 @@ add_subdirectory(third-party)
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror") 
 else()
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /WX ") # Wall causes some weird warnings
 endif()
 
 # download graphs -> move to some ohter place?
@@ -80,7 +80,11 @@ function(SOLVER NAME)
     # add_dependencies(${NAME} scip soplex)
 
     # UNCOMMEN THIS FOR SHARED BUILD
-    target_link_libraries(${NAME} scip soplex)
+    if (UNIX)
+        target_link_libraries(${NAME} scip soplex)
+    else()
+        target_link_libraries(${NAME} libscip libsoplex)
+    endif()
     add_dependencies(${NAME} scip-project soplex-project)
 endfunction()
 

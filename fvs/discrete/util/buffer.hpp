@@ -5,9 +5,9 @@
 #include <cstring>
 #include <vector>
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <unistd.h>
-#elif __MSDOS__ || __WIN32__ || _MSC_VER
+#elif _MSC_VER // __MSDOS__ || __WIN32__ ||
 #include <io.h>
 #endif
 

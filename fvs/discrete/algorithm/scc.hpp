@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "../subgraph.hpp"
+#include "fvs/discrete/subgraph.hpp"
 
 namespace fvs {
 

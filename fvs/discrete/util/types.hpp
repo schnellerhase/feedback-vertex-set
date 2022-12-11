@@ -4,7 +4,8 @@
 #include <vector>
 
 namespace fvs {
-using index_t = uint_fast32_t;
+// using index_t = uint_fast32_t;
+using index_t = std::size_t;
 
 // template<typename T=index_t>
 // using IndexList = std::vector<T>;

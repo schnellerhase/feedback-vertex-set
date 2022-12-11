@@ -199,21 +199,21 @@ jobs:
           sudo apt update
           sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev libbenchmark-dev git -y
 
-      # - name: create build dir
-      #   run: mkdir -p build
+      - name: create build dir
+        run: mkdir -p build
 
-      # - name: cmake
-      #   working-directory: build
-      #   run: |
-      #     cmake .. -GNinja \
-      #       -DCMAKE_BUILD_TYPE=Release \
-      #       -DBUILD_BENCHMARKS=ON \
+      - name: cmake
+        working-directory: build
+        run: |
+          cmake .. -GNinja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_BENCHMARKS=ON \
 
-      # - name: ninja
-      #   working-directory: build
-      #   run: ninja benchmark_reduce
+      - name: ninja
+        working-directory: build
+        run: ninja benchmark_reduce
 
-      - uses: actions/setup-go@v1
+      # - uses: actions/setup-go@v1
       # Run benchmark with `go test -bench` and stores the output to a file
       - name: Run benchmark
         working-directory: build

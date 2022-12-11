@@ -20,7 +20,7 @@ greedy_reduction(const Graph& graph, index_t batch_size)
     FVS fvs(graph.N(), false);
 
     index_t count = 0;
-    while (!Graph::is_acyclic(graph, fvs)) {
+    while (!is_acyclic(graph, fvs)) {
         for (index_t node = count * batch_size;
              node < std::min((count + 1) * batch_size, graph.N());
              node++)
@@ -33,7 +33,7 @@ greedy_reduction(const Graph& graph, index_t batch_size)
         i--;
         fvs[sorted_nodes[i]] = false;
 
-        if (!Graph::is_acyclic(graph, fvs))
+        if (!is_acyclic(graph, fvs))
             fvs[sorted_nodes[i]] = true;
     }
 

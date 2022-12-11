@@ -44,3 +44,16 @@ Coming soon...
 
 ## Custom Tools
 Coming soon...
+
+## Citings
+Paper for overview and general reductions [[1]](#1).
+Paper for DOUBLE and further reductions [[2]](#2).
+Paper for VC reductions [[3]](#3).
+
+
+## References
+<a id="1">[1]</a> Mile Lemaic (2008). Markov-Chain-Based Heuristics for the Feedback Vertex Set Problem for Digraphs. https://kups.ub.uni-koeln.de/2547/1/Dissertation.pdf
+
+<a id="2">[2]</a> Orenstein, T., Kohavi, Z. & Pomeranz, I. (1995). An optimal algorithm for cycle breaking in directed graphs, https://doi.org/10.1007/BF00993315
+
+<a id="3">[3]</a> Plachetta, Grinten, SAT-and-Reduce for Vertex Cover: Accelerating Branch-and-Reduce by SAT Solving, https://doi.org/10.1137/1.9781611976472.13

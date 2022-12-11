@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <numeric>
-#ifdef __unix__ || __APPLE__
+#if defined(__unix__) || defined(__APPLE__)
 #include <unistd.h>
 #elif _MSC_VER //  __MSDOS__ || __WIN32__ ||
 #include <io.h>

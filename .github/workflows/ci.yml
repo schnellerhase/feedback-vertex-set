@@ -204,17 +204,14 @@ jobs:
 
       - name: cmake
         working-directory: build
-        env:
-          CC: ${{ matrix.CC }}
-          CXX: ${{ matrix.CXX }}
         run: |
           cmake .. -GNinja \
-            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_BENCHMARKS=ON \
 
       - name: ninja
         working-directory: build
-        run: ninja
+        run: ninja benchmark_reduce
 
       - uses: actions/setup-go@v1
       # Run benchmark with `go test -bench` and stores the output to a file

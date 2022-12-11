@@ -209,10 +209,8 @@ jobs:
           CXX: ${{ matrix.CXX }}
         run: |
           cmake .. -GNinja \
-            -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-            -DBUILD_TESTING=ON \
+            -DCMAKE_BUILD_TYPE=Debug \
             -DBUILD_BENCHMARKS=ON \
-            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 
       - name: ninja
         working-directory: build

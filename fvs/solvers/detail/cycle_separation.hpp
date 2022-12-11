@@ -6,7 +6,7 @@
 #include "fvs/discrete/discrete.hpp"
 #include <objscip/objscip.h>
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif
@@ -537,6 +537,6 @@ SCIPcreateConsCycle(SCIP* scip,
 }
 }
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #pragma GCC diagnostic pop
 #endif

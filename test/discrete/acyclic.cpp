@@ -5,15 +5,15 @@
 TEST(is_acyclic, empty)
 {
     Graph graph(0, IndexList{}, IndexList{});
-    ASSERT_TRUE(Graph::is_acyclic(graph));
-    ASSERT_TRUE(Graph::is_acyclic(graph, FVS({})));
+    ASSERT_TRUE(is_acyclic(graph));
+    ASSERT_TRUE(is_acyclic(graph, FVS({})));
 }
 
 TEST(is_acyclic, single_node)
 {
     Graph graph(1, IndexList{}, IndexList{});
-    ASSERT_TRUE(Graph::is_acyclic(graph));
-    ASSERT_TRUE(Graph::is_acyclic(graph, FVS({ false })));
+    ASSERT_TRUE(is_acyclic(graph));
+    ASSERT_TRUE(is_acyclic(graph, FVS({ false })));
 }
 
 // TEST(is_acyclic, self_loop) // BY ASSUMPTION DOES NOT HAPPEN -> if it does
@@ -27,6 +27,6 @@ TEST(is_acyclic, single_node)
 TEST(is_acyclic, simple)
 {
     Graph graph(2, IndexList{ 0 }, IndexList{ 1 });
-    ASSERT_TRUE(Graph::is_acyclic(graph));
-    ASSERT_TRUE(Graph::is_acyclic(graph, FVS({ false, false })));
+    ASSERT_TRUE(is_acyclic(graph));
+    ASSERT_TRUE(is_acyclic(graph, FVS({ false, false })));
 }

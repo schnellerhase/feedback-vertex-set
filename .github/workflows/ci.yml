@@ -189,3 +189,55 @@ jobs:
       - name: clang-tidy
         run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*
 
+  benchmark:
+    name: Performance regression check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Software
+        run: |
+          sudo apt update
+          sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev libbenchmark-dev git -y
+
+      - name: create build dir
+        run: mkdir -p build
+
+      - name: cmake
+        working-directory: build
+        env:
+          CC: ${{ matrix.CC }}
+          CXX: ${{ matrix.CXX }}
+        run: |
+          cmake .. -GNinja \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+            -DBUILD_TESTING=ON \
+            -DBUILD_BENCHMARKS=ON \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+
+      - name: ninja
+        working-directory: build
+        run: ninja
+
+      - uses: actions/setup-go@v1
+      # Run benchmark with `go test -bench` and stores the output to a file
+      - name: Run benchmark
+        run: go test -bench 'BenchmarkFib' | tee output.txt
+      # Download previous benchmark result from cache (if exists)
+      - name: Download previous benchmark data
+        uses: actions/cache@v1
+        with:
+          path: ./cache
+          key: ${{ runner.os }}-benchmark
+      # Run `github-action-benchmark` action
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          # What benchmark tool the output.txt came from
+          tool: 'googlecpp'
+          # Where the output from the benchmark tool is stored
+          output-file-path: benchmark_result.json
+          # Where the previous data file is stored
+          external-data-json-path: ./cache/benchmark-data.json
+          # Workflow will fail when an alert happens
+          fail-on-alert: true
+      # Upload the updated cache file for the next job by actions/cache

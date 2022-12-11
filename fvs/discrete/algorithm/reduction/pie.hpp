@@ -2,10 +2,10 @@
 
 #include <tuple>
 
-#include "fvs/discrete/subgraph.hpp"
+#include "edge.hpp"
 #include "fvs/discrete/algorithm/scc.hpp"
 #include "fvs/discrete/algorithm/two_cycles.hpp"
-#include "edge.hpp"
+#include "fvs/discrete/subgraph.hpp"
 
 namespace fvs {
 

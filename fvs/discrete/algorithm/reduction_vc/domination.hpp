@@ -1,8 +1,8 @@
 #pragma once
 
-#include "fvs/discrete/undirected_graph.hpp"
 #include "fvs/discrete/algorithm/reduction/node.hpp"
 #include "fvs/discrete/algorithm/vc.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
 
 namespace fvs {
 

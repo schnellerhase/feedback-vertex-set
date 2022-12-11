@@ -2,9 +2,9 @@
 
 #include <algorithm>
 
-#include "fvs/discrete/undirected_graph.hpp"
 #include "dfs.hpp"
 #include "fvs.hpp"
+#include "fvs/discrete/undirected_graph.hpp"
 
 namespace fvs {
 

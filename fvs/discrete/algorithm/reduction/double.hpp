@@ -1,7 +1,7 @@
 #pragma once
 
-#include "fvs/discrete/subgraph.hpp"
 #include "fvs/discrete/algorithm/scc.hpp"
+#include "fvs/discrete/subgraph.hpp"
 
 namespace fvs {
 

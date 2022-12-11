@@ -2,12 +2,13 @@
 
 #include <queue>
 
-#include "fvs/discrete/util/types.hpp"
 #include "fvs/discrete/graph.hpp"
+#include "fvs/discrete/util/types.hpp"
 
 namespace fvs {
 
-bool is_acyclic(const Graph& graph)
+bool
+is_acyclic(const Graph& graph)
 {
     // TODO assert graph does not have self loops
 
@@ -40,7 +41,8 @@ bool is_acyclic(const Graph& graph)
     return (visited_nodes == graph.N());
 }
 
-bool is_acyclic(const Graph& graph, const FVS& fvs)
+bool
+is_acyclic(const Graph& graph, const FVS& fvs)
 {
     auto size_fvs = std::count(fvs.begin(), fvs.end(), true);
 

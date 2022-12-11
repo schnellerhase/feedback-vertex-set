@@ -1,9 +1,9 @@
 #pragma once
 
+#include "fvs/discrete/algorithm/acyclic.hpp"
 #include "fvs/discrete/graph.hpp"
 #include "fvs/discrete/subgraph.hpp"
 #include "fvs/discrete/undirected_graph.hpp"
-#include "fvs/discrete/algorithm/acyclic.hpp"
 namespace fvs {
 
 using FVS = VertexMarker;

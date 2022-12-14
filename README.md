@@ -4,11 +4,11 @@ This repo provides a feedback vertex set solver, inspried by the [PACE 2022](htt
 
 > Given a directed Graph $G=(V,E)$ one aims to find a *minimal* vertex set $FVS(G) \subset V$ such that $G \setminus FVS(V)$ is acyclic.
 
-Note that this is not the most general form of the feedback vertex set, as no weights on edges are assumend (and currently not supported). This case fits in the more general setting by the special choice of uniform weights of all edges, i.e. $w(e) = 1 \ \forall e \in E $.
+Note that this is not the most general form of the feedback vertex set problem, as no weights on edges are assumend (and currently not supported). This case fits in the more general setting by the special choice of uniform weights on all edges, i.e. $w(e) = 1 \ \forall e \in E $.
 
 ## Build
 
-The project is build using `cmake`. The usage of the build tool [ninja](https://ninja-build.org/) is supported (and encouraged). To build the project run
+The project is build using `cmake`. The usage of the build tool [`ninja`](https://ninja-build.org/) is supported (and encouraged). To build the project run
 ```
 cmake . && make
 ```

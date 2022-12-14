@@ -348,7 +348,16 @@ class ConshdlrCycles : public scip::ObjConshdlr
 
     ~ConshdlrCycles() override { delete _csep; }
 
-    virtual SCIP_DECL_CONSCHECK(scip_check)
+    SCIP_RETCODE scip_check(SCIP* scip,
+                                    SCIP_CONSHDLR* /* conshdlr */,
+                                    SCIP_CONS** /* conss */,
+                                    int /* nconss */,
+                                    SCIP_SOL* sol,
+                                    SCIP_Bool /* checkintegrality */,
+                                    SCIP_Bool /* checklprows */,
+                                    SCIP_Bool /* printreason */,
+                                    SCIP_Bool /* completely */,
+                                    SCIP_RESULT* result) override
     {
         assert(result != nullptr);
 
@@ -368,7 +377,13 @@ class ConshdlrCycles : public scip::ObjConshdlr
         return SCIP_OKAY;
     }
 
-    virtual SCIP_DECL_CONSENFOLP(scip_enfolp)
+    SCIP_RETCODE scip_enfolp(SCIP* scip,
+                                     SCIP_CONSHDLR* conshdlr,
+                                     SCIP_CONS** conss,
+                                     int nconss,
+                                     int nusefulconss,
+                                     SCIP_Bool /* solinfeasible */,
+                                     SCIP_RESULT* result) override
     {
         assert(result != nullptr);
 
@@ -387,7 +402,14 @@ class ConshdlrCycles : public scip::ObjConshdlr
         return SCIP_OKAY;
     }
 
-    virtual SCIP_DECL_CONSENFOPS(scip_enfops)
+    SCIP_RETCODE scip_enfops(SCIP* scip,
+                                     SCIP_CONSHDLR* conshdlr,
+                                     SCIP_CONS** conss,
+                                     int nconss,
+                                     int nusefulconss,
+                                     SCIP_Bool /* solinfeasible */,
+                                     SCIP_Bool /* objinfeasible */,
+                                     SCIP_RESULT* result) override
     {
         assert(result != nullptr);
 
@@ -406,7 +428,12 @@ class ConshdlrCycles : public scip::ObjConshdlr
         return SCIP_OKAY;
     }
 
-    virtual SCIP_DECL_CONSLOCK(scip_lock)
+    SCIP_RETCODE scip_lock(SCIP* scip,
+                                   SCIP_CONSHDLR* /* conshdlr */,
+                                   SCIP_CONS* /* cons */,
+                                   SCIP_LOCKTYPE /* locktype */,
+                                   int nlockspos,
+                                   int nlocksneg) override
     {
         for (index_t v = 0; v < _data.N(); ++v) {
             SCIPaddVarLocksType(
@@ -416,7 +443,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
         return SCIP_OKAY;
     }
 
-    virtual SCIP_DECL_CONSTRANS(scip_trans)
+    SCIP_DECL_CONSTRANS(scip_trans) override
     {
 
         //    SCIP_CONSDATA *sourcedata;
@@ -448,14 +475,14 @@ class ConshdlrCycles : public scip::ObjConshdlr
         return SCIP_OKAY;
     }
 
-    virtual SCIP_DECL_CONSHDLRCLONE(scip::ObjProbCloneable* clone)
+    SCIP_DECL_CONSHDLRCLONE(scip::ObjProbCloneable* clone) override
     {
         assert(valid != nullptr);
         *valid = true;
         return new ConshdlrCycles(_data, scip, _vars);
     }
 
-    virtual SCIP_DECL_CONSSEPASOL(scip_sepasol)
+    SCIP_DECL_CONSSEPASOL(scip_sepasol) override
     {
         SCIP_CALL(sepaCycle(scip,
                             conshdlr,
@@ -472,7 +499,7 @@ class ConshdlrCycles : public scip::ObjConshdlr
         return SCIP_OKAY;
     }
 
-    virtual SCIP_DECL_CONSSEPALP(scip_sepalp)
+    SCIP_DECL_CONSSEPALP(scip_sepalp) override
     {
         SCIP_CALL(sepaCycle(scip,
                             conshdlr,
@@ -489,7 +516,10 @@ class ConshdlrCycles : public scip::ObjConshdlr
         return SCIP_OKAY;
     }
 
-    virtual SCIP_DECL_CONSDELETE(scip_delete)
+    SCIP_RETCODE scip_delete(SCIP* scip,
+                                     SCIP_CONSHDLR* /* conshdlr */,
+                                     SCIP_CONS* /* cons */,
+                                     SCIP_CONSDATA** consdata) override
     {
         assert(consdata != nullptr);
 

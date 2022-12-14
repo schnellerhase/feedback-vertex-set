@@ -40,18 +40,18 @@ class CycleSeparation
 
     ~CycleSeparation() = default;
 
-    void separate(const std::vector<double>& x)
+    void separate()
     {
-        update_weights(x);
+        // update_weights();
 
         _cuts.resize(0);
 
         find_cycles<true>();
     }
 
-    bool check(const std::vector<double>& x)
+    bool check()
     {
-        update_weights(x);
+        // update_weights();
         return !find_cycles<false>();
     }
 
@@ -59,6 +59,7 @@ class CycleSeparation
     {
         return _cuts;
     }
+    [[nodiscard]] std::vector<double>& weights() { return _weight; }
 
   private:
     const Graph& _graph;
@@ -74,11 +75,11 @@ class CycleSeparation
     std::vector<int> _heapid;
     int _heaprun;
 
-    void update_weights(const std::vector<double>& x)
-    {
-        for (index_t e = 0; e < _graph.M(); ++e)
-            _weight[e] = (1.0 - x[e]);
-    }
+    // void update_weights()
+    // {
+    //     for (index_t e = 0; e < _graph.M(); ++e)
+    //         _weight[e] = (1.0 - _x[e]);
+    // }
 
     template<bool cut>
     bool find_cycle_from(index_t s)
@@ -236,11 +237,10 @@ sepaCycle(SCIP* scip,
 
     *result = SCIP_DIDNOTRUN;
 
-    std::vector<double> x(data.M());
     for (index_t e = 0; e < data.M(); ++e)
-        x[e] = 1.0 - SCIPgetSolVal(scip, sol, vars[data.tails()[e]]);
+        csep->weights()[e] = SCIPgetSolVal(scip, sol, vars[data.tails()[e]]);
 
-    csep->separate(x);
+    csep->separate();
 
     bool one_efficacious(false);
 
@@ -349,25 +349,23 @@ class ConshdlrCycles : public scip::ObjConshdlr
     ~ConshdlrCycles() override { delete _csep; }
 
     SCIP_RETCODE scip_check(SCIP* scip,
-                                    SCIP_CONSHDLR* /* conshdlr */,
-                                    SCIP_CONS** /* conss */,
-                                    int /* nconss */,
-                                    SCIP_SOL* sol,
-                                    SCIP_Bool /* checkintegrality */,
-                                    SCIP_Bool /* checklprows */,
-                                    SCIP_Bool /* printreason */,
-                                    SCIP_Bool /* completely */,
-                                    SCIP_RESULT* result) override
+                            SCIP_CONSHDLR* /* conshdlr */,
+                            SCIP_CONS** /* conss */,
+                            int /* nconss */,
+                            SCIP_SOL* sol,
+                            SCIP_Bool /* checkintegrality */,
+                            SCIP_Bool /* checklprows */,
+                            SCIP_Bool /* printreason */,
+                            SCIP_Bool /* completely */,
+                            SCIP_RESULT* result) override
     {
         assert(result != nullptr);
 
-        std::vector<double> x(_data.M());
-        for (index_t e = 0; e < _data.M(); ++e) {
-            index_t v = _data.tails()[e];
-            x[e] = 1.0 - SCIPgetSolVal(scip, sol, _vars[v]);
-        }
+        for (index_t e = 0; e < _data.M(); ++e)
+            _csep->weights()[e] =
+              SCIPgetSolVal(scip, sol, _vars[_data.tails()[e]]);
 
-        bool feasible = _csep->check(x);
+        bool feasible = _csep->check();
 
         if (feasible)
             *result = SCIP_FEASIBLE;
@@ -378,12 +376,12 @@ class ConshdlrCycles : public scip::ObjConshdlr
     }
 
     SCIP_RETCODE scip_enfolp(SCIP* scip,
-                                     SCIP_CONSHDLR* conshdlr,
-                                     SCIP_CONS** conss,
-                                     int nconss,
-                                     int nusefulconss,
-                                     SCIP_Bool /* solinfeasible */,
-                                     SCIP_RESULT* result) override
+                             SCIP_CONSHDLR* conshdlr,
+                             SCIP_CONS** conss,
+                             int nconss,
+                             int nusefulconss,
+                             SCIP_Bool /* solinfeasible */,
+                             SCIP_RESULT* result) override
     {
         assert(result != nullptr);
 
@@ -403,13 +401,13 @@ class ConshdlrCycles : public scip::ObjConshdlr
     }
 
     SCIP_RETCODE scip_enfops(SCIP* scip,
-                                     SCIP_CONSHDLR* conshdlr,
-                                     SCIP_CONS** conss,
-                                     int nconss,
-                                     int nusefulconss,
-                                     SCIP_Bool /* solinfeasible */,
-                                     SCIP_Bool /* objinfeasible */,
-                                     SCIP_RESULT* result) override
+                             SCIP_CONSHDLR* conshdlr,
+                             SCIP_CONS** conss,
+                             int nconss,
+                             int nusefulconss,
+                             SCIP_Bool /* solinfeasible */,
+                             SCIP_Bool /* objinfeasible */,
+                             SCIP_RESULT* result) override
     {
         assert(result != nullptr);
 
@@ -429,11 +427,11 @@ class ConshdlrCycles : public scip::ObjConshdlr
     }
 
     SCIP_RETCODE scip_lock(SCIP* scip,
-                                   SCIP_CONSHDLR* /* conshdlr */,
-                                   SCIP_CONS* /* cons */,
-                                   SCIP_LOCKTYPE /* locktype */,
-                                   int nlockspos,
-                                   int nlocksneg) override
+                           SCIP_CONSHDLR* /* conshdlr */,
+                           SCIP_CONS* /* cons */,
+                           SCIP_LOCKTYPE /* locktype */,
+                           int nlockspos,
+                           int nlocksneg) override
     {
         for (index_t v = 0; v < _data.N(); ++v) {
             SCIPaddVarLocksType(
@@ -517,9 +515,9 @@ class ConshdlrCycles : public scip::ObjConshdlr
     }
 
     SCIP_RETCODE scip_delete(SCIP* scip,
-                                     SCIP_CONSHDLR* /* conshdlr */,
-                                     SCIP_CONS* /* cons */,
-                                     SCIP_CONSDATA** consdata) override
+                             SCIP_CONSHDLR* /* conshdlr */,
+                             SCIP_CONS* /* cons */,
+                             SCIP_CONSDATA** consdata) override
     {
         assert(consdata != nullptr);
 

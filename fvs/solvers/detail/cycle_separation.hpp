@@ -6,6 +6,7 @@
 #include "fvs/discrete/discrete.hpp"
 #include "fvs/solvers/detail/util.hpp"
 #include <objscip/objscip.h>
+#include <scip/type_result.h>
 
 struct SCIP_ConsData
 {};
@@ -32,28 +33,18 @@ class CycleSeparation
       , _weight(graph.M())
       , _heap()
       , _heapid(graph.M())
-      , _heaprun(0)
     {
-        _heap.reserve(graph.M());
-        _cuts.reserve(graph.M());
     }
 
     ~CycleSeparation() = default;
 
     void separate()
     {
-        // update_weights();
-
-        _cuts.resize(0);
-
+        _cuts.clear();
         find_cycles<true>();
     }
 
-    bool check()
-    {
-        // update_weights();
-        return !find_cycles<false>();
-    }
+    bool check() { return !find_cycles<false>(); }
 
     [[nodiscard]] const std::vector<std::vector<index_t>>& cuts() const
     {
@@ -73,112 +64,106 @@ class CycleSeparation
 
     std::vector<index_t> _heap;
     std::vector<int> _heapid;
-    int _heaprun;
-
-    // void update_weights()
-    // {
-    //     for (index_t e = 0; e < _graph.M(); ++e)
-    //         _weight[e] = (1.0 - _x[e]);
-    // }
 
     template<bool cut>
-    bool find_cycle_from(index_t s)
+    bool find_cycles()
     {
-        for (index_t i = 0; i < _graph.N(); ++i) {
-            _dist[i] = INF;
-            _pv[i] = std::numeric_limits<index_t>::max();
-            _pl[i] = std::numeric_limits<index_t>::max();
-            _heapid[i] = 0;
-        }
+        for (index_t vertex_s = 0; vertex_s < _graph.N(); vertex_s++) {
 
-        _heaprun = 0;
-        _heap.resize(0);
+            for (index_t i = 0; i < _graph.N(); i++) {
+                _dist[i] = INF;
+                _pv[i] = std::numeric_limits<index_t>::max();
+                _pl[i] = std::numeric_limits<index_t>::max();
+                _heapid[i] = 0;
+            }
 
-        const index_t start = s;
-        _dist[start] = 0.0;
-        _pv[start] = 0;
-        _pl[start] = 0;
+            _heap.resize(0);
 
-        _heap.push_back(start);
-        _heapid[start] = _heaprun++;
+            _heap.push_back(vertex_s);
+            _dist[vertex_s] = 0.0;
+            _pv[vertex_s] = 0;
+            _pl[vertex_s] = 0;
+            _heapid[vertex_s] = 0;
 
-        for (index_t k = 0; k < _graph.indeg()[s]; ++k) {
-            const index_t t = _graph.inadj()[s][k];
+            for (index_t k = 0; k < _graph.indeg()[vertex_s]; k++) {
+                const auto& vertex_t = _graph.inadj()[vertex_s][k];
 
-            if constexpr (cut)
-                if (t < s)
+                // we have an edge t -> s
+
+                if constexpr (cut)
+                    if (vertex_t < vertex_s)
+                        continue;
+
+                const auto& weight_ts = _weight[_graph.in2arc()[vertex_s][k]];
+
+                bool ts_removed = round_to_bool(weight_ts);
+                if (ts_removed)
                     continue;
 
-            double w_cl = _weight[_graph.in2arc()[s][k]];
-
-            if (round_to_bool(w_cl))
-                continue;
-
-            if (_dist[t] < INF && _heapid[t] < 0) {
-                if (!round_to_bool(_dist[t] + w_cl)) {
+                if (_dist[vertex_t] < INF && _heapid[vertex_t] < 0 &&
+                    !round_to_bool(_dist[vertex_t] + weight_ts)) {
 
                     if constexpr (cut)
-                        cut_cycle(s, t, k);
+                        cut_cycle(vertex_s, vertex_t, k);
                     else
                         return true;
                 }
-            }
 
-            while (!_heap.empty()) {
-                index_t node = _heap[0];
-                std::pop_heap(_heap.begin(), _heap.end(), std::greater<>{});
-                _heap.resize(_heap.size() - 1);
+                while (!_heap.empty()) {
+                    std::pop_heap(_heap.begin(), _heap.end(), std::greater<>{});
+                    index_t vertex = _heap.back();
+                    _heap.pop_back();
 
-                _heapid[node] = -1;
+                    _heapid[vertex] = -1;
 
-                if (round_to_bool(_dist[node])) {
-                    continue;
-                }
+                    if (round_to_bool(_dist[vertex]))
+                        continue;
 
-                for (index_t l = 0; l < _graph.outdeg()[node]; ++l) {
-                    const index_t j = _graph.outadj()[node][l];
+                    for (index_t l = 0; l < _graph.outdeg()[vertex]; ++l) {
+                        const index_t j = _graph.outadj()[vertex][l];
 
-                    if constexpr (cut)
-                        if (j < s)
+                        if constexpr (cut)
+                            if (j < vertex_s)
+                                continue;
+
+                        const double new_dist_j =
+                          _weight[_graph.out2arc()[vertex][l]] + _dist[vertex];
+
+                        if constexpr (cut)
+                            if (new_dist_j >= 1.0)
+                                continue;
+
+                        bool on_heap = _heapid[j] >= 0;
+                        if (!on_heap)
                             continue;
 
-                    const double new_dist_j =
-                      _weight[_graph.out2arc()[node][l]] + _dist[node];
+                        bool better_distance = new_dist_j < _dist[j];
+                        bool better_length =
+                          new_dist_j == _dist[j] && _pl[vertex] + 1 < _pl[j];
+                        if (better_distance || better_length) {
+                            _dist[j] = new_dist_j;
+                            _pv[j] = vertex;
+                            _pe[j] = _graph.out2arc()[vertex][l];
+                            _pl[j] = _pl[vertex] + 1;
 
-                    if constexpr (cut)
-                        if (new_dist_j >= 1.0)
-                            continue;
-
-                    if (_heapid[j] >= 0 &&
-                        ((new_dist_j < _dist[j]) ||
-                         (new_dist_j <= _dist[j] && _pl[node] + 1 < _pl[j]))) {
-                        _dist[j] = new_dist_j;
-                        _pv[j] = node;
-                        _pe[j] = _graph.out2arc()[node][l];
-                        _pl[j] = _pl[node] + 1;
-
-                        if (!_heapid[j]) {
+                            if (_heapid[j])
+                                continue;
 
                             _heap.push_back(j);
 
                             std::push_heap(
                               _heap.begin(), _heap.end(), std::greater<>{});
 
-                            _heapid[j] = _heaprun++;
-                        } else {
-                            if (!std::is_heap(
-                                  _heap.begin(), _heap.end(), std::greater<>{}))
-                                std::make_heap(
-                                  _heap.begin(), _heap.end(), std::greater<>{});
+                            _heapid[j] = static_cast<int>(_heap.size()) - 1;
                         }
                     }
-                }
 
-                if (node == t) {
+                    if (vertex != vertex_t)
+                        continue;
 
-                    if (!round_to_bool(_dist[node] + w_cl)) {
+                    if (!round_to_bool(_dist[vertex] + weight_ts)) {
                         if constexpr (cut)
-                            cut_cycle(s, t, k);
+                            cut_cycle(vertex_s, vertex_t, k);
                         else
                             return true;
                     }
@@ -186,18 +171,6 @@ class CycleSeparation
                     break;
                 }
             }
-        }
-        return false;
-    }
-
-    template<bool cut>
-    bool find_cycles()
-    {
-        for (index_t s = 0; s < _graph.N(); ++s) {
-            bool result = find_cycle_from<cut>(s);
-            if constexpr (!cut)
-                if (result)
-                    return true;
         }
         return false;
     }
@@ -242,11 +215,10 @@ sepaCycle(SCIP* scip,
 
     csep->separate();
 
-    bool one_efficacious(false);
-
     int effi(0);
     const auto& cuts = csep->cuts();
-    for (index_t i = 0; i < cuts.size() && (*result != SCIP_CUTOFF); ++i) {
+    for (const auto& cut : cuts)
+    {
         SCIP_ROW* row = nullptr;
         SCIP_CALL(SCIPcreateEmptyRowConshdlr(scip,
                                              &row,
@@ -260,48 +232,39 @@ sepaCycle(SCIP* scip,
 
         SCIP_CALL(SCIPcacheRowExtensions(scip, row));
 
-        for (const auto& e : cuts[i])
+        for (const auto& e : cut)
             SCIP_CALL(SCIPaddVarToRow(scip, row, vars[data.tails()[e]], 1.0));
 
         SCIP_CALL(SCIPflushRowExtensions(scip, row));
 
         if (SCIPisCutEfficacious(scip, sol, row)) {
-            one_efficacious = true;
             SCIP_Bool infeasible = false;
             SCIP_CALL(SCIPaddRow(scip, row, FALSE, &infeasible));
             // SCIP_CALL(SCIPaddPoolCut(scip, row));
-            if (infeasible) {
+            if (infeasible)
+            {
                 *result = SCIP_CUTOFF;
-            } else {
-                if (enfo) {
-                    *result = SCIP_CONSADDED;
-                } else {
-                    *result = SCIP_SEPARATED;
-                }
+                break;
             }
+            else
+            {
+                *result = enfo ? SCIP_CONSADDED : SCIP_SEPARATED;
+            }
+                
             ++effi;
         }
+
         SCIP_CALL(SCIPreleaseRow(scip, &row));
 
         if (effi > 20000) // NOLINT
             break;
     }
 
-    if (0 == cuts.size()) {
-        if (enfo) {
-            *result = SCIP_FEASIBLE;
-        } else {
-            *result = SCIP_DIDNOTFIND;
-        }
-    }
+    if (0 == cuts.size())
+        *result = enfo ? SCIP_FEASIBLE : SCIP_DIDNOTFIND;
 
-    if (cuts.size() && one_efficacious == false) {
-        if (enfo) {
-            *result = SCIP_INFEASIBLE;
-        } else {
-            *result = SCIP_DIDNOTFIND;
-        }
-    }
+    if (cuts.size() && effi > 0)
+        *result = enfo ? SCIP_INFEASIBLE : SCIP_DIDNOTFIND;
 
     return SCIP_OKAY;
 }
@@ -433,27 +396,18 @@ class ConshdlrCycles : public scip::ObjConshdlr
                            int nlockspos,
                            int nlocksneg) override
     {
-        for (index_t v = 0; v < _data.N(); ++v) {
+        for (index_t v = 0; v < _data.N(); ++v)
             SCIPaddVarLocksType(
               scip, _vars[v], SCIP_LOCKTYPE_MODEL, nlockspos, nlocksneg);
-        }
 
         return SCIP_OKAY;
     }
 
     SCIP_DECL_CONSTRANS(scip_trans) override
     {
-
-        //    SCIP_CONSDATA *sourcedata;
         SCIP_CONSDATA* targetdata = nullptr;
-
-        //    sourcedata = SCIPconsGetData(sourcecons);
-        // assert(sourcedata != nullptr);
-
         SCIP_CALL(SCIPallocBlockMemory(scip, &targetdata));
-        // targetdata->graph = sourcedata->graph;
 
-        // create target constraint
         SCIP_CALL(SCIPcreateCons(scip,
                                  targetcons,
                                  SCIPconsGetName(sourcecons),
@@ -542,7 +496,7 @@ SCIPcreateConsCycle(SCIP* scip,
                     SCIP_Bool removable)
 {
     SCIP_CONSHDLR* conshdlr = SCIPfindConshdlr(scip, "Cycles");
-    ;
+
     if (conshdlr == nullptr) {
         SCIPerrorMessage("constraint handler not found\n");
         return SCIP_PLUGINNOTFOUND;

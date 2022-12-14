@@ -1,4 +1,4 @@
-<center> <h1>A Feedback Vertex Set Solver</h1> </center>
+<h1 align='center'>A Feedback Vertex Set Solver</h1>
 
 This repo provides a feedback vertex set solver, inspried by the [PACE 2022](https://pacechallenge.org/2022/) challenge.
 

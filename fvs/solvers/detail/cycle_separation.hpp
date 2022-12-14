@@ -78,12 +78,13 @@ class CycleSeparation
             }
 
             _heap.resize(0);
+            int heaprun = 0;
 
             _heap.push_back(vertex_s);
             _dist[vertex_s] = 0.0;
             _pv[vertex_s] = 0;
             _pl[vertex_s] = 0;
-            _heapid[vertex_s] = 0;
+            _heapid[vertex_s] = heaprun++;
 
             for (index_t k = 0; k < _graph.indeg()[vertex_s]; k++) {
                 const auto& vertex_t = _graph.inadj()[vertex_s][k];
@@ -138,8 +139,8 @@ class CycleSeparation
                             continue;
 
                         bool better_distance = new_dist_j < _dist[j];
-                        bool better_length =
-                          new_dist_j == _dist[j] && _pl[vertex] + 1 < _pl[j];
+                        bool better_length = (new_dist_j == _dist[j]) &&
+                                             (_pl[vertex] + 1 < _pl[j]);
                         if (better_distance || better_length) {
                             _dist[j] = new_dist_j;
                             _pv[j] = vertex;
@@ -154,7 +155,7 @@ class CycleSeparation
                             std::push_heap(
                               _heap.begin(), _heap.end(), std::greater<>{});
 
-                            _heapid[j] = static_cast<int>(_heap.size()) - 1;
+                            _heapid[j] = heaprun++;
                         }
                     }
 
@@ -217,8 +218,7 @@ sepaCycle(SCIP* scip,
 
     int effi(0);
     const auto& cuts = csep->cuts();
-    for (const auto& cut : cuts)
-    {
+    for (const auto& cut : cuts) {
         SCIP_ROW* row = nullptr;
         SCIP_CALL(SCIPcreateEmptyRowConshdlr(scip,
                                              &row,
@@ -241,16 +241,13 @@ sepaCycle(SCIP* scip,
             SCIP_Bool infeasible = false;
             SCIP_CALL(SCIPaddRow(scip, row, FALSE, &infeasible));
             // SCIP_CALL(SCIPaddPoolCut(scip, row));
-            if (infeasible)
-            {
+            if (infeasible) {
                 *result = SCIP_CUTOFF;
                 break;
-            }
-            else
-            {
+            } else {
                 *result = enfo ? SCIP_CONSADDED : SCIP_SEPARATED;
             }
-                
+
             ++effi;
         }
 
@@ -263,7 +260,7 @@ sepaCycle(SCIP* scip,
     if (0 == cuts.size())
         *result = enfo ? SCIP_FEASIBLE : SCIP_DIDNOTFIND;
 
-    if (cuts.size() && effi > 0)
+    if (cuts.size() && effi == 0)
         *result = enfo ? SCIP_INFEASIBLE : SCIP_DIDNOTFIND;
 
     return SCIP_OKAY;

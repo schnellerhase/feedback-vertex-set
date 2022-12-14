@@ -57,9 +57,6 @@ class FeedbackSolver
         //    SCIP_CALL_EXC(SCIPsetIntParam(_scip, "limits/autorestartnodes/",
         //    150));
 
-        // ToDo: Check if necessary
-        SCIPenableDebugSol(_scip);
-
         _cycleConsHandler =
           std::make_unique<ConshdlrCycles>(_data, _scip, _vars);
 

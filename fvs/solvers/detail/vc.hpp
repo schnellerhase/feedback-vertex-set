@@ -51,13 +51,13 @@ class VCoverSolver
         // SCIP_CALL_EXC(SCIPsetIntParam(_scip, "branching/pscost/priority",
         // 536870911))
 
-        for (auto& var : _vars)
-        {
+        for (auto& var : _vars) {
             constexpr char* name = nullptr;
             constexpr SCIP_Real lb = 0.0;
             constexpr SCIP_Real ub = 1.0;
             constexpr SCIP_Real obj = 1.0;
-            SCIP_CALL_EXC(SCIPcreateVarBasic(_scip, &var, name, lb, ub, obj, SCIP_VARTYPE_BINARY));
+            SCIP_CALL_EXC(SCIPcreateVarBasic(
+              _scip, &var, name, lb, ub, obj, SCIP_VARTYPE_BINARY));
 
             SCIP_CALL_EXC(SCIPaddVar(_scip, var));
             // SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));

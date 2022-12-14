@@ -84,10 +84,10 @@ class VCoverSolver
 
     ~VCoverSolver()
     {
-        for (auto& var : _vars)
-            SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
-
         try {
+            for (auto& var : _vars)
+                SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
+
             SCIPfree(&_scip);
 
             BMScheckEmptyMemory();

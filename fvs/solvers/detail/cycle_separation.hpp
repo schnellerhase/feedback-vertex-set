@@ -4,24 +4,25 @@
 
 #include "cycle_separation.hpp"
 #include "fvs/discrete/discrete.hpp"
+#include "fvs/solvers/detail/util.hpp"
 #include <objscip/objscip.h>
 
-#if defined(__unix__) || defined(__APPLE__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
 struct SCIP_ConsData
 {};
 
 namespace fvs::detail {
 
-static const double INF = std::numeric_limits<double>::max();
-static const double EPS = 1e-6;
-
-class CycleSeparation // NOLINT
+class CycleSeparation
 {
   public:
-    CycleSeparation(const Graph& graph)
+    CycleSeparation() = delete;
+    CycleSeparation(const CycleSeparation& other) = delete;
+    CycleSeparation(CycleSeparation&& other) = delete;
+
+    CycleSeparation& operator=(CycleSeparation other) = delete;
+    CycleSeparation& operator=(CycleSeparation&& other) = delete;
+
+    explicit CycleSeparation(const Graph& graph)
       : _graph(graph)
       , _cuts()
       , _pe(graph.N())
@@ -39,7 +40,7 @@ class CycleSeparation // NOLINT
 
     ~CycleSeparation() = default;
 
-    void separate(double* x)
+    void separate(const std::vector<double>& x)
     {
         update_weights(x);
 
@@ -48,7 +49,7 @@ class CycleSeparation // NOLINT
         find_cycles<true>();
     }
 
-    bool check(double* x)
+    bool check(const std::vector<double>& x)
     {
         update_weights(x);
         return !find_cycles<false>();
@@ -71,12 +72,12 @@ class CycleSeparation // NOLINT
 
     std::vector<index_t> _heap;
     std::vector<int> _heapid;
-    int _heaprun; // NOLINT
+    int _heaprun;
 
-    void update_weights(double* x)
+    void update_weights(const std::vector<double>& x)
     {
         for (index_t e = 0; e < _graph.M(); ++e)
-            _weight[e] = (1.0 - x[e]); // NOLINT
+            _weight[e] = (1.0 - x[e]);
     }
 
     template<bool cut>
@@ -109,11 +110,11 @@ class CycleSeparation // NOLINT
 
             double w_cl = _weight[_graph.in2arc()[s][k]];
 
-            if (w_cl + EPS > 1.0)
+            if (round_to_bool(w_cl))
                 continue;
 
             if (_dist[t] < INF && _heapid[t] < 0) {
-                if (_dist[t] + w_cl + EPS < 1.0) {
+                if (!round_to_bool(_dist[t] + w_cl)) {
 
                     if constexpr (cut)
                         cut_cycle(s, t, k);
@@ -129,7 +130,7 @@ class CycleSeparation // NOLINT
 
                 _heapid[node] = -1;
 
-                if (_dist[node] + EPS > 1.0) {
+                if (round_to_bool(_dist[node])) {
                     continue;
                 }
 
@@ -174,7 +175,7 @@ class CycleSeparation // NOLINT
 
                 if (node == t) {
 
-                    if (_dist[node] + w_cl + EPS < 1.0) {
+                    if (!round_to_bool(_dist[node] + w_cl)) {
                         if constexpr (cut)
                             cut_cycle(s, t, k);
                         else
@@ -227,7 +228,7 @@ sepaCycle(SCIP* scip,
           SCIP_RESULT* result,
           const Graph& data,
           CycleSeparation* csep,
-          SCIP_VAR** vars,
+          std::span<SCIP_VAR*> vars,
           bool enfo)
 {
     assert(scip != nullptr);
@@ -237,9 +238,9 @@ sepaCycle(SCIP* scip,
 
     std::vector<double> x(data.M());
     for (index_t e = 0; e < data.M(); ++e)
-        x[e] = 1.0 - SCIPgetSolVal(scip, sol, vars[data.tails()[e]]); // NOLINT
+        x[e] = 1.0 - SCIPgetSolVal(scip, sol, vars[data.tails()[e]]);
 
-    csep->separate(x.data());
+    csep->separate(x);
 
     bool one_efficacious(false);
 
@@ -260,8 +261,7 @@ sepaCycle(SCIP* scip,
         SCIP_CALL(SCIPcacheRowExtensions(scip, row));
 
         for (const auto& e : cuts[i])
-            SCIP_CALL(
-              SCIPaddVarToRow(scip, row, vars[data.tails()[e]], 1.0)); // NOLINT
+            SCIP_CALL(SCIPaddVarToRow(scip, row, vars[data.tails()[e]], 1.0));
 
         SCIP_CALL(SCIPflushRowExtensions(scip, row));
 
@@ -307,15 +307,24 @@ sepaCycle(SCIP* scip,
 }
 
 /** C++ constraint handler for cycle inequalities (on edge variables) */
-class ConshdlrCycles : public scip::ObjConshdlr // NOLINT
+class ConshdlrCycles : public scip::ObjConshdlr
 {
 
   public:
     const Graph& _data;
-    SCIP_VAR** _vars;
+    std::span<SCIP_VAR*> _vars;
     CycleSeparation* _csep;
 
-    ConshdlrCycles(const Graph& data, SCIP* scip, SCIP_VAR** vars)
+    ConshdlrCycles() = delete;
+    ConshdlrCycles(const ConshdlrCycles& other) = delete;
+    ConshdlrCycles(ConshdlrCycles&& other) = delete;
+
+    ConshdlrCycles& operator=(ConshdlrCycles other) = delete;
+    ConshdlrCycles& operator=(ConshdlrCycles&& other) = delete;
+
+    explicit ConshdlrCycles(const Graph& data,
+                            SCIP* scip,
+                            std::span<SCIP_VAR*> vars)
       : ObjConshdlr(scip,
                     "Cycles",
                     "Edge-based Cycle Separator",
@@ -346,10 +355,10 @@ class ConshdlrCycles : public scip::ObjConshdlr // NOLINT
         std::vector<double> x(_data.M());
         for (index_t e = 0; e < _data.M(); ++e) {
             index_t v = _data.tails()[e];
-            x[e] = 1.0 - SCIPgetSolVal(scip, sol, _vars[v]); // NOLINT
+            x[e] = 1.0 - SCIPgetSolVal(scip, sol, _vars[v]);
         }
 
-        bool feasible = _csep->check(x.data());
+        bool feasible = _csep->check(x);
 
         if (feasible)
             *result = SCIP_FEASIBLE;
@@ -400,11 +409,8 @@ class ConshdlrCycles : public scip::ObjConshdlr // NOLINT
     virtual SCIP_DECL_CONSLOCK(scip_lock)
     {
         for (index_t v = 0; v < _data.N(); ++v) {
-            SCIPaddVarLocksType(scip,
-                                _vars[v], // NOLINT
-                                SCIP_LOCKTYPE_MODEL,
-                                nlockspos,
-                                nlocksneg);
+            SCIPaddVarLocksType(
+              scip, _vars[v], SCIP_LOCKTYPE_MODEL, nlockspos, nlocksneg);
         }
 
         return SCIP_OKAY;
@@ -536,7 +542,3 @@ SCIPcreateConsCycle(SCIP* scip,
     return SCIP_OKAY;
 }
 }
-
-#if defined(__unix__) || defined(__APPLE__)
-#pragma GCC diagnostic pop
-#endif

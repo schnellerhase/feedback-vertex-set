@@ -10,10 +10,9 @@
 #include <vector>
 
 #include "fvs/discrete/discrete.hpp"
+#include "fvs/solvers/detail/util.hpp"
 
 namespace fvs::detail {
-
-static constexpr double ROUNDING_EPS = 2e-6;
 
 class VCoverSolver
 {
@@ -132,8 +131,7 @@ class VCoverSolver
         SCIP_SOL* sol = SCIPgetBestSol(_scip);
         VC vc(_data.N());
         for (index_t i = 0; i < vc.size(); i++)
-            vc[i] =
-              (int(SCIPgetSolVal(_scip, sol, _vars[i]) + ROUNDING_EPS) == 1);
+            vc[i] = round_to_bool(SCIPgetSolVal(_scip, sol, _vars[i]));
 
         return vc;
     }

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "fvs/discrete/graph.hpp"
 #include "fvs/discrete/algorithm/acyclic.hpp"
+#include "fvs/discrete/graph.hpp"
 
 namespace fvs {
 

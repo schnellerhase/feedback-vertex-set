@@ -4,10 +4,13 @@
 #include <memory>
 #include <scip/scip.h>
 #include <scip/scipdefplugins.h>
+#include <stdexcept>
 #include <vector>
 
 #include "fvs/discrete/discrete.hpp"
 #include "fvs/solvers/detail/cycle_separation.hpp"
+#include "fvs/solvers/detail/util.hpp"
+
 #include "scip/scip_exception.hpp"
 
 namespace fvs::detail {
@@ -18,9 +21,8 @@ class FeedbackSolver
     const Graph& _data;
 
     SCIP* _scip{};
-    SCIP_VAR** _vars;
+    std::span<SCIP_VAR*> _vars;
     SCIP_CONS* _cons;
-    int* _solution;
 
     std::unique_ptr<ConshdlrCycles> _cycleConsHandler;
 
@@ -34,9 +36,8 @@ class FeedbackSolver
 
     explicit FeedbackSolver(const Graph& data)
       : _data(data)
-      , _vars(new SCIP_Var*[_data.N()])
+      , _vars(new SCIP_Var*[data.N()], data.N())
       , _cons(nullptr)
-      , _solution(new int[_data.N()])
     {
         SCIP_CALL_EXC(SCIPcreate(&_scip));
         SCIP_CALL_EXC(SCIPcreateProbBasic(_scip, "feedback problem"));
@@ -77,7 +78,7 @@ class FeedbackSolver
             SCIP_VAR* var = nullptr;
             SCIP_CALL_EXC(SCIPcreateVarBasic(
               _scip, &var, nullptr, 0.0, 1.0, 1.0, SCIP_VARTYPE_BINARY));
-            _vars[v] = var; // NOLINT
+            _vars[v] = var;
             SCIP_CALL_EXC(SCIPaddVar(_scip, var));
             SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
         }
@@ -102,10 +103,10 @@ class FeedbackSolver
         // Add Clique constraint handler
     }
 
-    void set_UB(int var, double ub)
-    {
-        SCIP_CALL_EXC(SCIPchgVarUb(_scip, _vars[var], ub)); // NOLINT
-    }
+    // void set_UB(int var, double ub)
+    // {
+    //     SCIP_CALL_EXC(SCIPchgVarUb(_scip, _vars[var], ub));
+    // }
 
     void set_time_limit(double seconds)
     {
@@ -125,7 +126,7 @@ class FeedbackSolver
         SCIPcreateSol(_scip, &sol, nullptr);
 
         for (index_t i = 0; i < fvs.size(); ++i)
-            SCIPsetSolVal(_scip, sol, _vars[i], (fvs[i]) * 1.0); // NOLINT
+            SCIPsetSolVal(_scip, sol, _vars[i], (fvs[i]) * 1.0);
 
         SCIP_Bool kept = 0;
         SCIPaddSol(_scip, sol, &kept);
@@ -135,25 +136,21 @@ class FeedbackSolver
             std::cout << "Could not set initial solution!" << std::endl;
     }
 
-    bool solve()
+    FVS solve()
     {
         SCIP_RETCODE ret = SCIPsolve(_scip);
         //    SCIP_RETCODE ret = SCIPsolveParallel(_scip);
 
-        if (ret == SCIP_OKAY) {
-            for (index_t v = 0; v < _data.N(); ++v) {
-                _solution[v] = int( // NOLINT
-                  SCIPgetSolVal(
-                    _scip, SCIPgetBestSol(_scip), _vars[v]) + // NOLINT
-                  2e-6);                                      // NOLINT
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
+        if (ret != SCIP_OKAY)
+            throw std::runtime_error("FVS solver failed!");
 
-    [[nodiscard]] int* solution() { return _solution; }
+        SCIP_SOL* sol = SCIPgetBestSol(_scip);
+        FVS fvs(_data.N());
+        for (index_t v = 0; v < fvs.size(); v++)
+            fvs[v] = round_to_bool(SCIPgetSolVal(_scip, sol, _vars[v]));
+
+        return fvs;
+    }
 
     ~FeedbackSolver()
     {
@@ -166,8 +163,7 @@ class FeedbackSolver
         } catch (SCIPException& /* e */) {
         }
 
-        delete[] _vars;
-        delete[] _solution;
+        delete[] _vars.data();
     }
 };
 

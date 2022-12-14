@@ -43,25 +43,24 @@ class VCoverSolver
         SCIP_CALL_EXC(SCIPsetIntParam(_scip, "display/verblevel", 0));
         SCIP_CALL_EXC(SCIPsetIntParam(_scip, "display/freq", 0));
 
-        // ToDo: Check if necessary
-        SCIPenableDebugSol(_scip);
-
         // Turn off presolving
         // SCIP_CALL_EXC(SCIPsetIntParam(_scip, "presolving/maxrounds", 0))
         // SCIP_CALL_EXC(SCIPsetRealParam(_scip, "limits/time", 600))
-        // Add Clique constraint handler
 
         SCIP_CALL_EXC(SCIPincludeDefaultPlugins(_scip));
         // SCIP_CALL_EXC(SCIPsetIntParam(_scip, "branching/pscost/priority",
         // 536870911))
 
-        for (index_t v = 0; v < _data.N(); ++v) {
-            SCIP_VAR* var = nullptr;
-            SCIP_CALL_EXC(SCIPcreateVarBasic(
-              _scip, &var, nullptr, 0.0, 1.0, 1.0, SCIP_VARTYPE_BINARY));
-            _vars[v] = var;
+        for (auto& var : _vars)
+        {
+            constexpr char* name = nullptr;
+            constexpr SCIP_Real lb = 0.0;
+            constexpr SCIP_Real ub = 1.0;
+            constexpr SCIP_Real obj = 1.0;
+            SCIP_CALL_EXC(SCIPcreateVarBasic(_scip, &var, name, lb, ub, obj, SCIP_VARTYPE_BINARY));
+
             SCIP_CALL_EXC(SCIPaddVar(_scip, var));
-            SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
+            // SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
         }
 
         for (index_t e = 0; e < _data.M(); ++e) {
@@ -85,6 +84,9 @@ class VCoverSolver
 
     ~VCoverSolver()
     {
+        for (auto& var : _vars)
+            SCIP_CALL_EXC(SCIPreleaseVar(_scip, &var));
+
         try {
             SCIPfree(&_scip);
 

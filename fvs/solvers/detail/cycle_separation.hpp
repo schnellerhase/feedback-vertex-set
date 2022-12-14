@@ -232,7 +232,7 @@ sepaCycle(SCIP* scip,
           bool enfo)
 {
     assert(scip != nullptr);
-    assert(vars != nullptr);
+    assert(vars.data() != nullptr);
 
     *result = SCIP_DIDNOTRUN;
 

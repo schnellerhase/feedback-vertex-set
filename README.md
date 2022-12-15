@@ -1,8 +1,8 @@
 <h1 align='center'>A Feedback Vertex Set Solver</h1>
 
-This repo provides a feedback vertex set solver, inspried by the [PACE 2022](https://pacechallenge.org/2022/) challenge.
+This repository provides a feedback vertex set solver, inspried by the [PACE 2022](https://pacechallenge.org/2022/) challenge.
 
-> Given a directed Graph $G=(V,E)$ one aims to find a *minimal* vertex set $FVS(G) \subset V$ such that $G \setminus FVS(V)$ is acyclic.
+> Given a directed Graph $G=(V,E)$ one aims to find a *minimal* vertex set $FVS(G) \subset V$ such that $G \setminus FVS(G)$ is acyclic.
 
 Note that this is not the most general form of the feedback vertex set problem, as no weights on edges are assumend (and currently not supported). This case fits in the more general setting by the special choice of uniform weights on all edges, i.e. $w(e) = 1 \ \forall e \in E $.
 

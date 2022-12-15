@@ -1,9 +1,0 @@
-
-# Overview: 
-    https://kups.ub.uni-koeln.de/2547/1/Dissertation.pdf
-
-# For DOUBLE and further reductions:
-    https://link.springer.com/content/pdf/10.1007/BF00993315.pdf
-
-# for VC reductions
-    https://epubs.siam.org/doi/pdf/10.1137/1.9781611976472.13

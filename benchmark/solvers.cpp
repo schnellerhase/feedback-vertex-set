@@ -6,14 +6,17 @@
 #include "solvers/reduce.hpp"
 #include "solvers/naive.hpp"
 
-static void
-BM_naive(benchmark::State& state)
+auto read_graph(index_t graph_no)
 {
-    const index_t& graph_no = state.range(0);
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(3) << graph_no;
-    Graph graph = Graph::read("tracks/e_" + ss.str());
+    return Graph::read("tracks/e_" + ss.str());
+}
 
+static void
+BM_naive(benchmark::State& state)
+{  
+    Graph graph = read_graph(state.range(0));
     for (auto _ : state)
         solve_naive(graph);
 }
@@ -23,11 +26,7 @@ BENCHMARK(BM_naive)->DenseRange(1, 26, 2);
 static void
 BM_reduce(benchmark::State& state)
 {
-    const index_t& graph_no = state.range(0);
-    std::stringstream ss;
-    ss << std::setfill('0') << std::setw(3) << graph_no;
-    SubGraph graph = SubGraph(Graph::read("tracks/e_" + ss.str()));
-
+    SubGraph graph = SubGraph(read_graph(state.range(0)));
     for (auto _ : state)
         solve_reduce(graph);
 }

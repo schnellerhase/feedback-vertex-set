@@ -228,4 +228,4 @@ jobs:
           output-file-path: build/benchmark_result.json
           external-data-json-path: ./cache/benchmark-data.json
           fail-on-alert: true
-      # Upload the updated cache file for the next job by actions/cache
+          alert-threshold: "105%"

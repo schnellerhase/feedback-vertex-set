@@ -5,6 +5,9 @@
 #include "fvs/discrete/discrete.hpp"
 #include "solvers/reduce.hpp"
 
+#include <chrono>
+#include <thread>
+
 static void
 BM_reduce(benchmark::State& state)
 {
@@ -14,7 +17,10 @@ BM_reduce(benchmark::State& state)
     SubGraph graph = SubGraph(Graph::read("tracks/e_" + ss.str()));
 
     for (auto _ : state)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         solve_reduce(graph);
+    }
 }
 
 // BENCHMARK(BM_reduce)->DenseRange(1, 50, 2);

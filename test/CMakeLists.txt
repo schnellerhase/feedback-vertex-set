@@ -22,7 +22,7 @@ foreach(CPP ${CPPS})
     target_link_directories(test_${TEST_NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
     target_link_libraries(test_${TEST_NAME} scip soplex)
 
-    add_dependencies(test_${TEST_NAME} scip-project soplex-project)
+    # add_dependencies(test_${TEST_NAME} scip-project soplex)
 
     add_test(NAME test_${TEST_NAME} COMMAND test_${TEST_NAME})
 endforeach()

@@ -6,73 +6,72 @@ on:
   pull_request:
 
 jobs:
-  windows:
-    strategy:
-      fail-fast: true
-      matrix:
-        build-type: [Debug, Release]
+  # windows:
+  #   strategy:
+  #     fail-fast: true
+  #     matrix:
+  #       build-type: [Debug, Release]
 
-    runs-on: windows-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v1
+  #   runs-on: windows-latest
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v1
 
-    - uses: ilammy/msvc-dev-cmd@v1
+  #   - uses: ilammy/msvc-dev-cmd@v1
 
-    - name: create build dir
-      run: mkdir -p build
+  #   - name: create build dir
+  #     run: mkdir -p build
 
-    # - name: Install gtest
-    #   uses: MarkusJx/googletest-installer@v1.1
+  #   # - name: Install gtest
+  #   #   uses: MarkusJx/googletest-installer@v1.1
 
-    - name: cmake
-      run: cmake -S . -B build/ -G Ninja -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
-        # -D BUILD_TESTING=ON 
-        # -D BUILD_BENCHMARKS=ON
+  #   - name: cmake
+  #     run: cmake -S . -B build/ -G Ninja -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
+  #       # -D BUILD_TESTING=ON 
+  #       # -D BUILD_BENCHMARKS=ON
 
-    - name: build
-      run: cmake --build build/ --config ${{ matrix.build-type }}
+  #   - name: build
+  #     run: cmake --build build/ --config ${{ matrix.build-type }}
     
-    - name: test
-      run: ctest -V -j $(nproc)
-
+  #   - name: test
+  #     run: ctest -V -j $(nproc)
   unix:
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-22.04
-            CC: clang
-            CXX: clang++
-            build-type: Debug
-          - os: ubuntu-22.04
-            CC: clang
-            CXX: clang++
-            build-type: Release
-          - os: ubuntu-22.04
-            CC: gcc
-            CXX: g++
-            build-type: Debug
-          - os: ubuntu-22.04
-            CC: gcc
-            CXX: g++
-            build-type: Release
-          - os: macos-latest
-            CC: clang
-            CXX: clang++
-            build-type: Debug
-          - os: macos-latest
+          # - os: ubuntu-22.04
+          #   CC: clang
+          #   CXX: clang++
+          #   build-type: Debug
+          - os: ubuntu-20.04
             CC: clang
             CXX: clang++
             build-type: Release
-          - os: macos-latest
-            CC: gcc
-            CXX: g++
-            build-type: Debug
-          - os: macos-latest
-            CC: gcc
-            CXX: g++
-            build-type: Release
+          # - os: ubuntu-22.04
+          #   CC: gcc
+          #   CXX: g++
+          #   build-type: Debug
+          # - os: ubuntu-22.04
+          #   CC: gcc
+          #   CXX: g++
+          #   build-type: Release
+          # - os: macos-latest
+          #   CC: clang
+          #   CXX: clang++
+          #   build-type: Debug
+          # - os: macos-latest
+          #   CC: clang
+          #   CXX: clang++
+          #   build-type: Release
+          # - os: macos-latest
+          #   CC: gcc
+          #   CXX: g++
+          #   build-type: Debug
+          # - os: macos-latest
+          #   CC: gcc
+          #   CXX: g++
+          #   build-type: Release
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -80,24 +79,42 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Install Software
-      if: matrix.os == 'ubuntu-22.04'
+      if: matrix.os == 'ubuntu-20.04'
       run: |
-        sudo apt update
-        sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev libbenchmark-dev git -y
+        sudo apt-get update
+        # sudo apt-get upgrade -y
+        sudo apt-get install -y \
+          build-essential \
+          clang \
+          clang-format \
+          clang-tidy \
+          cmake \
+          git \
+          lib32ncurses5-dev \
+          libbenchmark-dev \
+          libblas-dev \
+          libboost-program-options-dev \
+          libgmp3-dev \
+          libgtest-dev \
+          libreadline-dev \
+          libz-dev \
+          ninja-build \
+          patchelf
+        wget -q --no-check-certificate --post-data "tname=blub&email=blub%40gmail.com&inst=&city=&country=blub" https://scipopt.org/download.php?fname=SCIPOptSuite-8.0.3-Linux-ubuntu.deb -O scipoptsuite.deb
+        sudo apt-get install ./scipoptsuite.deb
 
     - name: Install software
       if: matrix.os == 'macOS-latest'
       run: brew install ninja googletest google-benchmark
 
-    - name: create build dir
-      run: mkdir -p build
-
     - name: cmake
-      working-directory: build
+      # working-directory: build
       env:
         CC: ${{ matrix.CC }}
         CXX: ${{ matrix.CXX }}
       run: |
+        mkdir build
+        cd build
         cmake .. -GNinja \
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
           -DBUILD_TESTING=ON \

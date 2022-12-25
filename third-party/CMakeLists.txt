@@ -1,2 +1,2 @@
-add_subdirectory(scip)
-add_subdirectory(soplex)
+include_directories(scip)
+include_directories(soplex)

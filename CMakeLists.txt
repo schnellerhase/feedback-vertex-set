@@ -13,6 +13,9 @@ option(BUILD_TESTING "Compile tests" OFF)
 option(BUILD_BENCHMARKS "Compile benchmarks" OFF)
 option(ENABLE_PROFILING "Profiling support" OFF)
 
+option(FVS_USE_SYSTEM_SOPLEX ON)
+option(FVS_USE_SYSTEM_SCIP ON)
+
 include(CTest)
 
 if (CMAKE_BUILD_TYPE MATCHES RELEASE)
@@ -37,7 +40,7 @@ if (PROFILING)
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 endif()
 
-add_subdirectory(third-party)
+include_directories(third-party)
 
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror") 
@@ -67,12 +70,17 @@ function(SOLVER NAME)
     add_executable(${NAME} solvers/${NAME}.cpp)
 
     target_include_directories(${NAME} PUBLIC ${CMAKE_SOURCE_DIR})
-    target_include_directories(${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-src/src)
-    target_include_directories(${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-build)
+    # target_include_directories(${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-src/src)
+    # target_include_directories(${NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-build)
     target_include_directories(${NAME} SYSTEM PUBLIC third-party)
 
-    target_link_directories(${NAME} PUBLIC ${CMAKE_BINARY_DIR}/scip-build/lib)
-    target_link_directories(${NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
+    # target_link_directories(${NAME} PUBLIC ${CMAKE_BINARY_DIR}/scip-build/lib)
+    # target_link_directories(${NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
+    target_include_directories(${NAME} SYSTEM PUBLIC ${SOPLEX_INCLUDE_DIR})
+    target_include_directories(${NAME} SYSTEM PUBLIC ${SCIP_INCLUDE_DIR})
+    target_link_directories(${NAME} PUBLIC ${SOPLEX_LIBRARIES})
+    target_link_directories(${NAME} PUBLIC ${SCIP_LIBRARIES})
+    
 
     # UNCOMMENT THIS FOR STATIC BUILD
     # target_link_libraries(${NAME} -static)
@@ -85,7 +93,7 @@ function(SOLVER NAME)
     else()
         target_link_libraries(${NAME} libscip libsoplex)
     endif()
-    add_dependencies(${NAME} scip-project soplex-project)
+    # add_dependencies(${NAME} scip-project)
 endfunction()
 
 SOLVER(naive)
@@ -111,7 +119,7 @@ if (BUILD_BENCHMARKS)
         target_link_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/scip-build/lib)
         target_link_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
 
-        add_dependencies(benchmark_${NAME} scip-project soplex-project tracks)
+        # add_dependencies(benchmark_${NAME} scip-project soplex-project tracks)
 
         target_link_libraries(benchmark_${NAME} benchmark::benchmark pthread scip soplex)
     endfunction()

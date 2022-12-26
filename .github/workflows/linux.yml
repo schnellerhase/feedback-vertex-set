@@ -136,17 +136,35 @@ jobs:
           patchelf
         # wget --no-check-certificate --post-data "tname=blub&email=blub%40gmail.com&inst=&city=&country=blub" https://scipopt.org/download.php?fname=SCIPOptSuite-8.0.3-Linux-ubuntu.deb -O scipoptsuite.deb
         # sudo apt-get install ./scipoptsuite.deb
+
+    - name: Cache soplex/
+      uses: actions/cache@v3
+      with:
+        path: soplex/
+        key: build-soplex-ubuntu-${{ matrix.build-type }}
+        restore-keys: soplex-dir-ubuntu-${{ matrix.build-type }}
+  
     - name: Install SCIPoptSuite
       run: |
-        wget --quiet --no-check-certificate https://scipopt.org/download/release/SCIPOptSuite-8.0.0-Linux-ubuntu.deb
-        sudo apt-get install -y ./SCIPOptSuite-8.0.0-Linux-ubuntu.deb
+        if cd soplex; then git pull; cd ..; else git clone https://github.com/scipopt/soplex.git soplex; fi
+        cd soplex
+        cmake . -GNinja \
+          -DBOOST=ON \
+          -DBUILD_TESTING=OFF \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DGMP=OFF \
+          -DMPFR=OFF \
+          -DMT=OFF \
+          -DPAPILO=OFF \
+          -DQUADMATH=OFF \
+          -DZLIB=ON
+        sudo ninja install
 
     # - name: Install software
     #   if: matrix.os == 'macOS-latest'
     #   run: brew install ninja googletest google-benchmark
 
     - name: cmake
-      # working-directory: build
       env:
         CC: ${{ matrix.CC }}
         CXX: ${{ matrix.CXX }}
@@ -159,14 +177,16 @@ jobs:
           -DBUILD_BENCHMARKS=ON \
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 
-    - name: ninja
-      working-directory: build
-      run: ninja
-    - name: Cache build
+    - name: Cache build/
       uses: actions/cache@v3
       with:
         path: build/
+        key: build-dir-ubuntu-${{ matrix.build-type }}
         restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
+
+    # - name: ninja
+    #   working-directory: build
+    #   run: ninja
 
     # - name: test
     #   working-directory: build

@@ -209,6 +209,12 @@ jobs:
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
         ninja
 
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-dir-ubuntu-${{ matrix.build-type }}
+        path: build/
+
     # - name: test
     #   working-directory: build
     #   run: ctest -V -j $(nproc)
@@ -256,14 +262,18 @@ jobs:
           #   build-type: Release
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Cache build/
-        uses: actions/cache@v3
+      # - name: Cache build/
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: build/
+      #     key: build-dir-ubuntu-${{ matrix.build-type }}
+      #     restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
         with:
-          path: build/
-          key: build-dir-ubuntu-${{ matrix.build-type }}
-          restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
+          name: build-dir-ubuntu-${{ matrix.build-type }}
+
       - name: Test
-        working-directory: build
         run: ctest -V -j $(nproc)
 
   clang-format:

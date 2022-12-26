@@ -108,10 +108,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    # - name: Download image
-    #   uses: ishworkh/docker-image-artifact-download@v1
-    #   with:
-    #     image: "fvs_image:latest"
+    - name: Cache soplex/
+      uses: actions/cache@v3
+      with:
+        path: soplex/
+        key: build-soplex-ubuntu-${{ matrix.build-type }}
+        restore-keys: soplex-dir-ubuntu-${{ matrix.build-type }}
+
+    - name: Cache scip/
+      uses: actions/cache@v3
+      with:
+        path: scip/
+        key: build-scip-ubuntu-${{ matrix.build-type }}
+        restore-keys: scip-dir-ubuntu-${{ matrix.build-type }}
 
     - name: Install Software
       run: |
@@ -134,17 +143,8 @@ jobs:
           libz-dev \
           ninja-build \
           patchelf
-        # wget --no-check-certificate --post-data "tname=blub&email=blub%40gmail.com&inst=&city=&country=blub" https://scipopt.org/download.php?fname=SCIPOptSuite-8.0.3-Linux-ubuntu.deb -O scipoptsuite.deb
-        # sudo apt-get install ./scipoptsuite.deb
-
-    - name: Cache soplex/
-      uses: actions/cache@v3
-      with:
-        path: soplex/
-        key: build-soplex-ubuntu-${{ matrix.build-type }}
-        restore-keys: soplex-dir-ubuntu-${{ matrix.build-type }}
   
-    - name: Install SCIPoptSuite
+    - name: Install Soplex
       run: |
         if cd soplex; then git pull; cd ..; else git clone https://github.com/scipopt/soplex.git soplex; fi
         cd soplex
@@ -157,6 +157,30 @@ jobs:
           -DMT=OFF \
           -DPAPILO=OFF \
           -DQUADMATH=OFF \
+          -DZLIB=ON
+        sudo ninja install
+
+    - name: Install SCIP
+      run: |
+        if cd scip; then git pull; cd ..; else git clone https://github.com/scipopt/scip.git scip; fi
+        cd scip
+        cmake . -GNinja \
+          -DAUTOBUILD=OFF \
+          -DBUILD_TESTING=OFF \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DDEBUGSOL=OFF \
+          -DGMP=ON \
+          -DIPOPT=OFF \
+          -DLPS=spx \
+          -DLPSCHECK=OFF \
+          -DPAPILO=OFF \
+          -DPARASCIP=OFF \
+          -DREADLINE=OFF \
+          -DSHARED=ON \
+          -DTHREADSAFE=ON \
+          -DUSE_GMP=OFF \
+          -DWORHP=OFF \
+          -DZIMPL=OFF \
           -DZLIB=ON
         sudo ninja install
 

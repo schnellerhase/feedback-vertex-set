@@ -3,15 +3,7 @@ name: CI
 on: push
 
 jobs:
-  clang-format:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install software
-        run: sudo apt install clang-format -y
-      - name: Checkout project
-        uses: actions/checkout@v2
-      - name: Check formatting
-        run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
+  
   # clang-tidy:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -80,7 +72,7 @@ jobs:
           #   CC: clang
           #   CXX: clang++
           #   build-type: Debug
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             CC: clang
             CXX: clang++
             build-type: Release
@@ -142,8 +134,8 @@ jobs:
           libz-dev \
           ninja-build \
           patchelf
-        wget --no-check-certificate --post-data "tname=blub&email=blub%40gmail.com&inst=&city=&country=blub" https://scipopt.org/download.php?fname=SCIPOptSuite-8.0.3-Linux-ubuntu.deb -O scipoptsuite.deb
-        sudo apt-get install ./scipoptsuite.deb
+        # wget --no-check-certificate --post-data "tname=blub&email=blub%40gmail.com&inst=&city=&country=blub" https://scipopt.org/download.php?fname=SCIPOptSuite-8.0.3-Linux-ubuntu.deb -O scipoptsuite.deb
+        # sudo apt-get install ./scipoptsuite.deb
 
     # - name: Install software
     #   if: matrix.os == 'macOS-latest'
@@ -166,6 +158,11 @@ jobs:
     - name: ninja
       working-directory: build
       run: ninja
+    - name: Cache build
+      uses: actions/cache@v3
+      with:
+        path: build/
+        restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
 
     # - name: test
     #   working-directory: build
@@ -174,3 +171,14 @@ jobs:
     # - name: clang-tidy
     #   if: ${{ ( success() || failure() ) && matrix.os == 'ubuntu-22.04' && matrix.build-type == 'Release' && matrix.cxx == 'g++' }}
     #   run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*
+
+  clang-format:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install software
+        run: sudo apt install clang-format -y
+      - name: Checkout project
+        uses: actions/checkout@v2
+      - name: Check formatting
+        run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror

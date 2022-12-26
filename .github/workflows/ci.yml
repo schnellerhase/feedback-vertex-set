@@ -54,7 +54,7 @@ jobs:
         name: Build and Publish latest service image
         with:
           github-push-secret: ${{secrets.GITHUB_TOKEN}}
-          docker-image-name: my-svc
+          docker-image-name: fvs_image
           docker-image-tag: latest # optional
           dockerfile-path: Dockerfile # optional
           # build-context: ./src/svc # optional
@@ -99,44 +99,47 @@ jobs:
           #   CXX: g++
           #   build-type: Release
 
-    runs-on: ${{ matrix.os }}
+    # runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/schnellerhase/fvs_image:latest
     steps:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Download image
-      uses: ishworkh/docker-image-artifact-download@v1
-      with:
-        image: "fvs_image:latest"
+    # - name: Download image
+    #   uses: ishworkh/docker-image-artifact-download@v1
+    #   with:
+    #     image: "fvs_image:latest"
 
-    - name: Install Software
-      if: matrix.os == 'ubuntu-20.04'
-      run: |
-        sudo apt-get update
-        # sudo apt-get upgrade -y
-        sudo apt-get install -y \
-          build-essential \
-          clang \
-          clang-format \
-          clang-tidy \
-          cmake \
-          git \
-          lib32ncurses5-dev \
-          libbenchmark-dev \
-          libblas-dev \
-          libboost-program-options-dev \
-          libgmp3-dev \
-          libgtest-dev \
-          libreadline-dev \
-          libz-dev \
-          ninja-build \
-          patchelf
-        wget -q --no-check-certificate --post-data "tname=blub&email=blub%40gmail.com&inst=&city=&country=blub" https://scipopt.org/download.php?fname=SCIPOptSuite-8.0.3-Linux-ubuntu.deb -O scipoptsuite.deb
-        sudo apt-get install ./scipoptsuite.deb
+    # - name: Install Software
+    #   if: matrix.os == 'ubuntu-20.04'
+    #   run: |
+    #     sudo apt-get update
+    #     # sudo apt-get upgrade -y
+    #     sudo apt-get install -y \
+    #       build-essential \
+    #       clang \
+    #       clang-format \
+    #       clang-tidy \
+    #       cmake \
+    #       git \
+    #       lib32ncurses5-dev \
+    #       libbenchmark-dev \
+    #       libblas-dev \
+    #       libboost-program-options-dev \
+    #       libgmp3-dev \
+    #       libgtest-dev \
+    #       libreadline-dev \
+    #       libz-dev \
+    #       ninja-build \
+    #       patchelf
+    #     wget -q --no-check-certificate --post-data "tname=blub&email=blub%40gmail.com&inst=&city=&country=blub" https://scipopt.org/download.php?fname=SCIPOptSuite-8.0.3-Linux-ubuntu.deb -O scipoptsuite.deb
+    #     sudo apt-get install ./scipoptsuite.deb
 
-    - name: Install software
-      if: matrix.os == 'macOS-latest'
-      run: brew install ninja googletest google-benchmark
+    # - name: Install software
+    #   if: matrix.os == 'macOS-latest'
+    #   run: brew install ninja googletest google-benchmark
 
     - name: cmake
       # working-directory: build

@@ -35,7 +35,33 @@ jobs:
     
   #   - name: test
   #     run: ctest -V -j $(nproc)
+  container:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+
+      # - name: Build image
+      #   run: |
+      #     docker build -t fvs_image:latest - < Dockerfile
+
+      # - name: Upload image
+      #   uses: ishworkh/docker-image-artifact-upload@v1
+      #   with:
+      #     image: "fvs_image:latest"
+
+      - uses: pmorelli92/github-container-registry-build-push@2.0.0
+        name: Build and Publish latest service image
+        with:
+          github-push-secret: ${{secrets.GITHUB_TOKEN}}
+          docker-image-name: my-svc
+          docker-image-tag: latest # optional
+          dockerfile-path: Dockerfile # optional
+          # build-context: ./src/svc # optional
+          build-only: false # optional
+
   unix:
+    needs: [container]
     strategy:
       fail-fast: false
       matrix:
@@ -77,6 +103,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
+
+    - name: Download image
+      uses: ishworkh/docker-image-artifact-download@v1
+      with:
+        image: "fvs_image:latest"
 
     - name: Install Software
       if: matrix.os == 'ubuntu-20.04'

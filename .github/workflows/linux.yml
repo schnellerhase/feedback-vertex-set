@@ -109,8 +109,7 @@ jobs:
           #   CXX: g++
           #   build-type: Release
 
-    # runs-on: ${{ matrix.os }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     # container:
     #   image: ghcr.io/schnellerhase/fvs_image:latest
     steps:
@@ -143,7 +142,7 @@ jobs:
           libz-dev \
           ninja-build \
           patchelf
-        wget -q --no-check-certificate --post-data "tname=blub&email=blub%40gmail.com&inst=&city=&country=blub" https://scipopt.org/download.php?fname=SCIPOptSuite-8.0.3-Linux-ubuntu.deb -O scipoptsuite.deb
+        wget --no-check-certificate --post-data "tname=blub&email=blub%40gmail.com&inst=&city=&country=blub" https://scipopt.org/download.php?fname=SCIPOptSuite-8.0.3-Linux-ubuntu.deb -O scipoptsuite.deb
         sudo apt-get install ./scipoptsuite.deb
 
     # - name: Install software

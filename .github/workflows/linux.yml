@@ -63,7 +63,6 @@ jobs:
   #         build-only: false # optional
 
   build:
-    # needs: [container]
     strategy:
       fail-fast: false
       matrix:
@@ -102,94 +101,94 @@ jobs:
           #   build-type: Release
 
     runs-on: ${{ matrix.os }}
-    # container:
-    #   image: ghcr.io/schnellerhase/fvs_image:latest
+    container:
+      image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
     steps:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Cache soplex/
-      uses: actions/cache@v3
-      with:
-        path: soplex/
-        key: build-soplex-ubuntu-${{ matrix.build-type }}
-        restore-keys: soplex-dir-ubuntu-${{ matrix.build-type }}
+    # - name: Cache soplex/
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: soplex/
+    #     key: build-soplex-ubuntu-${{ matrix.build-type }}
+    #     restore-keys: soplex-dir-ubuntu-${{ matrix.build-type }}
 
-    - name: Cache scip/
-      uses: actions/cache@v3
-      with:
-        path: scip/
-        key: build-scip-ubuntu-${{ matrix.build-type }}
-        restore-keys: scip-dir-ubuntu-${{ matrix.build-type }}
+    # - name: Cache scip/
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: scip/
+    #     key: build-scip-ubuntu-${{ matrix.build-type }}
+    #     restore-keys: scip-dir-ubuntu-${{ matrix.build-type }}
 
-    - name: Cache build/
-      uses: actions/cache@v3
-      with:
-        path: build/
-        key: build-dir-ubuntu-${{ matrix.build-type }}
-        restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
+    # - name: Cache build/
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: build/
+    #     key: build-dir-ubuntu-${{ matrix.build-type }}
+    #     restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
 
-    - name: Install Software
-      run: |
-        sudo apt-get update
-        # sudo apt-get upgrade -y
-        sudo apt-get install -y \
-          build-essential \
-          clang \
-          clang-format \
-          clang-tidy \
-          cmake \
-          git \
-          lib32ncurses5-dev \
-          libbenchmark-dev \
-          libblas-dev \
-          libboost-program-options-dev \
-          libgmp3-dev \
-          libgtest-dev \
-          libreadline-dev \
-          libz-dev \
-          ninja-build \
-          patchelf
+    # - name: Install Software
+    #   run: |
+    #     sudo apt-get update
+    #     # sudo apt-get upgrade -y
+    #     sudo apt-get install -y \
+    #       build-essential \
+    #       clang \
+    #       clang-format \
+    #       clang-tidy \
+    #       cmake \
+    #       git \
+    #       lib32ncurses5-dev \
+    #       libbenchmark-dev \
+    #       libblas-dev \
+    #       libboost-program-options-dev \
+    #       libgmp3-dev \
+    #       libgtest-dev \
+    #       libreadline-dev \
+    #       libz-dev \
+    #       ninja-build \
+    #       patchelf
   
-    - name: Install Soplex
-      run: |
-        if cd soplex; then git pull; cd ..; else git clone https://github.com/scipopt/soplex.git soplex; fi
-        cd soplex
-        cmake . -GNinja \
-          -DBOOST=ON \
-          -DBUILD_TESTING=OFF \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-          -DGMP=OFF \
-          -DMPFR=OFF \
-          -DMT=OFF \
-          -DPAPILO=OFF \
-          -DQUADMATH=OFF \
-          -DZLIB=ON
-        sudo ninja install
+    # - name: Install Soplex
+    #   run: |
+    #     if cd soplex; then git pull; cd ..; else git clone https://github.com/scipopt/soplex.git soplex; fi
+    #     cd soplex
+    #     cmake . -GNinja \
+    #       -DBOOST=ON \
+    #       -DBUILD_TESTING=OFF \
+    #       -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+    #       -DGMP=OFF \
+    #       -DMPFR=OFF \
+    #       -DMT=OFF \
+    #       -DPAPILO=OFF \
+    #       -DQUADMATH=OFF \
+    #       -DZLIB=ON
+    #     sudo ninja install
 
-    - name: Install SCIP
-      run: |
-        if cd scip; then git pull; cd ..; else git clone https://github.com/scipopt/scip.git scip; fi
-        cd scip
-        cmake . -GNinja \
-          -DAUTOBUILD=OFF \
-          -DBUILD_TESTING=OFF \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-          -DDEBUGSOL=OFF \
-          -DGMP=ON \
-          -DIPOPT=OFF \
-          -DLPS=spx \
-          -DLPSCHECK=OFF \
-          -DPAPILO=OFF \
-          -DPARASCIP=OFF \
-          -DREADLINE=OFF \
-          -DSHARED=ON \
-          -DTHREADSAFE=ON \
-          -DUSE_GMP=OFF \
-          -DWORHP=OFF \
-          -DZIMPL=OFF \
-          -DZLIB=ON
-        sudo ninja install
+    # - name: Install SCIP
+    #   run: |
+    #     if cd scip; then git pull; cd ..; else git clone https://github.com/scipopt/scip.git scip; fi
+    #     cd scip
+    #     cmake . -GNinja \
+    #       -DAUTOBUILD=OFF \
+    #       -DBUILD_TESTING=OFF \
+    #       -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+    #       -DDEBUGSOL=OFF \
+    #       -DGMP=ON \
+    #       -DIPOPT=OFF \
+    #       -DLPS=spx \
+    #       -DLPSCHECK=OFF \
+    #       -DPAPILO=OFF \
+    #       -DPARASCIP=OFF \
+    #       -DREADLINE=OFF \
+    #       -DSHARED=ON \
+    #       -DTHREADSAFE=ON \
+    #       -DUSE_GMP=OFF \
+    #       -DWORHP=OFF \
+    #       -DZIMPL=OFF \
+    #       -DZLIB=ON
+    #     sudo ninja install
 
     # - name: Install software
     #   if: matrix.os == 'macOS-latest'
@@ -261,6 +260,8 @@ jobs:
           #   CXX: g++
           #   build-type: Release
     runs-on: ${{ matrix.os }}
+    container:
+      image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
     steps:
       # - name: Cache build/
       #   uses: actions/cache@v3
@@ -268,12 +269,16 @@ jobs:
       #     path: build/
       #     key: build-dir-ubuntu-${{ matrix.build-type }}
       #     restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
+      - name: Checkout
+        uses: actions/checkout@v1
       - name: Download Build Artifacts
         uses: actions/download-artifact@v3
         with:
           name: build-dir-ubuntu-${{ matrix.build-type }}
-
+      - name: show
+        run: ls -R
       - name: Test
+        working-directory: build
         run: ctest -V -j $(nproc)
 
   clang-format:

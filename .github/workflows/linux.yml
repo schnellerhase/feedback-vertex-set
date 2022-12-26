@@ -1,4 +1,4 @@
-name: CI
+name: linux
 
 on: push
 
@@ -72,18 +72,18 @@ jobs:
           #   CC: clang
           #   CXX: clang++
           #   build-type: Debug
-          - os: ubuntu-22.04
-            CC: clang
-            CXX: clang++
-            build-type: Release
+          # - os: ubuntu-20.04
+          #   CC: clang
+          #   CXX: clang++
+          #   build-type: Release
           # - os: ubuntu-22.04
           #   CC: gcc
           #   CXX: g++
           #   build-type: Debug
-          # - os: ubuntu-22.04
-          #   CC: gcc
-          #   CXX: g++
-          #   build-type: Release
+          - os: ubuntu-20.04
+            CC: gcc
+            CXX: g++
+            build-type: Release
           # - os: macos-latest
           #   CC: clang
           #   CXX: clang++
@@ -136,6 +136,10 @@ jobs:
           patchelf
         # wget --no-check-certificate --post-data "tname=blub&email=blub%40gmail.com&inst=&city=&country=blub" https://scipopt.org/download.php?fname=SCIPOptSuite-8.0.3-Linux-ubuntu.deb -O scipoptsuite.deb
         # sudo apt-get install ./scipoptsuite.deb
+    - name: Install SCIPoptSuite
+      run: |
+        wget --quiet --no-check-certificate https://scipopt.org/download/release/SCIPOptSuite-8.0.0-Linux-ubuntu.deb
+        sudo apt-get install -y ./SCIPOptSuite-8.0.0-Linux-ubuntu.deb
 
     # - name: Install software
     #   if: matrix.os == 'macOS-latest'

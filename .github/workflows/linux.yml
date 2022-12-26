@@ -122,6 +122,13 @@ jobs:
         key: build-scip-ubuntu-${{ matrix.build-type }}
         restore-keys: scip-dir-ubuntu-${{ matrix.build-type }}
 
+    - name: Cache build/
+      uses: actions/cache@v3
+      with:
+        path: build/
+        key: build-dir-ubuntu-${{ matrix.build-type }}
+        restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
+
     - name: Install Software
       run: |
         sudo apt-get update
@@ -200,17 +207,7 @@ jobs:
           -DBUILD_TESTING=ON \
           -DBUILD_BENCHMARKS=ON \
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-
-    - name: Cache build/
-      uses: actions/cache@v3
-      with:
-        path: build/
-        key: build-dir-ubuntu-${{ matrix.build-type }}
-        restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
-
-    # - name: ninja
-    #   working-directory: build
-    #   run: ninja
+        ninja
 
     # - name: test
     #   working-directory: build

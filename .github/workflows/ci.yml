@@ -45,11 +45,6 @@ jobs:
       #   run: |
       #     docker build -t fvs_image:latest - < Dockerfile
 
-      # - name: Upload image
-      #   uses: ishworkh/docker-image-artifact-upload@v1
-      #   with:
-      #     image: "fvs_image:latest"
-
       - uses: pmorelli92/github-container-registry-build-push@2.0.0
         name: Build and Publish latest service image
         with:

@@ -40,18 +40,19 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
-
-      # - name: Build image
-      #   run: |
-      #     docker build -t fvs_image:latest - < Dockerfile
-
+      - name: Get Dockerfile changed
+        id: dockerfile-changed
+        uses: tj-actions/changed-files@v35
+        with:
+          files: Dockerfile
       - uses: pmorelli92/github-container-registry-build-push@2.0.0
+        if: steps.dockerfile-changed.outputs.any_changed == 'true'
         name: Build and Publish latest service image
         with:
           github-push-secret: ${{secrets.GITHUB_TOKEN}}
-          docker-image-name: fvs_image
-          docker-image-tag: latest # optional
-          dockerfile-path: Dockerfile # optional
+          docker-image-name: ghcr.io/schnellerhase/fvs_image
+          # docker-image-tag: latest 
+          dockerfile-path: Dockerfile
           # build-context: ./src/svc # optional
           build-only: false # optional
 

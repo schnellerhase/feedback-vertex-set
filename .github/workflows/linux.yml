@@ -80,7 +80,7 @@ jobs:
           #   CC: gcc
           #   CXX: g++
           #   build-type: Debug
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             CC: gcc
             CXX: g++
             build-type: Release
@@ -200,13 +200,13 @@ jobs:
         CC: ${{ matrix.CC }}
         CXX: ${{ matrix.CXX }}
       run: |
-        mkdir build
+        mkdir -p build
         cd build
         cmake .. -GNinja \
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
           -DBUILD_TESTING=ON \
           -DBUILD_BENCHMARKS=ON \
-          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
         ninja
 
     # - name: test
@@ -216,6 +216,55 @@ jobs:
     # - name: clang-tidy
     #   if: ${{ ( success() || failure() ) && matrix.os == 'ubuntu-22.04' && matrix.build-type == 'Release' && matrix.cxx == 'g++' }}
     #   run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*
+  test:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # - os: ubuntu-22.04
+          #   CC: clang
+          #   CXX: clang++
+          #   build-type: Debug
+          # - os: ubuntu-20.04
+          #   CC: clang
+          #   CXX: clang++
+          #   build-type: Release
+          # - os: ubuntu-22.04
+          #   CC: gcc
+          #   CXX: g++
+          #   build-type: Debug
+          - os: ubuntu-22.04
+            CC: gcc
+            CXX: g++
+            build-type: Release
+          # - os: macos-latest
+          #   CC: clang
+          #   CXX: clang++
+          #   build-type: Debug
+          # - os: macos-latest
+          #   CC: clang
+          #   CXX: clang++
+          #   build-type: Release
+          # - os: macos-latest
+          #   CC: gcc
+          #   CXX: g++
+          #   build-type: Debug
+          # - os: macos-latest
+          #   CC: gcc
+          #   CXX: g++
+          #   build-type: Release
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Cache build/
+        uses: actions/cache@v3
+        with:
+          path: build/
+          key: build-dir-ubuntu-${{ matrix.build-type }}
+          restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
+      - name: Test
+        working-directory: build
+        run: ctest -V -j $(nproc)
 
   clang-format:
     needs: build

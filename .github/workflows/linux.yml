@@ -273,11 +273,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-dir-ubuntu-${{ matrix.build-type }}
+          path: build/
       - name: show
         run: ls -R
       - name: Test
         working-directory: build
-        run: ctest -V -j $(nproc)
+        run: sudo ctest -V -j $(nproc)
 
   clang-format:
     needs: build

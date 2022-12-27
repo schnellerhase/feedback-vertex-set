@@ -3,36 +3,6 @@ name: linux
 on: push
 
 jobs:   
-  # windows:
-  #   strategy:
-  #     fail-fast: true
-  #     matrix:
-  #       build-type: [Debug, Release]
-
-  #   runs-on: windows-latest
-  #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v1
-
-  #   - uses: ilammy/msvc-dev-cmd@v1
-
-  #   - name: create build dir
-  #     run: mkdir -p build
-
-  #   # - name: Install gtest
-  #   #   uses: MarkusJx/googletest-installer@v1.1
-
-  #   - name: cmake
-  #     run: cmake -S . -B build/ -G Ninja -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
-  #       # -D BUILD_TESTING=ON 
-  #       # -D BUILD_BENCHMARKS=ON
-
-  #   - name: build
-  #     run: cmake --build build/ --config ${{ matrix.build-type }}
-    
-  #   - name: test
-  #     run: ctest -V -j $(nproc)
-
   build-test-linux:
     strategy:
       fail-fast: true
@@ -54,23 +24,6 @@ jobs:
             CC: gcc
             CXX: g++
             build-type: Release
-          # - os: macos-latest
-          #   CC: clang
-          #   CXX: clang++
-          #   build-type: Debug
-          # - os: macos-latest
-          #   CC: clang
-          #   CXX: clang++
-          #   build-type: Release
-          # - os: macos-latest
-          #   CC: gcc
-          #   CXX: g++
-          #   build-type: Debug
-          # - os: macos-latest
-          #   CC: gcc
-          #   CXX: g++
-          #   build-type: Release
-
     runs-on: ${{ matrix.os }}
     container:
       image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
@@ -217,6 +170,37 @@ jobs:
         ninja
     - name: test
       working-directory: build
+      run: ctest -V -j $(nproc)
+
+  windows:
+    needs: build-test-linux
+    strategy:
+      fail-fast: true
+      matrix:
+        build-type: [Debug, Release]
+
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - uses: ilammy/msvc-dev-cmd@v1
+
+    - name: create build dir
+      run: mkdir -p build
+
+    # - name: Install gtest
+    #   uses: MarkusJx/googletest-installer@v1.1
+
+    - name: cmake
+      run: cmake -S . -B build/ -G Ninja -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
+        # -D BUILD_TESTING=ON 
+        # -D BUILD_BENCHMARKS=ON
+
+    - name: build
+      run: cmake --build build/ --config ${{ matrix.build-type }}
+    
+    - name: test
       run: ctest -V -j $(nproc)
 
   clang-format:

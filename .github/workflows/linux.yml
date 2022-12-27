@@ -30,51 +30,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
-
-    # - name: Install Soplex
-    #   run: |
-    #     if cd soplex; then git pull; cd ..; else git clone https://github.com/scipopt/soplex.git soplex; fi
-    #     cd soplex
-    #     cmake . -GNinja \
-    #       -DBOOST=ON \
-    #       -DBUILD_TESTING=OFF \
-    #       -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-    #       -DGMP=OFF \
-    #       -DMPFR=OFF \
-    #       -DMT=OFF \
-    #       -DPAPILO=OFF \
-    #       -DQUADMATH=OFF \
-    #       -DZLIB=ON
-    #     sudo ninja install
-
-    # - name: Install SCIP
-    #   run: |
-    #     if cd scip; then git pull; cd ..; else git clone https://github.com/scipopt/scip.git scip; fi
-    #     cd scip
-    #     cmake . -GNinja \
-    #       -DAUTOBUILD=OFF \
-    #       -DBUILD_TESTING=OFF \
-    #       -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-    #       -DDEBUGSOL=OFF \
-    #       -DGMP=ON \
-    #       -DIPOPT=OFF \
-    #       -DLPS=spx \
-    #       -DLPSCHECK=OFF \
-    #       -DPAPILO=OFF \
-    #       -DPARASCIP=OFF \
-    #       -DREADLINE=OFF \
-    #       -DSHARED=ON \
-    #       -DTHREADSAFE=ON \
-    #       -DUSE_GMP=OFF \
-    #       -DWORHP=OFF \
-    #       -DZIMPL=OFF \
-    #       -DZLIB=ON
-    #     sudo ninja install
-
-    # - name: Install software
-    #   if: matrix.os == 'macOS-latest'
-    #   run: brew install ninja googletest google-benchmark
-
     - name: cmake
       env:
         CC: ${{ matrix.CC }}
@@ -93,7 +48,7 @@ jobs:
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: build-dir-ubuntu-${{ matrix.build-type }}
+        name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
         path: build-dir.tar
     # - name: test
     #   working-directory: build
@@ -117,11 +72,10 @@ jobs:
           #   CC: gcc
           #   CXX: g++
           #   build-type: Debug
-          - os: ubuntu-22.04
+          - build-type: Release
             CC: gcc
             CXX: g++
-            build-type: Release
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-22.04
     container:
       image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
     steps:
@@ -130,7 +84,7 @@ jobs:
       - name: Download Build Artifacts
         uses: actions/download-artifact@v3
         with:
-          name: build-dir-ubuntu-${{ matrix.build-type }}
+          name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
       - name: unpack
         run: tar xvf build-dir.tar
       - name: Download Tracks

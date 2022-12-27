@@ -2,16 +2,7 @@ name: linux
 
 on: push
 
-jobs:
-  
-  # clang-tidy:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Install software
-  #       run: sudo apt install cmake -y
-  #     - name: Checkout project
-  #       uses: actions/checkout@v2
-      
+jobs:   
   # windows:
   #   strategy:
   #     fail-fast: true
@@ -41,26 +32,6 @@ jobs:
     
   #   - name: test
   #     run: ctest -V -j $(nproc)
-  # container:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: Checkout project
-  #       uses: actions/checkout@v2
-  #     - name: Get Dockerfile changed
-  #       id: dockerfile-changed
-  #       uses: tj-actions/changed-files@v35
-  #       with:
-  #         files: Dockerfile
-  #     - uses: pmorelli92/github-container-registry-build-push@2.0.0
-  #       if: steps.dockerfile-changed.outputs.any_changed == 'true'
-  #       name: Build and Publish latest service image
-  #       with:
-  #         github-push-secret: ${{secrets.GITHUB_TOKEN}}
-  #         docker-image-name: ghcr.io/schnellerhase/fvs_image
-  #         # docker-image-tag: latest 
-  #         dockerfile-path: Dockerfile
-  #         # build-context: ./src/svc # optional
-  #         build-only: false # optional
 
   build:
     strategy:
@@ -106,28 +77,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
-
-    # - name: Cache soplex/
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: soplex/
-    #     key: build-soplex-ubuntu-${{ matrix.build-type }}
-    #     restore-keys: soplex-dir-ubuntu-${{ matrix.build-type }}
-
-    # - name: Cache scip/
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: scip/
-    #     key: build-scip-ubuntu-${{ matrix.build-type }}
-    #     restore-keys: scip-dir-ubuntu-${{ matrix.build-type }}
-
-    # - name: Cache build/
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: build/
-    #     key: build-dir-ubuntu-${{ matrix.build-type }}
-    #     restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
-
     # - name: Install Software
     #   run: |
     #     sudo apt-get update
@@ -208,17 +157,18 @@ jobs:
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
         ninja
 
+    - name: Tar build directory
+      run: tar -cvf build-dir.tar build/
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
       with:
         name: build-dir-ubuntu-${{ matrix.build-type }}
-        path: build/
+        path: build-dir.tar
 
     # - name: test
     #   working-directory: build
     #   run: ctest -V -j $(nproc)
 
-    
   test:
     needs: build
     strategy:
@@ -261,24 +211,22 @@ jobs:
     container:
       image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
     steps:
-      # - name: Cache build/
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: build/
-      #     key: build-dir-ubuntu-${{ matrix.build-type }}
-      #     restore-keys: build-dir-ubuntu-${{ matrix.build-type }}
       - name: Checkout
         uses: actions/checkout@v1
       - name: Download Build Artifacts
         uses: actions/download-artifact@v3
         with:
           name: build-dir-ubuntu-${{ matrix.build-type }}
-          path: build/
+      - name: unpack
+        run: tar xvf build-dir.tar
+      - name: Download Tracks
+        working-directory: build
+        run: ninja tracks
       - name: show
         run: ls -R
       - name: Test
         working-directory: build
-        run: sudo ctest -V -j $(nproc)
+        run: ctest -V -j $(nproc)
 
   clang-format:
     needs: build

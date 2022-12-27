@@ -3,7 +3,7 @@ name: linux
 on: push
 
 jobs:   
-  build-test-linux:
+  build-linux:
     strategy:
       fail-fast: true
       matrix:
@@ -41,71 +41,73 @@ jobs:
     - name: build
       working-directory: build
       run: ninja
-    # - name: Tar build directory
-    #   run: tar -cvf build-dir.tar build/
-    # - name: Upload Build Artifact
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
-    #     path: build-dir.tar
-    - name: test
-      env:
-        LD_LIBRARY_PATH: /usr/local/lib
-      working-directory: build
-      run: ctest -V -j $(nproc)
+    - name: Tar build directory
+      run: tar -cvf build-dir.tar build/
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
+        path: build-dir.tar
+    # - name: test
+    #   env:
+    #     LD_LIBRARY_PATH: /usr/local/lib
+    #   working-directory: build
+    #   run: ctest -V -j $(nproc)
 
-  # test-linux:
-  #   needs: build-linux
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       include:
-  #         # - build-type: Debug
-  #         #   CC: clang
-  #         #   CXX: clang++
-  #         # - build-type: Release
-  #         #   CC: clang
-  #         #   CXX: clang++
-  #         - build-type: Debug
-  #           CC: gcc
-  #           CXX: g++
-  #         - build-type: Release
-  #           CC: gcc
-  #           CXX: g++
-  #   runs-on: ubuntu-22.04
-  #   container:
-  #     image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v1
-  #     - name: Download Build Artifacts
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
-  #     - name: unpack
-  #       run: tar xvf build-dir.tar
-  #     - name: cmake
-  #       env:
-  #         CC: ${{ matrix.CC }}
-  #         CXX: ${{ matrix.CXX }}
-  #       run: |
-  #         cd build
-  #         cmake .. -GNinja \
-  #           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-  #           -DBUILD_TESTING=ON \
-  #           -DBUILD_BENCHMARKS=ON \
-  #           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-  #     - name: Download Tracks
-  #       working-directory: build
-  #       run: ninja tracks
-  #     - name: show
-  #       run: ls -R
-  #     - name: Test
-  #       working-directory: build
-  #       run: ctest -V -j $(nproc)
+  test-linux:
+    needs: build-linux
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # - build-type: Debug
+          #   CC: clang
+          #   CXX: clang++
+          # - build-type: Release
+          #   CC: clang
+          #   CXX: clang++
+          - build-type: Debug
+            CC: gcc
+            CXX: g++
+          - build-type: Release
+            CC: gcc
+            CXX: g++
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
+      - name: unpack
+        run: tar xvf build-dir.tar
+      # - name: cmake
+      #   env:
+      #     CC: ${{ matrix.CC }}
+      #     CXX: ${{ matrix.CXX }}
+      #   run: |
+      #     cd build
+      #     cmake .. -GNinja \
+      #       -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+      #       -DBUILD_TESTING=ON \
+      #       -DBUILD_BENCHMARKS=ON \
+      #       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      - name: Download Tracks
+        working-directory: build
+        run: ninja tracks
+      - name: show
+        run: ls -R
+      - name: Test
+        env:
+          LD_LIBRARY_PATH: /usr/local/lib
+        working-directory: build
+        run: ctest -V -j $(nproc)
 
   build-test-macos:
-    needs: build-test-linux
+    needs: test-linux
     strategy:
       fail-fast: true
       matrix:
@@ -205,7 +207,7 @@ jobs:
   #     run: ctest -V -j $(nproc)
 
   clang-format:
-    needs: build-test-linux
+    needs: test-linux
     runs-on: ubuntu-latest
     steps:
       - name: Install software
@@ -216,7 +218,7 @@ jobs:
         run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
   
   clang-tidy:
-    needs: build-test-linux
+    needs: test-linux
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest

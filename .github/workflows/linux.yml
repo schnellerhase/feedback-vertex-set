@@ -33,23 +33,23 @@ jobs:
   #   - name: test
   #     run: ctest -V -j $(nproc)
 
-  build:
+  build+test-linux:
     strategy:
       fail-fast: false
       matrix:
         include:
-          # - os: ubuntu-22.04
-          #   CC: clang
-          #   CXX: clang++
-          #   build-type: Debug
-          # - os: ubuntu-20.04
-          #   CC: clang
-          #   CXX: clang++
-          #   build-type: Release
-          # - os: ubuntu-22.04
-          #   CC: gcc
-          #   CXX: g++
-          #   build-type: Debug
+          - os: ubuntu-22.04
+            CC: clang
+            CXX: clang++
+            build-type: Debug
+          - os: ubuntu-20.04
+            CC: clang
+            CXX: clang++
+            build-type: Release
+          - os: ubuntu-22.04
+            CC: gcc
+            CXX: g++
+            build-type: Debug
           - os: ubuntu-22.04
             CC: gcc
             CXX: g++
@@ -156,80 +156,19 @@ jobs:
           -DBUILD_BENCHMARKS=ON \
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
         ninja
-
-    - name: Tar build directory
-      run: tar -cvf build-dir.tar build/
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-dir-ubuntu-${{ matrix.build-type }}
-        path: build-dir.tar
-
-    # - name: test
-    #   working-directory: build
-    #   run: ctest -V -j $(nproc)
-
-  test:
-    needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # - os: ubuntu-22.04
-          #   CC: clang
-          #   CXX: clang++
-          #   build-type: Debug
-          # - os: ubuntu-20.04
-          #   CC: clang
-          #   CXX: clang++
-          #   build-type: Release
-          # - os: ubuntu-22.04
-          #   CC: gcc
-          #   CXX: g++
-          #   build-type: Debug
-          - os: ubuntu-22.04
-            CC: gcc
-            CXX: g++
-            build-type: Release
-          # - os: macos-latest
-          #   CC: clang
-          #   CXX: clang++
-          #   build-type: Debug
-          # - os: macos-latest
-          #   CC: clang
-          #   CXX: clang++
-          #   build-type: Release
-          # - os: macos-latest
-          #   CC: gcc
-          #   CXX: g++
-          #   build-type: Debug
-          # - os: macos-latest
-          #   CC: gcc
-          #   CXX: g++
-          #   build-type: Release
-    runs-on: ${{ matrix.os }}
-    container:
-      image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-dir-ubuntu-${{ matrix.build-type }}
-      - name: unpack
-        run: tar xvf build-dir.tar
-      - name: Download Tracks
-        working-directory: build
-        run: ninja tracks
-      - name: show
-        run: ls -R
-      - name: Test
-        working-directory: build
-        run: ctest -V -j $(nproc)
+    # - name: Tar build directory
+    #   run: tar -cvf build-dir.tar build/
+    # - name: Upload Build Artifact
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: build-dir-ubuntu-${{ matrix.build-type }}
+    #     path: build-dir.tar
+    - name: test
+      working-directory: build
+      run: ctest -V -j $(nproc)
 
   clang-format:
-    needs: build
+    needs: build+test-linux
     runs-on: ubuntu-latest
     steps:
       - name: Install software
@@ -240,7 +179,7 @@ jobs:
         run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
   
   clang-tidy:
-    needs: build
+    needs: build+test-linux
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest

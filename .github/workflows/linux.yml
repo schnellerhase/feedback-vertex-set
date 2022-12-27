@@ -5,7 +5,6 @@ on: push
 jobs:   
   build-linux:
     strategy:
-      fail-fast: true
       matrix:
         include:
           - build-type: Debug
@@ -57,15 +56,14 @@ jobs:
   test-linux:
     needs: build-linux
     strategy:
-      fail-fast: false
       matrix:
         include:
-          # - build-type: Debug
-          #   CC: clang
-          #   CXX: clang++
-          # - build-type: Release
-          #   CC: clang
-          #   CXX: clang++
+          - build-type: Debug
+            CC: clang
+            CXX: clang++
+          - build-type: Release
+            CC: clang
+            CXX: clang++
           - build-type: Debug
             CC: gcc
             CXX: g++
@@ -84,22 +82,6 @@ jobs:
           name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
       - name: unpack
         run: tar xvf build-dir.tar
-      # - name: cmake
-      #   env:
-      #     CC: ${{ matrix.CC }}
-      #     CXX: ${{ matrix.CXX }}
-      #   run: |
-      #     cd build
-      #     cmake .. -GNinja \
-      #       -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-      #       -DBUILD_TESTING=ON \
-      #       -DBUILD_BENCHMARKS=ON \
-      #       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-      - name: Download Tracks
-        working-directory: build
-        run: ninja tracks
-      - name: show
-        run: ls -R
       - name: Test
         env:
           LD_LIBRARY_PATH: /usr/local/lib
@@ -107,9 +89,7 @@ jobs:
         run: ctest -V -j $(nproc)
 
   build-test-macos:
-    needs: test-linux
     strategy:
-      fail-fast: true
       matrix:
         include:
           - build-type: Debug
@@ -207,7 +187,6 @@ jobs:
   #     run: ctest -V -j $(nproc)
 
   clang-format:
-    needs: test-linux
     runs-on: ubuntu-latest
     steps:
       - name: Install software
@@ -218,7 +197,6 @@ jobs:
         run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
   
   clang-tidy:
-    needs: test-linux
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest

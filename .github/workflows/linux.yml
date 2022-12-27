@@ -8,12 +8,12 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - build-type: Debug
-            CC: clang
-            CXX: clang++
-          - build-type: Release
-            CC: clang
-            CXX: clang++
+          # - build-type: Debug
+          #   CC: clang
+          #   CXX: clang++
+          # - build-type: Release
+          #   CC: clang
+          #   CXX: clang++
           - build-type: Debug
             CC: gcc
             CXX: g++
@@ -58,12 +58,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - build-type: Debug
-            CC: clang
-            CXX: clang++
-          - build-type: Release
-            CC: clang
-            CXX: clang++
+          # - build-type: Debug
+          #   CC: clang
+          #   CXX: clang++
+          # - build-type: Release
+          #   CC: clang
+          #   CXX: clang++
           - build-type: Debug
             CC: gcc
             CXX: g++

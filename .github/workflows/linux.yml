@@ -47,11 +47,6 @@ jobs:
       with:
         name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
         path: build-dir.tar
-    # - name: test
-    #   env:
-    #     LD_LIBRARY_PATH: /usr/local/lib
-    #   working-directory: build
-    #   run: ctest -V -j $(nproc)
 
   test-linux:
     needs: build-linux
@@ -91,9 +86,7 @@ jobs:
   build-test-macos:
     strategy:
       matrix:
-        include:
-          - build-type: Debug
-          - build-type: Release
+        build-type: [Debug, Release]
     runs-on: macos-latest
     steps:
     - name: Checkout
@@ -155,36 +148,30 @@ jobs:
       working-directory: build
       run: ctest -V -j $(nproc)
 
-  # windows:
-  #   needs: build-test-linux
-  #   strategy:
-  #     fail-fast: true
-  #     matrix:
-  #       build-type: [Debug, Release]
+  windows-build:
+    strategy:
+      matrix:
+        build-type: [Debug, Release]
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: create build dir
+      run: mkdir -p build
+    # - name: Install gtest
+    #   uses: MarkusJx/googletest-installer@v1.1
 
-  #   runs-on: windows-latest
-  #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v1
+    - name: cmake
+      run: cmake -S . -B build/ -G Ninja -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
+        # -D BUILD_TESTING=ON 
+        # -D BUILD_BENCHMARKS=ON
 
-  #   - uses: ilammy/msvc-dev-cmd@v1
-
-  #   - name: create build dir
-  #     run: mkdir -p build
-
-  #   # - name: Install gtest
-  #   #   uses: MarkusJx/googletest-installer@v1.1
-
-  #   - name: cmake
-  #     run: cmake -S . -B build/ -G Ninja -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
-  #       # -D BUILD_TESTING=ON 
-  #       # -D BUILD_BENCHMARKS=ON
-
-  #   - name: build
-  #     run: cmake --build build/ --config ${{ matrix.build-type }}
+    - name: build
+      run: cmake --build build/ --config ${{ matrix.build-type }}
     
-  #   - name: test
-  #     run: ctest -V -j $(nproc)
+    - name: test
+      run: ctest -V -j $(nproc)
 
   clang-format:
     runs-on: ubuntu-latest

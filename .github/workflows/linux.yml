@@ -3,17 +3,17 @@ name: linux
 on: push
 
 jobs:   
-  build-linux:
+  build-test-linux:
     strategy:
       fail-fast: true
       matrix:
         include:
-          # - build-type: Debug
-          #   CC: clang
-          #   CXX: clang++
-          # - build-type: Release
-          #   CC: clang
-          #   CXX: clang++
+          - build-type: Debug
+            CC: clang
+            CXX: clang++
+          - build-type: Release
+            CC: clang
+            CXX: clang++
           - build-type: Debug
             CC: gcc
             CXX: g++
@@ -41,139 +41,135 @@ jobs:
     - name: build
       working-directory: build
       run: ninja
-    - name: Tar build directory
-      run: tar -cvf build-dir.tar build/
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
-        path: build-dir.tar
-    # - name: test
-    #   working-directory: build
-    #   run: ctest -V -j $(nproc)
+    # - name: Tar build directory
+    #   run: tar -cvf build-dir.tar build/
+    # - name: Upload Build Artifact
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
+    #     path: build-dir.tar
+    - name: test
+      working-directory: build
+      run: ctest -V -j $(nproc)
 
-  test-linux:
-    needs: build-linux
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # - build-type: Debug
-          #   CC: clang
-          #   CXX: clang++
-          # - build-type: Release
-          #   CC: clang
-          #   CXX: clang++
-          - build-type: Debug
-            CC: gcc
-            CXX: g++
-          - build-type: Release
-            CC: gcc
-            CXX: g++
-    runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
-      - name: unpack
-        run: tar xvf build-dir.tar
-      - name: cmake
-        env:
-          CC: ${{ matrix.CC }}
-          CXX: ${{ matrix.CXX }}
-        run: |
-          cd build
-          cmake .. -GNinja \
-            -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-            -DBUILD_TESTING=ON \
-            -DBUILD_BENCHMARKS=ON \
-            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-      - name: Download Tracks
-        working-directory: build
-        run: ninja tracks
-      - name: show
-        run: ls -R
-      - name: Test
-        working-directory: build
-        run: ctest -V -j $(nproc)
-
-  # build-test-macos:
-  #   needs: build-test-linux
+  # test-linux:
+  #   needs: build-linux
   #   strategy:
-  #     fail-fast: true
+  #     fail-fast: false
   #     matrix:
   #       include:
-  #         - os: macos-latest
-  #           build-type: Debug
-  #         - os: macos-latest
-  #           build-type: Release
-  #   runs-on: ${{ matrix.os }}
+  #         # - build-type: Debug
+  #         #   CC: clang
+  #         #   CXX: clang++
+  #         # - build-type: Release
+  #         #   CC: clang
+  #         #   CXX: clang++
+  #         - build-type: Debug
+  #           CC: gcc
+  #           CXX: g++
+  #         - build-type: Release
+  #           CC: gcc
+  #           CXX: g++
+  #   runs-on: ubuntu-22.04
   #   container:
   #     image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
   #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v1
-  #   - name: Install software
-  #     run: brew install ninja googletest google-benchmark
+  #     - name: Checkout
+  #       uses: actions/checkout@v1
+  #     - name: Download Build Artifacts
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
+  #     - name: unpack
+  #       run: tar xvf build-dir.tar
+  #     - name: cmake
+  #       env:
+  #         CC: ${{ matrix.CC }}
+  #         CXX: ${{ matrix.CXX }}
+  #       run: |
+  #         cd build
+  #         cmake .. -GNinja \
+  #           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+  #           -DBUILD_TESTING=ON \
+  #           -DBUILD_BENCHMARKS=ON \
+  #           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  #     - name: Download Tracks
+  #       working-directory: build
+  #       run: ninja tracks
+  #     - name: show
+  #       run: ls -R
+  #     - name: Test
+  #       working-directory: build
+  #       run: ctest -V -j $(nproc)
+
+  build-test-macos:
+    needs: build-test-linux
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - build-type: Debug
+          - build-type: Release
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Install software
+      run: brew install ninja googletest google-benchmark
     
-  #   - name: Install Soplex
-  #     run: |
-  #       if cd soplex; then git pull; cd ..; else git clone https://github.com/scipopt/soplex.git soplex; fi
-  #       cd soplex
-  #       cmake . -GNinja \
-  #         -DBOOST=ON \
-  #         -DBUILD_TESTING=OFF \
-  #         -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-  #         -DGMP=OFF \
-  #         -DMPFR=OFF \
-  #         -DMT=OFF \
-  #         -DPAPILO=OFF \
-  #         -DQUADMATH=OFF \
-  #         -DZLIB=ON
-  #       sudo ninja install
+    - name: Install Soplex
+      run: |
+        if cd soplex; then git pull; cd ..; else git clone https://github.com/scipopt/soplex.git soplex; fi
+        cd soplex
+        cmake . -GNinja \
+          -DBOOST=ON \
+          -DBUILD_TESTING=OFF \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DGMP=OFF \
+          -DMPFR=OFF \
+          -DMT=OFF \
+          -DPAPILO=OFF \
+          -DQUADMATH=OFF \
+          -DZLIB=ON
+        sudo ninja install
 
-  #   - name: Install SCIP
-  #     run: |
-  #       if cd scip; then git pull; cd ..; else git clone https://github.com/scipopt/scip.git scip; fi
-  #       cd scip
-  #       cmake . -GNinja \
-  #         -DAUTOBUILD=OFF \
-  #         -DBUILD_TESTING=OFF \
-  #         -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-  #         -DDEBUGSOL=OFF \
-  #         -DGMP=ON \
-  #         -DIPOPT=OFF \
-  #         -DLPS=spx \
-  #         -DLPSCHECK=OFF \
-  #         -DPAPILO=OFF \
-  #         -DPARASCIP=OFF \
-  #         -DREADLINE=OFF \
-  #         -DSHARED=ON \
-  #         -DTHREADSAFE=ON \
-  #         -DUSE_GMP=OFF \
-  #         -DWORHP=OFF \
-  #         -DZIMPL=OFF \
-  #         -DZLIB=ON
-  #       sudo ninja install
+    - name: Install SCIP
+      run: |
+        if cd scip; then git pull; cd ..; else git clone https://github.com/scipopt/scip.git scip; fi
+        cd scip
+        cmake . -GNinja \
+          -DAUTOBUILD=OFF \
+          -DBUILD_TESTING=OFF \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DDEBUGSOL=OFF \
+          -DGMP=ON \
+          -DIPOPT=OFF \
+          -DLPS=spx \
+          -DLPSCHECK=OFF \
+          -DPAPILO=OFF \
+          -DPARASCIP=OFF \
+          -DREADLINE=OFF \
+          -DSHARED=ON \
+          -DTHREADSAFE=ON \
+          -DUSE_GMP=OFF \
+          -DWORHP=OFF \
+          -DZIMPL=OFF \
+          -DZLIB=ON
+        sudo ninja install
 
-  #   - name: cmake
-  #     run: |
-  #       mkdir -p build
-  #       cd build
-  #       cmake .. -GNinja \
-  #         -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-  #         -DBUILD_TESTING=ON \
-  #         -DBUILD_BENCHMARKS=ON \
-  #         -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-  #       ninja
-    # - name: test
-    #   working-directory: build
-    #   run: ctest -V -j $(nproc)
+    - name: cmake
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. -GNinja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DBUILD_TESTING=ON \
+          -DBUILD_BENCHMARKS=ON \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        ninja
+    - name: test
+      working-directory: build
+      run: ctest -V -j $(nproc)
 
   # windows:
   #   needs: build-test-linux
@@ -206,33 +202,33 @@ jobs:
   #   - name: test
   #     run: ctest -V -j $(nproc)
 
-  # clang-format:
-  #   needs: build-test-linux
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Install software
-  #       run: sudo apt install clang-format -y
-  #     - name: Checkout project
-  #       uses: actions/checkout@v2
-  #     - name: Check formatting
-  #       run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
+  clang-format:
+    needs: build-test-linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install software
+        run: sudo apt install clang-format -y
+      - name: Checkout project
+        uses: actions/checkout@v2
+      - name: Check formatting
+        run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
   
-  # clang-tidy:
-    # needs: build-test-linux
-    # runs-on: ubuntu-latest
-    # container:
-    #   image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
-    # steps:
-    #   - name: Checkout project
-    #     uses: actions/checkout@v2
-    #   - name: cmake
-    #     run: |
-    #       mkdir build
-    #       cd build
-    #       cmake .. -GNinja \
-    #       -DCMAKE_BUILD_TYPE=Debug \
-    #       -DBUILD_TESTING=ON \
-    #       -DBUILD_BENCHMARKS=ON \
-    #       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-    #   - name: clang-tidy
-    #     run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*
+  clang-tidy:
+    needs: build-test-linux
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+      - name: cmake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -GNinja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DBUILD_TESTING=ON \
+          -DBUILD_BENCHMARKS=ON \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      - name: clang-tidy
+        run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*

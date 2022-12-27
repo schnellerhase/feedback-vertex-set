@@ -49,6 +49,8 @@ jobs:
     #     name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
     #     path: build-dir.tar
     - name: test
+      env:
+        LD_LIBRARY_PATH: /usr/local/lib
       working-directory: build
       run: ctest -V -j $(nproc)
 

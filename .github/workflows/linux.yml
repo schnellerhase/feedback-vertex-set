@@ -8,23 +8,19 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - os: ubuntu-22.04
+          - build-type: Debug
             CC: clang
             CXX: clang++
-            build-type: Debug
-          - os: ubuntu-20.04
+          - build-type: Release
             CC: clang
             CXX: clang++
-            build-type: Release
-          - os: ubuntu-22.04
+          - build-type: Debug
             CC: gcc
             CXX: g++
-            build-type: Debug
-          - os: ubuntu-22.04
+          - build-type: Release
             CC: gcc
             CXX: g++
-            build-type: Release
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-22.04
     container:
       image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
     steps:
@@ -42,7 +38,9 @@ jobs:
           -DBUILD_TESTING=ON \
           -DBUILD_BENCHMARKS=ON \
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-        ninja
+    - name: build
+      working-directory: build
+      run: ninja
     - name: Tar build directory
       run: tar -cvf build-dir.tar build/
     - name: Upload Build Artifact
@@ -60,18 +58,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - os: ubuntu-22.04
-          #   CC: clang
-          #   CXX: clang++
-          #   build-type: Debug
-          # - os: ubuntu-20.04
-          #   CC: clang
-          #   CXX: clang++
-          #   build-type: Release
-          # - os: ubuntu-22.04
-          #   CC: gcc
-          #   CXX: g++
-          #   build-type: Debug
+          - build-type: Debug
+            CC: clang
+            CXX: clang++
+          - build-type: Release
+            CC: clang
+            CXX: clang++
+          - build-type: Debug
+            CC: gcc
+            CXX: g++
           - build-type: Release
             CC: gcc
             CXX: g++
@@ -87,6 +82,17 @@ jobs:
           name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
       - name: unpack
         run: tar xvf build-dir.tar
+      - name: cmake
+        env:
+          CC: ${{ matrix.CC }}
+          CXX: ${{ matrix.CXX }}
+        run: |
+          cd build
+          cmake .. -GNinja \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+            -DBUILD_TESTING=ON \
+            -DBUILD_BENCHMARKS=ON \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
       - name: Download Tracks
         working-directory: build
         run: ninja tracks

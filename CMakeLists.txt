@@ -40,9 +40,10 @@ if (PROFILING)
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 endif()
 
-find_package(scip)
-find_package(soplex)
-
+# find_package(scip)
+# find_package(soplex)
+include_directories(third-party/scip)
+include_directories(third-party/soplex)
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror") 
 else()

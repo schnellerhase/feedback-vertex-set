@@ -94,45 +94,45 @@ jobs:
     - name: Install software
       run: brew install ninja googletest google-benchmark
     
-    - name: Install Soplex
-      run: |
-        if cd soplex; then git pull; cd ..; else git clone https://github.com/scipopt/soplex.git soplex; fi
-        cd soplex
-        cmake . -GNinja \
-          -DBOOST=ON \
-          -DBUILD_TESTING=OFF \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-          -DGMP=OFF \
-          -DMPFR=OFF \
-          -DMT=OFF \
-          -DPAPILO=OFF \
-          -DQUADMATH=OFF \
-          -DZLIB=ON
-        sudo ninja install
+    # - name: Install Soplex
+    #   run: |
+    #     if cd soplex; then git pull; cd ..; else git clone https://github.com/scipopt/soplex.git soplex; fi
+    #     cd soplex
+    #     cmake . -GNinja \
+    #       -DBOOST=ON \
+    #       -DBUILD_TESTING=OFF \
+    #       -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+    #       -DGMP=OFF \
+    #       -DMPFR=OFF \
+    #       -DMT=OFF \
+    #       -DPAPILO=OFF \
+    #       -DQUADMATH=OFF \
+    #       -DZLIB=ON
+    #     sudo ninja install
 
-    - name: Install SCIP
-      run: |
-        if cd scip; then git pull; cd ..; else git clone https://github.com/scipopt/scip.git scip; fi
-        cd scip
-        cmake . -GNinja \
-          -DAUTOBUILD=OFF \
-          -DBUILD_TESTING=OFF \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-          -DDEBUGSOL=OFF \
-          -DGMP=ON \
-          -DIPOPT=OFF \
-          -DLPS=spx \
-          -DLPSCHECK=OFF \
-          -DPAPILO=OFF \
-          -DPARASCIP=OFF \
-          -DREADLINE=OFF \
-          -DSHARED=ON \
-          -DTHREADSAFE=ON \
-          -DUSE_GMP=OFF \
-          -DWORHP=OFF \
-          -DZIMPL=OFF \
-          -DZLIB=ON
-        sudo ninja install
+    # - name: Install SCIP
+    #   run: |
+    #     if cd scip; then git pull; cd ..; else git clone https://github.com/scipopt/scip.git scip; fi
+    #     cd scip
+    #     cmake . -GNinja \
+    #       -DAUTOBUILD=OFF \
+    #       -DBUILD_TESTING=OFF \
+    #       -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+    #       -DDEBUGSOL=OFF \
+    #       -DGMP=ON \
+    #       -DIPOPT=OFF \
+    #       -DLPS=spx \
+    #       -DLPSCHECK=OFF \
+    #       -DPAPILO=OFF \
+    #       -DPARASCIP=OFF \
+    #       -DREADLINE=OFF \
+    #       -DSHARED=ON \
+    #       -DTHREADSAFE=ON \
+    #       -DUSE_GMP=OFF \
+    #       -DWORHP=OFF \
+    #       -DZIMPL=OFF \
+    #       -DZLIB=ON
+    #     sudo ninja install
 
     - name: cmake
       run: |
@@ -142,7 +142,9 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
           -DBUILD_TESTING=ON \
           -DBUILD_BENCHMARKS=ON \
-          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+          -DFVS_USE_SYSTEM_SOPLEX=OFF \
+          -DFVS_USE_SYSTEM_SCIP=OFF
         ninja
     - name: test
       working-directory: build

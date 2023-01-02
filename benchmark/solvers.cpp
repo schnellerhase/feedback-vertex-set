@@ -20,7 +20,7 @@ BM_naive(benchmark::State& state)
     for (auto _ : state)
         solve_naive(graph);
 }
-BENCHMARK(BM_naive)->Iterations(10)->DenseRange(1, 26, 2);
+BENCHMARK(BM_naive)->DenseRange(1, 26, 2);
 
 
 static void
@@ -32,5 +32,5 @@ BM_reduce(benchmark::State& state)
 }
 
 // BENCHMARK(BM_reduce)->DenseRange(1, 50, 2);
-BENCHMARK(BM_reduce)->Iterations(10)->DenseRange(1, 36, 2);
+BENCHMARK(BM_reduce)->DenseRange(1, 36, 2);
 BENCHMARK_MAIN();

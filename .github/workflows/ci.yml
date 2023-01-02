@@ -83,6 +83,50 @@ jobs:
         working-directory: build
         run: ctest -V -j $(nproc)
 
+  benchmark-linux:
+    needs: build-linux
+    strategy:
+      matrix:
+        include:
+          - CC: clang
+            CXX: clang++
+          - CC: gcc
+            CXX: g++
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir-ubuntu-Release-${{ matrix.CXX }}
+      - name: unpack
+        run: tar xvf build-dir.tar
+      - name: Run benchmark
+        
+        working-directory: build
+        run: ./benchmark_solvers 
+      - name: Run benchmark
+        env:
+          LD_LIBRARY_PATH: /usr/local/lib
+        working-directory: build
+        run: ./benchmark_solvers --benchmark_min_time=20 --benchmark_format=json | tee benchmark_result.json
+      - name: Download previous benchmark data
+        uses: actions/cache@v1
+        with:
+          path: ./cache
+          key: ${{ runner.os }}-benchmark
+      - name: Run github-action-benchmark
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: 'googlecpp'
+          output-file-path: build/benchmark_result.json
+          external-data-json-path: ./cache/benchmark-data.json
+          fail-on-alert: true
+          alert-threshold: "105%"
+
   build-macos:
     strategy:
       matrix:
@@ -188,44 +232,3 @@ jobs:
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
       - name: clang-tidy
         run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*
-
-  benchmark:
-    name: Performance regression check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Software
-        run: |
-          sudo apt update
-          sudo apt install clang clang-format clang-tidy cmake ninja-build build-essential libgtest-dev libbenchmark-dev git -y
-
-      - name: create build dir
-        run: mkdir -p build
-
-      - name: cmake
-        working-directory: build
-        run: |
-          cmake .. -GNinja \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_BENCHMARKS=ON \
-
-      - name: ninja
-        working-directory: build
-        run: ninja benchmark_solvers
-
-      - name: Run benchmark
-        working-directory: build
-        run: ./benchmark_solvers --benchmark_format=json | tee benchmark_result.json
-      - name: Download previous benchmark data
-        uses: actions/cache@v1
-        with:
-          path: ./cache
-          key: ${{ runner.os }}-benchmark
-      - name: Run github-action-benchmark
-        uses: benchmark-action/github-action-benchmark@v1
-        with:
-          tool: 'googlecpp'
-          output-file-path: build/benchmark_result.json
-          external-data-json-path: ./cache/benchmark-data.json
-          fail-on-alert: true
-          alert-threshold: "105%"

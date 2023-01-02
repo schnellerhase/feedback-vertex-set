@@ -13,16 +13,14 @@ foreach(CPP ${CPPS})
     add_executable(test_${TEST_NAME} ${CPP})
 
     target_include_directories(test_${TEST_NAME} PUBLIC ../)
-    # target_include_directories(test_${TEST_NAME} PUBLIC ../solvers)
-    target_include_directories(test_${TEST_NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-src/src)
-    target_include_directories(test_${TEST_NAME} SYSTEM PUBLIC ${CMAKE_BINARY_DIR}/scip-build)
-    target_include_directories(test_${TEST_NAME} SYSTEM PUBLIC ../third-party/)
-    
-    target_link_directories(test_${TEST_NAME} PUBLIC ${CMAKE_BINARY_DIR}/scip-build/lib)
-    target_link_directories(test_${TEST_NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
     target_link_libraries(test_${TEST_NAME} scip soplex)
 
-    add_dependencies(test_${TEST_NAME} scip-project soplex-project)
+    if (NOT FVS_USE_SYSTEM_SCIP)
+        add_dependencies(test_${TEST_NAME} scip-project)
+    endif()
 
+    if (NOT FVS_USE_SYSTEM_SOPLEX)
+        add_dependencies(test_${TEST_NAME} soplex-project)
+    endif()
     add_test(NAME test_${TEST_NAME} COMMAND test_${TEST_NAME})
 endforeach()

@@ -1,0 +1,195 @@
+name: CI
+
+on: push
+
+jobs:   
+  build-linux:
+    strategy:
+      matrix:
+        include:
+          - build-type: Debug
+            CC: clang
+            CXX: clang++
+          - build-type: Release
+            CC: clang
+            CXX: clang++
+          - build-type: Debug
+            CC: gcc
+            CXX: g++
+          - build-type: Release
+            CC: gcc
+            CXX: g++
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: cmake
+      env:
+        CC: ${{ matrix.CC }}
+        CXX: ${{ matrix.CXX }}
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. -GNinja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DBUILD_TESTING=ON \
+          -DBUILD_BENCHMARKS=ON \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    - name: build
+      working-directory: build
+      run: ninja
+    - name: Tar build directory
+      run: tar -cvf build-dir.tar build/
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
+        path: build-dir.tar
+
+  test-linux:
+    needs: build-linux
+    strategy:
+      matrix:
+        include:
+          - build-type: Debug
+            CC: clang
+            CXX: clang++
+          - build-type: Release
+            CC: clang
+            CXX: clang++
+          - build-type: Debug
+            CC: gcc
+            CXX: g++
+          - build-type: Release
+            CC: gcc
+            CXX: g++
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir-ubuntu-${{ matrix.build-type }}-${{ matrix.CXX }}
+      - name: unpack
+        run: tar xvf build-dir.tar
+      - name: Test
+        env:
+          LD_LIBRARY_PATH: /usr/local/lib
+        working-directory: build
+        run: ctest -V -j $(nproc)
+
+  clang-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install software
+        run: sudo apt install clang-format -y
+      - name: Checkout project
+        uses: actions/checkout@v2
+      - name: Check formatting
+        run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
+  
+  clang-tidy:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+      - name: cmake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -GNinja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DBUILD_TESTING=ON \
+          -DBUILD_BENCHMARKS=ON \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      - name: clang-tidy
+        run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*
+
+  build-macos:
+    needs: [test-linux, clang-format, clang-tidy]
+    strategy:
+      matrix:
+        build-type: [Debug, Release]
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Install software
+      run: brew install ninja googletest google-benchmark
+    - name: cmake
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. -GNinja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DBUILD_TESTING=ON \
+          -DBUILD_BENCHMARKS=ON \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+          -DFVS_USE_SYSTEM_SOPLEX=OFF \
+          -DFVS_USE_SYSTEM_SCIP=OFF
+    - name: build
+      working-directory: build
+      run: ninja
+    - name: Tar build directory
+      run: tar -cvf build-dir.tar build/
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-dir-macos-${{ matrix.build-type }}
+        path: build-dir.tar
+
+  test-macos:
+    needs: build-macos
+    strategy:
+      matrix:
+        build-type: [Debug, Release]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install software
+        run: brew install ninja googletest google-benchmark
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-dir-macos-${{ matrix.build-type }}
+      - name: unpack
+        run: tar xvf build-dir.tar
+      - name: Test
+        env:
+          LD_LIBRARY_PATH: /usr/local/lib
+        working-directory: build
+        run: ctest -V -j $(nproc)
+  
+  windows-build:
+    needs: [test-linux, clang-format, clang-tidy]
+    strategy:
+      matrix:
+        build-type: [Debug, Release]
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: create build dir
+      run: mkdir -p build
+    # - name: Install gtest
+    #   uses: MarkusJx/googletest-installer@v1.1
+
+    - name: cmake
+      run: cmake -S . -B build/ -G Ninja -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
+        # -D BUILD_TESTING=ON 
+        # -D BUILD_BENCHMARKS=ON
+
+    - name: build
+      run: cmake --build build/ --config ${{ matrix.build-type }}
+    
+    - name: test
+      run: ctest -V -j $(nproc)

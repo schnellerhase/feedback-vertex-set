@@ -43,5 +43,8 @@ else()
         # BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/scip-build/lib/libscip.a"
     )
 
+    set(SCIP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/scip-src/src;${CMAKE_BINARY_DIR}/scip-build PARENT_SCOPE)
+    set(SCIP_LIBRARIES ${CMAKE_BINARY_DIR}/scip-build/lib PARENT_SCOPE)
+
     add_dependencies(scip-project soplex-project)
 endif()

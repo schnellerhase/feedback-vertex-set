@@ -43,6 +43,9 @@ else()
         DOWNLOAD_NO_PROGRESS TRUE
     )
 
+    set(SOPLEX_INCLUDE_DIR ${CMAKE_BINARY_DIR}/soplex-src/src;${CMAKE_BINARY_DIR}/soplex-build PARENT_SCOPE)
+    set(SOPLEX_LIBRARIES ${CMAKE_BINARY_DIR}/soplex-build/lib PARENT_SCOPE)
+
     # add_library(soplex_static_lib STATIC IMPORTED GLOBAL)
     # set_target_properties(soplex_static_lib PROPERTIES IMPORTED_LOCATION "${CMAKE_BINARY_DIR}/soplex-build/lib/libsoplex.a")
 endif()

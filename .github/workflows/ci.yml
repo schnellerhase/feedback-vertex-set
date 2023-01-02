@@ -24,7 +24,7 @@ jobs:
       image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
     - name: cmake
       env:
         CC: ${{ matrix.CC }}
@@ -70,7 +70,7 @@ jobs:
       image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
       - name: Download Build Artifacts
         uses: actions/download-artifact@v3
         with:
@@ -90,7 +90,7 @@ jobs:
     runs-on: macos-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
     - name: Install software
       run: brew install ninja googletest google-benchmark
     - name: cmake
@@ -123,7 +123,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
       - name: Install software
         run: brew install ninja googletest google-benchmark
       - name: Download Build Artifacts
@@ -145,7 +145,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
     - uses: ilammy/msvc-dev-cmd@v1
     - name: create build dir
       run: mkdir -p build
@@ -169,7 +169,7 @@ jobs:
       - name: Install software
         run: sudo apt-get install clang-format -y
       - name: Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Check formatting
         run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs clang-format -style=file --dry-run --Werror
   
@@ -179,7 +179,7 @@ jobs:
       image: ghcr.io/schnellerhase/feedback-vertex-set-container-release:latest
     steps:
       - name: Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: cmake
         run: |
           mkdir build

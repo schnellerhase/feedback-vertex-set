@@ -107,36 +107,35 @@ jobs:
     - name: build
       working-directory: build
       run: ninja
-    - name: Tar build directory
-      run: tar -cvf build-dir.tar build/
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-dir-macos-${{ matrix.build-type }}
-        path: build-dir.tar
-
-  test-macos:
-    needs: build-macos
-    strategy:
-      matrix:
-        build-type: [Debug, Release]
-    runs-on: macos-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install software
-        run: brew install ninja googletest google-benchmark
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-dir-macos-${{ matrix.build-type }}
-      - name: unpack
-        run: tar xvf build-dir.tar
-      - name: Test
-        # env:
-        #   LD_LIBRARY_PATH: /usr/local/lib
-        working-directory: build
-        run: ctest -V -j $(nproc)
+  #   - name: Tar build directory
+  #     run: tar -cvf build-dir.tar build/
+  #   - name: Upload Build Artifact
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: build-dir-macos-${{ matrix.build-type }}
+  #       path: build-dir.tar
+  # test-macos:
+  #   needs: build-macos
+  #   strategy:
+  #     matrix:
+  #       build-type: [Debug, Release]
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Install software
+  #       run: brew install ninja googletest google-benchmark
+  #     - name: Download Build Artifacts
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: build-dir-macos-${{ matrix.build-type }}
+  #     - name: unpack
+  #       run: tar xvf build-dir.tar
+    - name: Test
+      # env:
+      #   LD_LIBRARY_PATH: /usr/local/lib
+      working-directory: build
+      run: ctest -V -j $(nproc)
   
   windows-build:
     strategy:

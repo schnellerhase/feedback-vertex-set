@@ -113,7 +113,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ./cache
-          key: ${{ runner.os }}-benchmark
+          key: ${{ runner.os }}-${{ matrix.CC }}-benchmark
       - name: Run github-action-benchmark
         uses: benchmark-action/github-action-benchmark@v1
         with:

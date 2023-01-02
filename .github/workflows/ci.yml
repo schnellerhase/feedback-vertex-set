@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install software
-        run: sudo apt install clang-format -y
+        run: sudo apt-get install clang-format -y
       - name: Checkout project
         uses: actions/checkout@v2
       - name: Check formatting

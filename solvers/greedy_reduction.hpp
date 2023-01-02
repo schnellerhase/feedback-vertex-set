@@ -13,7 +13,7 @@ solve_greedy_reduction(const SubGraph& graph)
         index_t ccf(1);
         auto start_solution = greedy_reduction(subgraph, ccf);
         const auto sub_fvs =
-          solve_fvs_with_initial_solution(subgraph, start_solution);
+          solve_fvs(subgraph, start_solution);
         append_fvs(sub_fvs, subgraph, fvs);
     }
     return fvs;

@@ -37,9 +37,9 @@ TEST(Graph, scc_complex_4)
                 IndexList{ 0, 1, 1, 1, 2, 2, 3, 4, 4 },
                 IndexList{ 1, 0, 2, 3, 1, 3, 5, 1, 2 });
 
-    ASSERT_FALSE(Graph::is_acyclic(graph));
+    ASSERT_FALSE(is_acyclic(graph));
     auto fvs = greedy_reduction(graph, 1);
-    ASSERT_TRUE(Graph::is_acyclic(graph, fvs));
+    ASSERT_TRUE(is_acyclic(graph, fvs));
     // IndexList sorted_should({1, 2, 3, 0, 4, 5, 6});
     ASSERT_EQ(fvs, FVS({ true, false, true, false, false, false, false }));
 }

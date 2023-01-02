@@ -113,7 +113,6 @@ jobs:
         run: find fvs -iname *.hpp -o -iname *.cpp -o -iname *.h | xargs -P 0 -n 1 clang-tidy -p build -warnings-as-errors=*
 
   build-macos:
-    needs: [test-linux, clang-format, clang-tidy]
     strategy:
       matrix:
         build-type: [Debug, Release]
@@ -169,7 +168,6 @@ jobs:
         run: ctest -V -j $(nproc)
   
   windows-build:
-    needs: [test-linux, clang-format, clang-tidy]
     strategy:
       matrix:
         build-type: [Debug, Release]

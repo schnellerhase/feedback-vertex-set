@@ -32,5 +32,5 @@ BM_reduce(benchmark::State& state)
 }
 
 // BENCHMARK(BM_reduce)->DenseRange(1, 50, 2);
-BENCHMARK(BM_reduce)->DenseRange(1, 36, 2);
+BENCHMARK(BM_reduce)->DenseRange(1, 36, 2)->Iterations(10);
 BENCHMARK_MAIN();

@@ -120,11 +120,11 @@ if (BUILD_BENCHMARKS)
         # target_link_directories(benchmark_${NAME} PUBLIC ${CMAKE_BINARY_DIR}/soplex-build/lib)
 
         add_dependencies(benchmark_${NAME} tracks)
-        if (FVS_USE_SYSTEM_SCIP)
+        if (NOT FVS_USE_SYSTEM_SCIP)
             add_dependencies(benchmark_${NAME} scip-project)
         endif()
 
-        if (FVS_USE_SYSTEM_SOPLEX)
+        if (NOT FVS_USE_SYSTEM_SOPLEX)
             add_dependencies(benchmark_${NAME} soplex-project)
         endif()
 

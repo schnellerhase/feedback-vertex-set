@@ -132,8 +132,6 @@ jobs:
   #     - name: unpack
   #       run: tar xvf build-dir.tar
     - name: Test
-      # env:
-      #   LD_LIBRARY_PATH: /usr/local/lib
       working-directory: build
       run: ctest -V -j $(nproc)
   

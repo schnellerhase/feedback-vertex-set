@@ -1,2 +1,0 @@
-include_directories(scip)
-include_directories(soplex)

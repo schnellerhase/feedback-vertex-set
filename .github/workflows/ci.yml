@@ -105,10 +105,6 @@ jobs:
       - name: unpack
         run: tar xvf build-dir.tar
       - name: Run benchmark
-        
-        working-directory: build
-        run: ./benchmark_solvers 
-      - name: Run benchmark
         env:
           LD_LIBRARY_PATH: /usr/local/lib
         working-directory: build

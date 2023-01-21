@@ -7,6 +7,7 @@
 
 #include "algorithm/cc.hpp"
 // #include "algorithm/dfs.hpp"
+#include "algorithm/acyclic.hpp"
 #include "algorithm/connected.hpp"
 #include "algorithm/double.hpp"
 #include "algorithm/extract_undirected.hpp"

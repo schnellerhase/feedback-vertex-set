@@ -24,19 +24,6 @@ using FVS = VertexMarker;
 
 class Graph
 {
-  private:
-    index_t _N;
-    index_t _M;
-    IndexList _indeg;
-    IndexList _outdeg;
-    IndexListList _inadj;
-    IndexListList _outadj;
-
-    IndexList _tails;
-    IndexList _heads;
-    IndexListList _in2arc;
-    IndexListList _out2arc;
-
   public:
     Graph(index_t N,
           index_t M,
@@ -47,85 +34,10 @@ class Graph
           IndexList tails,
           IndexList heads,
           IndexListList in2arc,
-          IndexListList out2arc)
-      : _N(N)
-      , _M(M)
-      , _indeg(std::move(indeg))
-      , _outdeg(std::move(outdeg))
-      , _inadj(std::move(inadj))
-      , _outadj(std::move(outadj))
-      , _tails(std::move(tails))
-      , _heads(std::move(heads))
-      , _in2arc(std::move(in2arc))
-      , _out2arc(std::move(out2arc))
-    {
-        assert(_indeg.size() == _N);
-        assert(_outdeg.size() == _N);
-        assert(_inadj.size() == _N);
-        assert(
-          std::all_of(_inadj.begin(), _inadj.end(), [this](IndexList& list) {
-              return list.size() < this->_N;
-          }));
-        assert(_outadj.size() == _N);
-        assert(
-          std::all_of(_outadj.begin(), _outadj.end(), [this](IndexList& list) {
-              return list.size() < this->_N;
-          }));
+          IndexListList out2arc);
 
-        assert(_tails.size() == _M);
-        assert(_heads.size() == _M);
-
-        assert(_in2arc.size() == _N);
-
-        assert(
-          std::all_of(_in2arc.begin(), _in2arc.end(), [this](IndexList& list) {
-              return list.size() < this->_N;
-          }));
-        assert(std::all_of(
-          _out2arc.begin(), _out2arc.end(), [this](IndexList& list) {
-              return list.size() < this->_N;
-          }));
-    }
-
-    Graph(IndexList indeg, IndexList outdeg, IndexList tails, IndexList heads)
-      : _N(indeg.size())
-      , _M(tails.size())
-      , _indeg(std::move(indeg))
-      , _outdeg(std::move(outdeg))
-      , _inadj(IndexListList(_N))
-      , _outadj(IndexListList(_N))
-      , _tails(std::move(tails))
-      , _heads(std::move(heads))
-      , _in2arc(IndexListList(_N))
-      , _out2arc(IndexListList(_N))
-    {
-        assert(_indeg.size() == _outdeg.size());
-        assert(_tails.size() == _heads.size());
-
-        _compute_adj_lists();
-    }
-
-    Graph(index_t N, IndexList tails, IndexList heads)
-      : _N(N)
-      , _M(tails.size())
-      , _indeg(IndexList(N))
-      , _outdeg(IndexList(N))
-      , _inadj(IndexListList(N))
-      , _outadj(IndexListList(N))
-      , _tails(std::move(tails))
-      , _heads(std::move(heads))
-      , _in2arc(IndexListList(N))
-      , _out2arc(IndexListList(N))
-    {
-        assert(_tails.size() == _heads.size());
-
-        for (index_t i = 0; i < _M; i++) {
-            _outdeg[_tails[i]]++;
-            _indeg[_heads[i]]++;
-        }
-
-        _compute_adj_lists();
-    }
+    Graph(IndexList indeg, IndexList outdeg, IndexList tails, IndexList heads);
+    Graph(index_t N, IndexList tails, IndexList heads);
 
     explicit Graph(const Graph& other) =
       default; // copy should not happen uintended
@@ -185,41 +97,14 @@ class Graph
         _M = M;
     }
 
-    void shrink_to_fit()
-    {
-        _indeg.shrink_to_fit();
-        _outdeg.shrink_to_fit();
-        _tails.shrink_to_fit();
-        _heads.shrink_to_fit();
+    void shrink_to_fit();
 
-        _inadj.shrink_to_fit();
-        for (auto& list : _inadj)
-            list.shrink_to_fit();
-
-        _outadj.shrink_to_fit();
-        for (auto& list : _outadj)
-            list.shrink_to_fit();
-
-        _in2arc.shrink_to_fit();
-        for (auto& list : _in2arc)
-            list.shrink_to_fit();
-
-        _out2arc.shrink_to_fit();
-        for (auto& list : _out2arc)
-            list.shrink_to_fit();
-    }
-
-    bool operator==(const Graph& rhs) const
-    {
-        return (_N == rhs._N) && (_M == rhs._M) && (_indeg == rhs._indeg) &&
-               (_outdeg == rhs._outdeg) && (_tails == rhs._tails) &&
-               (_heads == rhs._heads) && (_inadj == rhs._inadj) &&
-               (_outadj == rhs._outadj) && (_in2arc == rhs._in2arc) &&
-               (_out2arc == rhs._out2arc);
-    }
+    bool operator==(const Graph& rhs) const;
 
     inline static bool has_edge(const Graph& graph, index_t from, index_t to)
     {
+        // TODO: this is very inefficient, think about removing this or at least
+        // marking it as slow!
         const auto& outadj = graph.outadj()[from];
         auto ptr = std::find(outadj.begin(), outadj.end(), to);
         return (ptr != outadj.end());
@@ -358,73 +243,6 @@ class Graph
 #endif
     }
 
-    static bool is_acyclic(const Graph& graph)
-    {
-        // TODO assert graph does not have self loops
-
-        if (graph.N() == 0)
-            return true;
-
-        std::queue<index_t> sources;
-        for (index_t i = 0; i < graph.N(); i++)
-            if (graph.indeg()[i] == 0)
-                sources.push(i);
-
-        if (sources.empty())
-            return false;
-
-        IndexList indeg(graph.indeg());
-
-        index_t visited_nodes = 0;
-        while (!sources.empty()) {
-            index_t u = sources.front();
-            sources.pop();
-            visited_nodes++;
-
-            for (const index_t v : graph.outadj()[u]) {
-                indeg[v]--;
-                if (indeg[v] == 0)
-                    sources.push(v);
-            }
-        }
-
-        return (visited_nodes == graph.N());
-    }
-
-    static bool is_acyclic(const Graph& graph, const FVS& fvs)
-    {
-        auto size_fvs = std::count(fvs.begin(), fvs.end(), true);
-
-        if (graph.N() - size_fvs == 0)
-            return true;
-
-        IndexList indeg(graph.N(), 0);
-        for (index_t u = 0; u < graph.N(); ++u)
-            if (!fvs[u])
-                for (const index_t v : graph.outadj()[u])
-                    ++indeg[v];
-
-        std::queue<index_t> sources;
-        for (index_t i = 0; i < graph.N(); i++)
-            if (!fvs[i] && indeg[i] == 0)
-                sources.push(i);
-
-        index_t visited_nodes = 0;
-        while (!sources.empty()) {
-            index_t u = sources.front();
-            sources.pop();
-            visited_nodes++;
-
-            for (const index_t v : graph.outadj()[u]) {
-                indeg[v]--;
-                if (!fvs[v] && indeg[v] == 0)
-                    sources.push(v);
-            }
-        }
-
-        return (visited_nodes == (graph.N() - size_fvs));
-    }
-
     static bool has_valid_data_structure(const Graph& graph)
     {
         if (std::accumulate(graph.indeg().begin(),
@@ -457,6 +275,19 @@ class Graph
 
         return true;
     }
+
+  private:
+    index_t _N;
+    index_t _M;
+    IndexList _indeg;
+    IndexList _outdeg;
+    IndexListList _inadj;
+    IndexListList _outadj;
+
+    IndexList _tails;
+    IndexList _heads;
+    IndexListList _in2arc;
+    IndexListList _out2arc;
 
   protected:
     void _compute_adj_lists()
@@ -502,21 +333,127 @@ class Graph
     }
 };
 
-// std::ostream&
-// operator<<(std::ostream& os, const Graph& graph)
-// {
-//     // maybe use std::setw(...)
-//     os << "N=" << graph.N() << "\n"
-//        << "M=" << graph.M() << "\n"
-//        << "heads=" << graph.heads() << "\n"
-//        << "tails=" << graph.tails() << "\n"
-//        << "indeg=" << graph.indeg() << "\n"
-//        << "outdeg=" << graph.outdeg() << "\n"
-//        << "inadj=" << graph.inadj() << "\n"
-//        << "outadj=" << graph.outadj() << "\n"
-//        << "in2arc=" << graph.in2arc() << "\n"
-//        << "out2arc=" << graph.out2arc() << "\n";
+Graph::Graph(index_t N,
+             index_t M,
+             IndexList indeg,
+             IndexList outdeg,
+             IndexListList inadj,
+             IndexListList outadj,
+             IndexList tails,
+             IndexList heads,
+             IndexListList in2arc,
+             IndexListList out2arc)
+  : _N(N)
+  , _M(M)
+  , _indeg(std::move(indeg))
+  , _outdeg(std::move(outdeg))
+  , _inadj(std::move(inadj))
+  , _outadj(std::move(outadj))
+  , _tails(std::move(tails))
+  , _heads(std::move(heads))
+  , _in2arc(std::move(in2arc))
+  , _out2arc(std::move(out2arc))
+{
+    assert(_indeg.size() == _N);
+    assert(_outdeg.size() == _N);
+    assert(_inadj.size() == _N);
+    assert(std::all_of(_inadj.begin(), _inadj.end(), [this](IndexList& list) {
+        return list.size() < this->_N;
+    }));
+    assert(_outadj.size() == _N);
+    assert(std::all_of(_outadj.begin(), _outadj.end(), [this](IndexList& list) {
+        return list.size() < this->_N;
+    }));
 
-//     return os;
-// }
+    assert(_tails.size() == _M);
+    assert(_heads.size() == _M);
+
+    assert(_in2arc.size() == _N);
+
+    assert(std::all_of(_in2arc.begin(), _in2arc.end(), [this](IndexList& list) {
+        return list.size() < this->_N;
+    }));
+    assert(
+      std::all_of(_out2arc.begin(), _out2arc.end(), [this](IndexList& list) {
+          return list.size() < this->_N;
+      }));
+}
+
+Graph::Graph(IndexList indeg,
+             IndexList outdeg,
+             IndexList tails,
+             IndexList heads)
+  : _N(indeg.size())
+  , _M(tails.size())
+  , _indeg(std::move(indeg))
+  , _outdeg(std::move(outdeg))
+  , _inadj(IndexListList(_N))
+  , _outadj(IndexListList(_N))
+  , _tails(std::move(tails))
+  , _heads(std::move(heads))
+  , _in2arc(IndexListList(_N))
+  , _out2arc(IndexListList(_N))
+{
+    assert(_indeg.size() == _outdeg.size());
+    assert(_tails.size() == _heads.size());
+
+    _compute_adj_lists();
+}
+
+Graph::Graph(index_t N, IndexList tails, IndexList heads)
+  : _N(N)
+  , _M(tails.size())
+  , _indeg(IndexList(N))
+  , _outdeg(IndexList(N))
+  , _inadj(IndexListList(N))
+  , _outadj(IndexListList(N))
+  , _tails(std::move(tails))
+  , _heads(std::move(heads))
+  , _in2arc(IndexListList(N))
+  , _out2arc(IndexListList(N))
+{
+    assert(_tails.size() == _heads.size());
+
+    for (index_t i = 0; i < _M; i++) {
+        _outdeg[_tails[i]]++;
+        _indeg[_heads[i]]++;
+    }
+
+    _compute_adj_lists();
+}
+
+void
+Graph::shrink_to_fit()
+{
+    _indeg.shrink_to_fit();
+    _outdeg.shrink_to_fit();
+    _tails.shrink_to_fit();
+    _heads.shrink_to_fit();
+
+    _inadj.shrink_to_fit();
+    for (auto& list : _inadj)
+        list.shrink_to_fit();
+
+    _outadj.shrink_to_fit();
+    for (auto& list : _outadj)
+        list.shrink_to_fit();
+
+    _in2arc.shrink_to_fit();
+    for (auto& list : _in2arc)
+        list.shrink_to_fit();
+
+    _out2arc.shrink_to_fit();
+    for (auto& list : _out2arc)
+        list.shrink_to_fit();
+}
+
+bool
+Graph::operator==(const Graph& rhs) const
+{
+    return (_N == rhs._N) && (_M == rhs._M) && (_indeg == rhs._indeg) &&
+           (_outdeg == rhs._outdeg) && (_tails == rhs._tails) &&
+           (_heads == rhs._heads) && (_inadj == rhs._inadj) &&
+           (_outadj == rhs._outadj) && (_in2arc == rhs._in2arc) &&
+           (_out2arc == rhs._out2arc);
+}
 }

@@ -40,7 +40,8 @@ class CycleSeparation
 
     void separate()
     {
-        _cuts.clear();
+        // _cuts.clear();
+        _cuts.resize(0);
         find_cycles<true>();
     }
 
